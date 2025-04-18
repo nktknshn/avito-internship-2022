@@ -4,17 +4,18 @@ import (
 	"context"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
 )
 
 type GetBalanceUseCase struct {
 	trm         trm.Manager
-	accountRepo domain.AccountRepository
+	accountRepo domainAccount.AccountRepository
 }
 
 func NewGetBalanceUseCase(
 	trm trm.Manager,
-	accountRepo domain.AccountRepository,
+	accountRepo domainAccount.AccountRepository,
 ) *GetBalanceUseCase {
 
 	if trm == nil {
@@ -31,10 +32,6 @@ func NewGetBalanceUseCase(
 	}
 }
 
-type In struct {
-	UserID domain.UserID
-}
-
 type Out struct {
 	Available int64
 	Reserved  int64
@@ -49,7 +46,7 @@ func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	}
 
 	return Out{
-		Available: acc.Balance.Available.Value(),
-		Reserved:  acc.Balance.Reserved.Value(),
+		Available: acc.Balance.GetAvailable().Value(),
+		Reserved:  acc.Balance.GetReserved().Value(),
 	}, nil
 }

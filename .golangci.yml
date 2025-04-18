@@ -31,6 +31,9 @@ linters:
     - unconvert
     - unparam
     - whitespace
+    - staticcheck
+    - errcheck
+    - goimports
 
 issues:
   exclude:

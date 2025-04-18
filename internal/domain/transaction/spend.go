@@ -1,8 +1,12 @@
-package domain
+package transaction
 
 import (
-	"errors"
 	"time"
+
+	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainAmount "github.com/nktknshn/avito-internship-2022/internal/domain/amount"
+	domainProduct "github.com/nktknshn/avito-internship-2022/internal/domain/product"
 )
 
 type TransactionSpendStatus string
@@ -41,22 +45,22 @@ func NewTransactionSpendID(id int64) (TransactionSpendID, error) {
 
 type TransactionSpend struct {
 	ID        TransactionSpendID
-	AccountID AccountID
-	UserID    UserID
-	OrderID   OrderID
-	ProductID ProductID
-	Amount    AmountPositive
+	AccountID domainAccount.AccountID
+	UserID    domain.UserID
+	OrderID   domainAccount.OrderID
+	ProductID domainProduct.ProductID
+	Amount    domainAmount.AmountPositive
 	Status    TransactionSpendStatus
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 func NewTransactionSpendReserved(
-	accountID AccountID,
-	userID UserID,
-	orderID OrderID,
-	productID ProductID,
-	amount AmountPositive,
+	accountID domainAccount.AccountID,
+	userID domain.UserID,
+	orderID domainAccount.OrderID,
+	productID domainProduct.ProductID,
+	amount domainAmount.AmountPositive,
 	now time.Time,
 ) (*TransactionSpend, error) {
 	return &TransactionSpend{
@@ -73,7 +77,7 @@ func NewTransactionSpendReserved(
 
 func (t *TransactionSpend) Cancel(now time.Time) error {
 	if t.Status != TransactionSpendStatusReserved {
-		return errors.New("cannot cancel")
+		return ErrTransactionStatusMismatch
 	}
 	t.Status = TransactionSpendStatusCanceled
 	t.UpdatedAt = now
@@ -82,7 +86,7 @@ func (t *TransactionSpend) Cancel(now time.Time) error {
 
 func (t *TransactionSpend) Confirm(now time.Time) error {
 	if t.Status != TransactionSpendStatusReserved {
-		return errors.New("cannot cancel")
+		return ErrTransactionStatusMismatch
 	}
 	t.Status = TransactionSpendStatusConfirmed
 	t.UpdatedAt = now
@@ -105,22 +109,22 @@ func NewTransactionSpendFromValues(
 		return nil, err
 	}
 
-	_accountID, err := NewAccountID(accountID)
+	_accountID, err := domainAccount.NewAccountID(accountID)
 	if err != nil {
 		return nil, err
 	}
 
-	_userID, err := NewUserID(userID)
+	_userID, err := domain.NewUserID(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	_orderID, err := NewOrderID(orderID)
+	_orderID, err := domainAccount.NewOrderID(orderID)
 	if err != nil {
 		return nil, err
 	}
 
-	_productID, err := NewProductID(productID)
+	_productID, err := domainProduct.NewProductID(productID)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +134,7 @@ func NewTransactionSpendFromValues(
 		return nil, err
 	}
 
-	_amount, err := NewAmountPositive(amount)
+	_amount, err := domainAmount.NewAmountPositive(amount)
 	if err != nil {
 		return nil, err
 	}

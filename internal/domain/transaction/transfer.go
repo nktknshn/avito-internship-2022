@@ -1,6 +1,12 @@
-package domain
+package transaction
 
-import "time"
+import (
+	"time"
+
+	"github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainAmount "github.com/nktknshn/avito-internship-2022/internal/domain/amount"
+)
 
 type TransactionTransferID int64
 
@@ -36,18 +42,18 @@ const (
 
 type TransactionTransfer struct {
 	ID            TransactionTransferID
-	FromAccountID AccountID
-	ToAccountID   AccountID
-	Amount        AmountPositive
+	FromAccountID domainAccount.AccountID
+	ToAccountID   domainAccount.AccountID
+	Amount        domainAmount.AmountPositive
 	Status        TransactionTransferStatus
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
 
 func NewTransactionTransfer(
-	fromAccountID AccountID,
-	toAccountID AccountID,
-	amount AmountPositive,
+	fromAccountID domainAccount.AccountID,
+	toAccountID domainAccount.AccountID,
+	amount domainAmount.AmountPositive,
 	now time.Time,
 ) (*TransactionTransfer, error) {
 	return &TransactionTransfer{
@@ -75,17 +81,17 @@ func NewTransactionTransferFromValues(
 		return nil, err
 	}
 
-	_fromAccountID, err := NewAccountID(fromAccountID)
+	_fromAccountID, err := account.NewAccountID(fromAccountID)
 	if err != nil {
 		return nil, err
 	}
 
-	_toAccountID, err := NewAccountID(toAccountID)
+	_toAccountID, err := account.NewAccountID(toAccountID)
 	if err != nil {
 		return nil, err
 	}
 
-	_amount, err := NewAmountPositive(amount)
+	_amount, err := domainAmount.NewAmountPositive(amount)
 	if err != nil {
 		return nil, err
 	}

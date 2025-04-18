@@ -5,7 +5,9 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domain "github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
 type TransactionsRepository struct {
@@ -17,11 +19,11 @@ func NewTransactionsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *TransactionsR
 	return &TransactionsRepository{db: db, getter: c}
 }
 
-func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domain.TransactionSpend, error) {
+func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domainAccount.OrderID) ([]*domainTransaction.TransactionSpend, error) {
 	sq := `
 		SELECT id, account_id, user_id, order_id, product_id, status, amount, created_at, updated_at 
 		FROM transactions_spend 
-		WHERE user_id = ? AND order_id = ?;
+		WHERE user_id = ? AND order_id = ? FOR UPDATE;
 	`
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
@@ -34,7 +36,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 		return nil, err
 	}
 
-	result := make([]*domain.TransactionSpend, len(transactions))
+	result := make([]*domainTransaction.TransactionSpend, len(transactions))
 
 	for i, transaction := range transactions {
 		result[i], err = fromTransactionSpendDTO(transaction)
@@ -45,7 +47,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 	return result, nil
 }
 
-func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domain.TransactionSpend) (*domain.TransactionSpend, error) {
+func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domainTransaction.TransactionSpend) (*domainTransaction.TransactionSpend, error) {
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
 	transactionDTO, err := toTransactionSpendDTO(transaction)
@@ -116,7 +118,7 @@ func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr 
 	return &newDTO, nil
 }
 
-func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domain.TransactionDeposit) (*domain.TransactionDeposit, error) {
+func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domainTransaction.TransactionDeposit) (*domainTransaction.TransactionDeposit, error) {
 	sq := `
 		INSERT INTO transactions_deposit 
 			(account_id, user_id, deposit_source, status, amount, created_at, updated_at) 
@@ -146,4 +148,34 @@ func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, tra
 	return fromTransactionDepositDTO(&newDTO)
 }
 
-var _ domain.TransactionRepository = &TransactionsRepository{}
+func (r *TransactionsRepository) SaveTransactionTransfer(ctx context.Context, transaction *domainTransaction.TransactionTransfer) (*domainTransaction.TransactionTransfer, error) {
+	sq := `
+		INSERT INTO transactions_transfer 
+			(account_id, user_id, order_id, product_id, status, amount, created_at, updated_at) 
+		VALUES 
+			(:account_id, :user_id, :order_id, :product_id, :status, :amount, :created_at, :updated_at)
+		RETURNING *;
+	`
+
+	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	transactionDTO, err := toTransactionTransferDTO(transaction)
+	if err != nil {
+		return nil, err
+	}
+
+	sq, args, err := tr.BindNamed(sq, transactionDTO)
+	if err != nil {
+		return nil, err
+	}
+
+	var newDTO transactionTransferDTO
+	err = tr.GetContext(ctx, &newDTO, sq, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return fromTransactionTransferDTO(&newDTO)
+}
+
+var _ domainTransaction.TransactionRepository = &TransactionsRepository{}

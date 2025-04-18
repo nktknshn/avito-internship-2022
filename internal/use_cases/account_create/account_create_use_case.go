@@ -4,13 +4,14 @@ import (
 	"context"
 
 	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
 )
 
 type AccountCreateUseCase struct {
-	userAccountRepo domain.AccountRepository
+	userAccountRepo domainAccount.AccountRepository
 }
 
-func NewAccountCreateUseCase(userAccountRepo domain.AccountRepository) *AccountCreateUseCase {
+func NewAccountCreateUseCase(userAccountRepo domainAccount.AccountRepository) *AccountCreateUseCase {
 
 	if userAccountRepo == nil {
 		panic("userAccountRepo is nil")

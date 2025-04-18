@@ -7,7 +7,8 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domain "github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
 )
 
 type AccountsRepository struct {
@@ -15,8 +16,8 @@ type AccountsRepository struct {
 	getter *trmsqlx.CtxGetter
 }
 
-func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.UserID) (*domain.Account, error) {
-	sq := `SELECT id, user_id, balance_available, balance_reserved FROM accounts WHERE user_id = ?;`
+func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.UserID) (*domainAccount.Account, error) {
+	sq := `SELECT id, user_id, balance_available, balance_reserved FROM accounts WHERE user_id = ? FOR UPDATE;`
 
 	var accDTO accountDTO
 
@@ -25,7 +26,7 @@ func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.User
 	err := tr.GetContext(ctx, &accDTO, r.db.Rebind(sq), userID)
 
 	if errors.Is(err, sql.ErrNoRows) {
-		return nil, domain.ErrAccountNotFound
+		return nil, domainAccount.ErrAccountNotFound
 	}
 
 	if err != nil {
@@ -41,7 +42,33 @@ func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.User
 	return acc, nil
 }
 
-func (r *AccountsRepository) Save(ctx context.Context, account *domain.Account) (*domain.Account, error) {
+func (r *AccountsRepository) GetByAccountID(ctx context.Context, accountID domainAccount.AccountID) (*domainAccount.Account, error) {
+	sq := `SELECT id, user_id, balance_available, balance_reserved FROM accounts WHERE id = ? FOR UPDATE;`
+
+	var accDTO accountDTO
+
+	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	err := tr.GetContext(ctx, &accDTO, r.db.Rebind(sq), accountID)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, domainAccount.ErrAccountNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	acc, err := fromAccountDTO(&accDTO)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return acc, nil
+}
+
+func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Account) (*domainAccount.Account, error) {
 
 	accDTO, err := toAccountDTO(account)
 
@@ -120,4 +147,4 @@ func (r *AccountsRepository) update(ctx context.Context, tr trmsqlx.Tr, accDto *
 	return &newDTO, nil
 }
 
-var _ domain.AccountRepository = &AccountsRepository{}
+var _ domainAccount.AccountRepository = &AccountsRepository{}

@@ -1,8 +1,12 @@
-package domain
+package transaction
 
 import (
 	"errors"
 	"time"
+
+	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainAmount "github.com/nktknshn/avito-internship-2022/internal/domain/amount"
 )
 
 var (
@@ -57,16 +61,22 @@ func NewTransactionDepositID(id int64) (TransactionDepositID, error) {
 
 type TransactionDeposit struct {
 	ID            TransactionDepositID
-	AccountID     AccountID
-	UserID        UserID
+	AccountID     domainAccount.AccountID
+	UserID        domain.UserID
 	DepositSource DepositSource
 	Status        TransactionDepositStatus
-	Amount        AmountPositive
+	Amount        domainAmount.AmountPositive
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
 
-func NewTransactionDeposit(accountID AccountID, userID UserID, source DepositSource, amount AmountPositive, now time.Time) (*TransactionDeposit, error) {
+func NewTransactionDeposit(
+	accountID domainAccount.AccountID,
+	userID domain.UserID,
+	source DepositSource,
+	amount domainAmount.AmountPositive,
+	now time.Time,
+) (*TransactionDeposit, error) {
 	return &TransactionDeposit{
 		UserID:        userID,
 		DepositSource: source,
@@ -94,12 +104,12 @@ func NewTransactionDepositFromValues(
 		return nil, err
 	}
 
-	_accountID, err := NewAccountID(accountID)
+	_accountID, err := domainAccount.NewAccountID(accountID)
 	if err != nil {
 		return nil, err
 	}
 
-	_userID, err := NewUserID(userID)
+	_userID, err := domain.NewUserID(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +124,7 @@ func NewTransactionDepositFromValues(
 		return nil, err
 	}
 
-	_amount, err := NewAmountPositive(amount)
+	_amount, err := domainAmount.NewAmountPositive(amount)
 	if err != nil {
 		return nil, err
 	}

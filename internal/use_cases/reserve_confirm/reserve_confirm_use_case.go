@@ -5,19 +5,20 @@ import (
 	"time"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
 type ReserveConfirmUseCase struct {
 	trm              trm.Manager
-	accountRepo      domain.AccountRepository
-	transactionsRepo domain.TransactionRepository
+	accountRepo      domainAccount.AccountRepository
+	transactionsRepo domainTransaction.TransactionRepository
 }
 
 func NewReserveConfirmUseCase(
 	trm trm.Manager,
-	accountRepo domain.AccountRepository,
-	transactionsRepo domain.TransactionRepository,
+	accountRepo domainAccount.AccountRepository,
+	transactionsRepo domainTransaction.TransactionRepository,
 ) *ReserveConfirmUseCase {
 
 	if trm == nil {
@@ -39,46 +40,8 @@ func NewReserveConfirmUseCase(
 	}
 }
 
-type In struct {
-	UserID    domain.UserID
-	OrderID   domain.OrderID
-	ProductID domain.ProductID
-	Amount    domain.AmountPositive
-}
-
-func NewInFromValues(userID int64, orderID int64, productID int64, amount int64) (In, error) {
-	_userID, err := domain.NewUserID(userID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_orderID, err := domain.NewOrderID(orderID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_productID, err := domain.NewProductID(productID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_amount, err := domain.NewAmountPositive(amount)
-	if err != nil {
-		return In{}, err
-	}
-
-	return In{
-		UserID:    _userID,
-		OrderID:   _orderID,
-		ProductID: _productID,
-		Amount:    _amount,
-	}, nil
-}
-
 func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 	// если amount не равен сумме резерва, то ошибка
-	// или списываем деньги с резерва, а остаток возвращаем на баланс
-
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 		acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
 
@@ -92,21 +55,21 @@ func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		var transaction *domain.TransactionSpend
+		var transaction *domainTransaction.TransactionSpend
 
 		for _, transaction = range orderTransactions {
-			if transaction.Status == domain.TransactionSpendStatusReserved {
+			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
 				break
 			}
 		}
 
 		if transaction == nil {
-			return domain.ErrTransactionNotFound
+			return domainTransaction.ErrTransactionNotFound
 		}
 
 		// возможно имплементировать как стратегию на уровне моделей домена
 		if transaction.Amount != in.Amount {
-			return domain.ErrTransactionAmountMismatch
+			return domainTransaction.ErrTransactionAmountMismatch
 		}
 
 		err = acc.BalanceReserveConfirm(in.Amount)

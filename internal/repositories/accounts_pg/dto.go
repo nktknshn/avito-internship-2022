@@ -3,7 +3,9 @@ package accounts_pg
 import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domain "github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainAmount "github.com/nktknshn/avito-internship-2022/internal/domain/amount"
 )
 
 func NewAccountsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *AccountsRepository {
@@ -17,8 +19,8 @@ type accountDTO struct {
 	BalanceReserved  int64 `db:"balance_reserved"`
 }
 
-func fromAccountDTO(a *accountDTO) (*domain.Account, error) {
-	id, err := domain.NewAccountID(a.Id)
+func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
+	id, err := domainAccount.NewAccountID(a.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -26,30 +28,31 @@ func fromAccountDTO(a *accountDTO) (*domain.Account, error) {
 	if err != nil {
 		return nil, err
 	}
-	balanceAvailable, err := domain.NewAmount(a.BalanceAvailable)
+	balanceAvailable, err := domainAmount.NewAmount(a.BalanceAvailable)
 	if err != nil {
 		return nil, err
 	}
-	balanceReserved, err := domain.NewAmount(a.BalanceReserved)
+	balanceReserved, err := domainAmount.NewAmount(a.BalanceReserved)
 	if err != nil {
 		return nil, err
 	}
-	accountBalance, err := domain.NewAccountBalance(balanceAvailable, balanceReserved)
+	accountBalance, err := domainAccount.NewAccountBalance(balanceAvailable, balanceReserved)
 	if err != nil {
 		return nil, err
 	}
-	return &domain.Account{
+
+	return &domainAccount.Account{
 		ID:      id,
 		UserID:  userID,
 		Balance: accountBalance,
 	}, nil
 }
 
-func toAccountDTO(a *domain.Account) (*accountDTO, error) {
+func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
 	return &accountDTO{
 		Id:               a.ID.Value(),
 		UserId:           a.UserID.Value(),
-		BalanceAvailable: a.Balance.Available.Value(),
-		BalanceReserved:  a.Balance.Reserved.Value(),
+		BalanceAvailable: a.Balance.GetAvailable().Value(),
+		BalanceReserved:  a.Balance.GetReserved().Value(),
 	}, nil
 }

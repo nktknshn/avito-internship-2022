@@ -1,6 +1,11 @@
-package domain
+package account
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	"github.com/nktknshn/avito-internship-2022/internal/domain/amount"
+)
 
 type OrderID int64
 
@@ -10,6 +15,7 @@ func (o OrderID) Value() int64 {
 
 var (
 	ErrInvalidOrderID = errors.New("invalid order id")
+	ErrSameAccount    = errors.New("same account")
 )
 
 func NewOrderID(id int64) (OrderID, error) {
@@ -38,11 +44,11 @@ func NewAccountID(id int64) (AccountID, error) {
 
 type Account struct {
 	ID      AccountID
-	UserID  UserID
+	UserID  domain.UserID
 	Balance AccountBalance
 }
 
-func NewAccount(userID UserID) (*Account, error) {
+func NewAccount(userID domain.UserID) (*Account, error) {
 	return &Account{
 		UserID:  userID,
 		Balance: NewAccountBalanceEmpty(),
@@ -54,7 +60,7 @@ func (ac *Account) SetBalance(ab AccountBalance) error {
 	return nil
 }
 
-func (ac *Account) BalanceDeposit(amount AmountPositive) error {
+func (ac *Account) BalanceDeposit(amount amount.AmountPositive) error {
 	newBalance, err := ac.Balance.Deposit(amount)
 	if err != nil {
 		return err
@@ -66,8 +72,8 @@ func (ac *Account) BalanceDeposit(amount AmountPositive) error {
 	return nil
 }
 
-func (ac *Account) BalanceReserve(amount AmountPositive) error {
-	newBalance, err := ac.Balance.Reserve(amount)
+func (ac *Account) BalanceReserve(a amount.AmountPositive) error {
+	newBalance, err := ac.Balance.Reserve(a)
 	if err != nil {
 		return err
 	}
@@ -78,8 +84,8 @@ func (ac *Account) BalanceReserve(amount AmountPositive) error {
 	return nil
 }
 
-func (ac *Account) BalanceReserveCancel(amount AmountPositive) error {
-	newBalance, err := ac.Balance.ReserveCancel(amount)
+func (ac *Account) BalanceReserveCancel(a amount.AmountPositive) error {
+	newBalance, err := ac.Balance.ReserveCancel(a)
 	if err != nil {
 		return err
 	}
@@ -90,12 +96,39 @@ func (ac *Account) BalanceReserveCancel(amount AmountPositive) error {
 	return nil
 }
 
-func (ac *Account) BalanceReserveConfirm(amount AmountPositive) error {
-	newBalance, err := ac.Balance.ReserveConfirm(amount)
+func (ac *Account) BalanceReserveConfirm(a amount.AmountPositive) error {
+	newBalance, err := ac.Balance.ReserveConfirm(a)
 	if err != nil {
 		return err
 	}
 	err = ac.SetBalance(newBalance)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ac *Account) BalanceWithdraw(amount amount.AmountPositive) error {
+	newBalance, err := ac.Balance.Withdraw(amount)
+	if err != nil {
+		return err
+	}
+	err = ac.SetBalance(newBalance)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ac *Account) Transfer(to *Account, amount amount.AmountPositive) error {
+	if ac.ID == to.ID {
+		return ErrSameAccount
+	}
+	err := ac.BalanceWithdraw(amount)
+	if err != nil {
+		return err
+	}
+	err = to.BalanceDeposit(amount)
 	if err != nil {
 		return err
 	}

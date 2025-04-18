@@ -6,19 +6,22 @@ import (
 	"time"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domain "github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
 type DepositUseCase struct {
 	trm              trm.Manager
-	accountRepo      domain.AccountRepository
-	transactionsRepo domain.TransactionRepository
+	accountRepo      domainAccount.AccountRepository
+	transactionsRepo domainTransaction.TransactionRepository
 }
 
 func NewDepositUseCase(
 	trm trm.Manager,
-	accountRepo domain.AccountRepository,
-	transactionsRepo domain.TransactionRepository,
+	accountRepo domainAccount.AccountRepository,
+	transactionsRepo domainTransaction.TransactionRepository,
 ) *DepositUseCase {
 
 	if trm == nil {
@@ -40,43 +43,14 @@ func NewDepositUseCase(
 	}
 }
 
-type In struct {
-	UserID domain.UserID
-	Amount domain.AmountPositive
-	Source domain.DepositSource
-}
-
-func NewInFromValues(userID int64, amount int64, source string) (In, error) {
-	_userID, err := domain.NewUserID(userID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_source, err := domain.NewDepositSource(source)
-	if err != nil {
-		return In{}, err
-	}
-
-	_amount, err := domain.NewAmountPositive(amount)
-	if err != nil {
-		return In{}, err
-	}
-
-	return In{
-		UserID: _userID,
-		Source: _source,
-		Amount: _amount,
-	}, nil
-}
-
 // getAccountCreating returns an account for the user.
 // If the account does not exist, it creates a new one.
-func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.UserID) (*domain.Account, error) {
+func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.UserID) (*domainAccount.Account, error) {
 
 	acc, err := u.accountRepo.GetByUserID(ctx, userID)
 
-	if errors.Is(err, domain.ErrAccountNotFound) {
-		newAccount, err := domain.NewAccount(userID)
+	if errors.Is(err, domainAccount.ErrAccountNotFound) {
+		newAccount, err := domainAccount.NewAccount(userID)
 
 		if err != nil {
 			return nil, err
@@ -106,7 +80,7 @@ func (u *DepositUseCase) Handle(ctx context.Context, in In) error {
 			return nil
 		}
 
-		transaction, err := domain.NewTransactionDeposit(
+		transaction, err := domainTransaction.NewTransactionDeposit(
 			acc.ID,
 			in.UserID,
 			in.Source,

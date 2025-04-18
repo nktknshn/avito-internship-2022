@@ -5,19 +5,20 @@ import (
 	"time"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
-	"github.com/nktknshn/avito-internship-2022/internal/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
 type ReserveUseCase struct {
 	trm             trm.Manager
-	accountRepo     domain.AccountRepository
-	transactionRepo domain.TransactionRepository
+	accountRepo     domainAccount.AccountRepository
+	transactionRepo domainTransaction.TransactionRepository
 }
 
 func NewReserveUseCase(
 	trm trm.Manager,
-	accountRepo domain.AccountRepository,
-	transactionRepo domain.TransactionRepository,
+	accountRepo domainAccount.AccountRepository,
+	transactionRepo domainTransaction.TransactionRepository,
 ) *ReserveUseCase {
 
 	if trm == nil {
@@ -37,42 +38,6 @@ func NewReserveUseCase(
 		accountRepo,
 		transactionRepo,
 	}
-}
-
-type In struct {
-	UserID    domain.UserID
-	ProductID domain.ProductID
-	OrderID   domain.OrderID
-	Amount    domain.AmountPositive
-}
-
-func NewInFromValues(userID int64, productID int64, orderID int64, amount int64) (In, error) {
-	_userID, err := domain.NewUserID(userID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_productID, err := domain.NewProductID(productID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_orderID, err := domain.NewOrderID(orderID)
-	if err != nil {
-		return In{}, err
-	}
-
-	_amount, err := domain.NewAmountPositive(amount)
-	if err != nil {
-		return In{}, err
-	}
-
-	return In{
-		UserID:    _userID,
-		ProductID: _productID,
-		OrderID:   _orderID,
-		Amount:    _amount,
-	}, nil
 }
 
 func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
@@ -96,8 +61,8 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 
 		for _, transaction := range orderTransactions {
 			// если существует транзакция с таким OrderID и статус не canceled, то ошибка
-			if transaction.Status != domain.TransactionSpendStatusCanceled {
-				return domain.ErrTransactionAlreadyExists
+			if transaction.Status != domainTransaction.TransactionSpendStatusCanceled {
+				return domainTransaction.ErrTransactionAlreadyExists
 			}
 		}
 
@@ -113,7 +78,7 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		transaction, err := domain.NewTransactionSpendReserved(
+		transaction, err := domainTransaction.NewTransactionSpendReserved(
 			acc.ID,
 			in.UserID,
 			in.OrderID,
