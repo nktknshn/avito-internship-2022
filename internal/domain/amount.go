@@ -6,8 +6,8 @@ import "errors"
 type Amount int64
 
 var (
-	InvalidAmount         = errors.New("Invalid Amount")
-	InvalidPositiveAmount = errors.New("Invalid Positive Amount")
+	InvalidAmount         = errors.New("invalid amount")
+	InvalidPositiveAmount = errors.New("invalid positive amount")
 )
 
 func NewAmount(amount int64) (Amount, error) {

@@ -11,13 +11,13 @@ import (
 type ReserveCancelUseCase struct {
 	trm              trm.Manager
 	accountRepo      domain.AccountRepository
-	transactionsRepo domain.AccountTransactionRepository
+	transactionsRepo domain.TransactionRepository
 }
 
 func NewReserveCancelUseCase(
 	trm trm.Manager,
 	accountRepo domain.AccountRepository,
-	transactionsRepo domain.AccountTransactionRepository,
+	transactionsRepo domain.TransactionRepository,
 ) *ReserveCancelUseCase {
 
 	if trm == nil {
@@ -47,8 +47,36 @@ type In struct {
 	Amount    domain.AmountPositive
 }
 
-func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
+func NewInFromValues(userID int64, orderID int64, productID int64, amount int64) (In, error) {
+	_userID, err := domain.NewUserID(userID)
+	if err != nil {
+		return In{}, err
+	}
 
+	_orderID, err := domain.NewOrderID(orderID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_productID, err := domain.NewProductID(productID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_amount, err := domain.NewAmountPositive(amount)
+	if err != nil {
+		return In{}, err
+	}
+
+	return In{
+		UserID:    _userID,
+		OrderID:   _orderID,
+		ProductID: _productID,
+		Amount:    _amount,
+	}, nil
+}
+
+func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 		acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
 		if err != nil {
@@ -61,10 +89,10 @@ func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		var transaction *domain.AccountTransactionSpend
+		var transaction *domain.TransactionSpend
 
 		for _, transaction = range orderTransactions {
-			if transaction.Status == domain.AccountTransactionSpendStatusReserved {
+			if transaction.Status == domain.TransactionSpendStatusReserved {
 				break
 			}
 		}

@@ -1,4 +1,4 @@
-package accounts
+package accounts_pg
 
 import (
 	"context"

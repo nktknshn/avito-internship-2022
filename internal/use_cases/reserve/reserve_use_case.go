@@ -11,13 +11,13 @@ import (
 type ReserveUseCase struct {
 	trm             trm.Manager
 	accountRepo     domain.AccountRepository
-	transactionRepo domain.AccountTransactionRepository
+	transactionRepo domain.TransactionRepository
 }
 
 func NewReserveUseCase(
 	trm trm.Manager,
 	accountRepo domain.AccountRepository,
-	transactionRepo domain.AccountTransactionRepository,
+	transactionRepo domain.TransactionRepository,
 ) *ReserveUseCase {
 
 	if trm == nil {
@@ -46,6 +46,35 @@ type In struct {
 	Amount    domain.AmountPositive
 }
 
+func NewInFromValues(userID int64, productID int64, orderID int64, amount int64) (In, error) {
+	_userID, err := domain.NewUserID(userID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_productID, err := domain.NewProductID(productID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_orderID, err := domain.NewOrderID(orderID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_amount, err := domain.NewAmountPositive(amount)
+	if err != nil {
+		return In{}, err
+	}
+
+	return In{
+		UserID:    _userID,
+		ProductID: _productID,
+		OrderID:   _orderID,
+		Amount:    _amount,
+	}, nil
+}
+
 func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 
 	// а если canceled, то OrderID новый?
@@ -67,7 +96,7 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 
 		for _, transaction := range orderTransactions {
 			// если существует транзакция с таким OrderID и статус не canceled, то ошибка
-			if transaction.Status != domain.AccountTransactionSpendStatusCanceled {
+			if transaction.Status != domain.TransactionSpendStatusCanceled {
 				return domain.ErrTransactionAlreadyExists
 			}
 		}
@@ -84,7 +113,7 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		transaction, err := domain.NewAccountTransactionSpendReserved(
+		transaction, err := domain.NewTransactionSpendReserved(
 			acc.ID,
 			in.UserID,
 			in.OrderID,

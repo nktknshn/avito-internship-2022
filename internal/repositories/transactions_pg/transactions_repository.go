@@ -1,4 +1,4 @@
-package transactions
+package transactions_pg
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func NewTransactionsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *TransactionsR
 	return &TransactionsRepository{db: db, getter: c}
 }
 
-func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domain.AccountTransactionSpend, error) {
+func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domain.TransactionSpend, error) {
 	sq := `
 		SELECT id, account_id, user_id, order_id, product_id, status, amount, created_at, updated_at 
 		FROM transactions_spend 
@@ -34,7 +34,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 		return nil, err
 	}
 
-	result := make([]*domain.AccountTransactionSpend, len(transactions))
+	result := make([]*domain.TransactionSpend, len(transactions))
 
 	for i, transaction := range transactions {
 		result[i], err = fromTransactionSpendDTO(transaction)
@@ -45,7 +45,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 	return result, nil
 }
 
-func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domain.AccountTransactionSpend) (*domain.AccountTransactionSpend, error) {
+func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domain.TransactionSpend) (*domain.TransactionSpend, error) {
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
 	transactionDTO, err := toTransactionSpendDTO(transaction)
@@ -116,7 +116,7 @@ func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr 
 	return &newDTO, nil
 }
 
-func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domain.AccountTransactionDeposit) (*domain.AccountTransactionDeposit, error) {
+func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domain.TransactionDeposit) (*domain.TransactionDeposit, error) {
 	sq := `
 		INSERT INTO transactions_deposit 
 			(account_id, user_id, deposit_source, status, amount, created_at, updated_at) 
@@ -146,4 +146,4 @@ func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, tra
 	return fromTransactionDepositDTO(&newDTO)
 }
 
-var _ domain.AccountTransactionRepository = &TransactionsRepository{}
+var _ domain.TransactionRepository = &TransactionsRepository{}

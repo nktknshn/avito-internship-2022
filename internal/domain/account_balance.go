@@ -4,6 +4,11 @@ import (
 	"errors"
 )
 
+var (
+	ErrInsufficientBalance = errors.New("insufficent available balance")
+	ErrInsufficientReserve = errors.New("insufficent reserved balance")
+)
+
 type AccountBalance struct {
 	Available Amount
 	Reserved  Amount
@@ -22,11 +27,6 @@ func NewAccountBalanceEmpty() AccountBalance {
 		Reserved:  0,
 	}
 }
-
-var (
-	ErrInsufficientBalance = errors.New("insufficent available balance")
-	ErrInsufficientReserve = errors.New("insufficent reserved balance")
-)
 
 func (ac AccountBalance) Deposit(amount AmountPositive) (AccountBalance, error) {
 	return AccountBalance{

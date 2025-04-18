@@ -1,0 +1,107 @@
+package domain
+
+import "time"
+
+type TransactionTransferID int64
+
+func (id TransactionTransferID) Value() int64 {
+	return int64(id)
+}
+
+func NewTransactionTransferID(id int64) (TransactionTransferID, error) {
+	if id < 0 {
+		return 0, ErrInvalidTransactionID
+	}
+	return TransactionTransferID(id), nil
+}
+
+type TransactionTransferStatus string
+
+func NewTransactionTransferStatus(s string) (TransactionTransferStatus, error) {
+	switch s {
+	case TransactionTransferStatusConfirmed:
+		return TransactionTransferStatus(s), nil
+	default:
+		return "", ErrInvalidTransactionStatus
+	}
+}
+
+func (s TransactionTransferStatus) Value() string {
+	return string(s)
+}
+
+const (
+	TransactionTransferStatusConfirmed = "confirmed"
+)
+
+type TransactionTransfer struct {
+	ID            TransactionTransferID
+	FromAccountID AccountID
+	ToAccountID   AccountID
+	Amount        AmountPositive
+	Status        TransactionTransferStatus
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+func NewTransactionTransfer(
+	fromAccountID AccountID,
+	toAccountID AccountID,
+	amount AmountPositive,
+	now time.Time,
+) (*TransactionTransfer, error) {
+	return &TransactionTransfer{
+		FromAccountID: fromAccountID,
+		ToAccountID:   toAccountID,
+		Amount:        amount,
+		Status:        TransactionTransferStatusConfirmed,
+		CreatedAt:     now,
+		UpdatedAt:     now,
+	}, nil
+}
+
+func NewTransactionTransferFromValues(
+	id int64,
+	fromAccountID int64,
+	toAccountID int64,
+	amount int64,
+	status string,
+	createdAt time.Time,
+	updatedAt time.Time,
+) (*TransactionTransfer, error) {
+
+	_id, err := NewTransactionTransferID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	_fromAccountID, err := NewAccountID(fromAccountID)
+	if err != nil {
+		return nil, err
+	}
+
+	_toAccountID, err := NewAccountID(toAccountID)
+	if err != nil {
+		return nil, err
+	}
+
+	_amount, err := NewAmountPositive(amount)
+	if err != nil {
+		return nil, err
+	}
+
+	_status, err := NewTransactionTransferStatus(status)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TransactionTransfer{
+		ID:            _id,
+		FromAccountID: _fromAccountID,
+		ToAccountID:   _toAccountID,
+		Amount:        _amount,
+		Status:        _status,
+		CreatedAt:     createdAt,
+		UpdatedAt:     updatedAt,
+	}, nil
+}

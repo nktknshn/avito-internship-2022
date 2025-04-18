@@ -1,6 +1,9 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
 
 type UserID int64
 
@@ -15,4 +18,12 @@ func NewUserID(userID int64) (UserID, error) {
 		return 0, ErrInvalidUserID
 	}
 	return UserID(userID), nil
+}
+
+func NewUserIDFromString(userID string) (UserID, error) {
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		return 0, ErrInvalidUserID
+	}
+	return NewUserID(id)
 }

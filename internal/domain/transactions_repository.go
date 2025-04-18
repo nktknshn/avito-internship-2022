@@ -1,9 +1,11 @@
 package domain
 
-import "context"
+import (
+	"context"
+)
 
-type AccountTransactionRepository interface {
-	SaveTransactionDeposit(ctx context.Context, transaction *AccountTransactionDeposit) (*AccountTransactionDeposit, error)
-	SaveTransactionSpend(ctx context.Context, transaction *AccountTransactionSpend) (*AccountTransactionSpend, error)
-	GetTransactionSpendByOrderID(ctx context.Context, userID UserID, orderID OrderID) ([]*AccountTransactionSpend, error)
+type TransactionRepository interface {
+	SaveTransactionDeposit(ctx context.Context, transaction *TransactionDeposit) (*TransactionDeposit, error)
+	SaveTransactionSpend(ctx context.Context, transaction *TransactionSpend) (*TransactionSpend, error)
+	GetTransactionSpendByOrderID(ctx context.Context, userID UserID, orderID OrderID) ([]*TransactionSpend, error)
 }

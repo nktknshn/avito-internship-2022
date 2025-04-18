@@ -1,4 +1,4 @@
-package transactions
+package transactions_pg
 
 import (
 	"time"
@@ -29,7 +29,7 @@ type transactionDepositDTO struct {
 	UpdatedAt     time.Time `db:"updated_at"`
 }
 
-func toTransactionSpendDTO(transaction *domain.AccountTransactionSpend) (*transactionSpendDTO, error) {
+func toTransactionSpendDTO(transaction *domain.TransactionSpend) (*transactionSpendDTO, error) {
 	return &transactionSpendDTO{
 		ID:        transaction.ID.Value(),
 		AccountID: transaction.AccountID.Value(),
@@ -43,7 +43,7 @@ func toTransactionSpendDTO(transaction *domain.AccountTransactionSpend) (*transa
 	}, nil
 }
 
-func toTransactionDepositDTO(transaction *domain.AccountTransactionDeposit) (*transactionDepositDTO, error) {
+func toTransactionDepositDTO(transaction *domain.TransactionDeposit) (*transactionDepositDTO, error) {
 	return &transactionDepositDTO{
 		ID:            transaction.ID.Value(),
 		AccountID:     transaction.AccountID.Value(),
@@ -56,8 +56,8 @@ func toTransactionDepositDTO(transaction *domain.AccountTransactionDeposit) (*tr
 	}, nil
 }
 
-func fromTransactionSpendDTO(dto *transactionSpendDTO) (*domain.AccountTransactionSpend, error) {
-	return domain.NewAccountTransactionSpendFromValues(
+func fromTransactionSpendDTO(dto *transactionSpendDTO) (*domain.TransactionSpend, error) {
+	return domain.NewTransactionSpendFromValues(
 		dto.ID,
 		dto.AccountID,
 		dto.UserID,
@@ -70,8 +70,8 @@ func fromTransactionSpendDTO(dto *transactionSpendDTO) (*domain.AccountTransacti
 	)
 }
 
-func fromTransactionDepositDTO(dto *transactionDepositDTO) (*domain.AccountTransactionDeposit, error) {
-	return domain.NewAccountTransactionDepositFromValues(
+func fromTransactionDepositDTO(dto *transactionDepositDTO) (*domain.TransactionDeposit, error) {
+	return domain.NewTransactionDepositFromValues(
 		dto.ID,
 		dto.AccountID,
 		dto.UserID,

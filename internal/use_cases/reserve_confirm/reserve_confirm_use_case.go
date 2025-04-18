@@ -11,13 +11,13 @@ import (
 type ReserveConfirmUseCase struct {
 	trm              trm.Manager
 	accountRepo      domain.AccountRepository
-	transactionsRepo domain.AccountTransactionRepository
+	transactionsRepo domain.TransactionRepository
 }
 
 func NewReserveConfirmUseCase(
 	trm trm.Manager,
 	accountRepo domain.AccountRepository,
-	transactionsRepo domain.AccountTransactionRepository,
+	transactionsRepo domain.TransactionRepository,
 ) *ReserveConfirmUseCase {
 
 	if trm == nil {
@@ -46,6 +46,35 @@ type In struct {
 	Amount    domain.AmountPositive
 }
 
+func NewInFromValues(userID int64, orderID int64, productID int64, amount int64) (In, error) {
+	_userID, err := domain.NewUserID(userID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_orderID, err := domain.NewOrderID(orderID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_productID, err := domain.NewProductID(productID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_amount, err := domain.NewAmountPositive(amount)
+	if err != nil {
+		return In{}, err
+	}
+
+	return In{
+		UserID:    _userID,
+		OrderID:   _orderID,
+		ProductID: _productID,
+		Amount:    _amount,
+	}, nil
+}
+
 func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 	// если amount не равен сумме резерва, то ошибка
 	// или списываем деньги с резерва, а остаток возвращаем на баланс
@@ -63,10 +92,10 @@ func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		var transaction *domain.AccountTransactionSpend
+		var transaction *domain.TransactionSpend
 
 		for _, transaction = range orderTransactions {
-			if transaction.Status == domain.AccountTransactionSpendStatusReserved {
+			if transaction.Status == domain.TransactionSpendStatusReserved {
 				break
 			}
 		}

@@ -1,4 +1,4 @@
-package accounts
+package accounts_pg
 
 import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"

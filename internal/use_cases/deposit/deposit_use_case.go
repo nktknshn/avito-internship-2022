@@ -12,13 +12,13 @@ import (
 type DepositUseCase struct {
 	trm              trm.Manager
 	accountRepo      domain.AccountRepository
-	transactionsRepo domain.AccountTransactionRepository
+	transactionsRepo domain.TransactionRepository
 }
 
 func NewDepositUseCase(
 	trm trm.Manager,
 	accountRepo domain.AccountRepository,
-	transactionsRepo domain.AccountTransactionRepository,
+	transactionsRepo domain.TransactionRepository,
 ) *DepositUseCase {
 
 	if trm == nil {
@@ -46,26 +46,54 @@ type In struct {
 	Source domain.DepositSource
 }
 
+func NewInFromValues(userID int64, amount int64, source string) (In, error) {
+	_userID, err := domain.NewUserID(userID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_source, err := domain.NewDepositSource(source)
+	if err != nil {
+		return In{}, err
+	}
+
+	_amount, err := domain.NewAmountPositive(amount)
+	if err != nil {
+		return In{}, err
+	}
+
+	return In{
+		UserID: _userID,
+		Source: _source,
+		Amount: _amount,
+	}, nil
+}
+
+// getAccountCreating returns an account for the user.
+// If the account does not exist, it creates a new one.
 func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.UserID) (*domain.Account, error) {
 
 	acc, err := u.accountRepo.GetByUserID(ctx, userID)
 
-	if err == nil {
-		return acc, nil
-	}
-
 	if errors.Is(err, domain.ErrAccountNotFound) {
 		newAccount, err := domain.NewAccount(userID)
+
 		if err != nil {
 			return nil, err
 		}
+
 		acc, err = u.accountRepo.Save(ctx, newAccount)
-		if err == nil {
-			return acc, err
+
+		if err != nil {
+			return nil, err
 		}
 	}
 
-	return nil, err
+	if err != nil {
+		return nil, err
+	}
+
+	return acc, nil
 }
 
 func (u *DepositUseCase) Handle(ctx context.Context, in In) error {
@@ -78,7 +106,7 @@ func (u *DepositUseCase) Handle(ctx context.Context, in In) error {
 			return nil
 		}
 
-		transaction, err := domain.NewAccountTransactionDeposit(
+		transaction, err := domain.NewTransactionDeposit(
 			acc.ID,
 			in.UserID,
 			in.Source,

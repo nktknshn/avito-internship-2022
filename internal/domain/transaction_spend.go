@@ -5,79 +5,91 @@ import (
 	"time"
 )
 
-type AccountTransactionSpendStatus string
+type TransactionSpendStatus string
 
-func (s AccountTransactionSpendStatus) Value() string {
+func (s TransactionSpendStatus) Value() string {
 	return string(s)
 }
 
 const (
-	AccountTransactionSpendStatusUnknown   = ""
-	AccountTransactionSpendStatusReserved  = "reserved"
-	AccountTransactionSpendStatusCanceled  = "canceled"
-	AccountTransactionSpendStatusConfirmed = "confirmed"
+	TransactionSpendStatusReserved  = "reserved"
+	TransactionSpendStatusCanceled  = "canceled"
+	TransactionSpendStatusConfirmed = "confirmed"
 )
 
-func NewAccountTransactionSpendStatus(status string) (AccountTransactionSpendStatus, error) {
+func NewTransactionSpendStatus(status string) (TransactionSpendStatus, error) {
 	switch status {
-	case AccountTransactionSpendStatusUnknown, AccountTransactionSpendStatusReserved, AccountTransactionSpendStatusCanceled, AccountTransactionSpendStatusConfirmed:
-		return AccountTransactionSpendStatus(status), nil
+	case TransactionSpendStatusReserved, TransactionSpendStatusCanceled, TransactionSpendStatusConfirmed:
+		return TransactionSpendStatus(status), nil
 	default:
-		return "", ErrInvalidAccountTransactionStatus
+		return "", ErrInvalidTransactionStatus
 	}
 }
 
-type AccountTransactionSpend struct {
-	ID        AccountTransactionSpendID
+type TransactionSpendID int64
+
+func (id TransactionSpendID) Value() int64 {
+	return int64(id)
+}
+
+func NewTransactionSpendID(id int64) (TransactionSpendID, error) {
+	if id < 0 {
+		return 0, ErrInvalidTransactionID
+	}
+	return TransactionSpendID(id), nil
+}
+
+type TransactionSpend struct {
+	ID        TransactionSpendID
 	AccountID AccountID
 	UserID    UserID
 	OrderID   OrderID
 	ProductID ProductID
 	Amount    AmountPositive
-	Status    AccountTransactionSpendStatus
+	Status    TransactionSpendStatus
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewAccountTransactionSpendReserved(
+func NewTransactionSpendReserved(
 	accountID AccountID,
 	userID UserID,
 	orderID OrderID,
 	productID ProductID,
 	amount AmountPositive,
 	now time.Time,
-) (*AccountTransactionSpend, error) {
-	return &AccountTransactionSpend{
+) (*TransactionSpend, error) {
+	return &TransactionSpend{
 		AccountID: accountID,
 		UserID:    userID,
 		OrderID:   orderID,
 		ProductID: productID,
 		Amount:    amount,
-		Status:    AccountTransactionSpendStatusReserved,
+		Status:    TransactionSpendStatusReserved,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}, nil
 }
 
-func (t *AccountTransactionSpend) Cancel(now time.Time) error {
-	if t.Status != AccountTransactionSpendStatusReserved {
+func (t *TransactionSpend) Cancel(now time.Time) error {
+	if t.Status != TransactionSpendStatusReserved {
 		return errors.New("cannot cancel")
 	}
-	t.Status = AccountTransactionSpendStatusCanceled
+	t.Status = TransactionSpendStatusCanceled
 	t.UpdatedAt = now
 	return nil
 }
 
-func (t *AccountTransactionSpend) Confirm(now time.Time) error {
-	if t.Status != AccountTransactionSpendStatusReserved {
+func (t *TransactionSpend) Confirm(now time.Time) error {
+	if t.Status != TransactionSpendStatusReserved {
 		return errors.New("cannot cancel")
 	}
-	t.Status = AccountTransactionSpendStatusConfirmed
+	t.Status = TransactionSpendStatusConfirmed
 	t.UpdatedAt = now
 	return nil
 }
 
-func NewAccountTransactionSpendFromValues(
+func NewTransactionSpendFromValues(
 	id int64,
 	accountID int64,
 	userID int64,
@@ -87,8 +99,8 @@ func NewAccountTransactionSpendFromValues(
 	status string,
 	createdAt time.Time,
 	updatedAt time.Time,
-) (*AccountTransactionSpend, error) {
-	_id, err := NewAccountTransactionSpendID(id)
+) (*TransactionSpend, error) {
+	_id, err := NewTransactionSpendID(id)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +125,7 @@ func NewAccountTransactionSpendFromValues(
 		return nil, err
 	}
 
-	_status, err := NewAccountTransactionSpendStatus(status)
+	_status, err := NewTransactionSpendStatus(status)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +135,7 @@ func NewAccountTransactionSpendFromValues(
 		return nil, err
 	}
 
-	return &AccountTransactionSpend{
+	return &TransactionSpend{
 		ID:        _id,
 		AccountID: _accountID,
 		UserID:    _userID,
