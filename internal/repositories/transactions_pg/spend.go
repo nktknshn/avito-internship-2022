@@ -4,20 +4,10 @@ import (
 	"context"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
-	"github.com/jmoiron/sqlx"
 	domain "github.com/nktknshn/avito-internship-2022/internal/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
-
-type TransactionsRepository struct {
-	db     *sqlx.DB
-	getter *trmsqlx.CtxGetter
-}
-
-func NewTransactionsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *TransactionsRepository {
-	return &TransactionsRepository{db: db, getter: c}
-}
 
 func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domainAccount.OrderID) ([]*domainTransaction.TransactionSpend, error) {
 	sq := `
@@ -117,65 +107,3 @@ func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr 
 
 	return &newDTO, nil
 }
-
-func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domainTransaction.TransactionDeposit) (*domainTransaction.TransactionDeposit, error) {
-	sq := `
-		INSERT INTO transactions_deposit 
-			(account_id, user_id, deposit_source, status, amount, created_at, updated_at) 
-		VALUES 
-			(:account_id, :user_id, :deposit_source, :status, :amount, :created_at, :updated_at)
-		RETURNING *;
-	`
-
-	tr := r.getter.DefaultTrOrDB(ctx, r.db)
-
-	transactionDTO, err := toTransactionDepositDTO(transaction)
-	if err != nil {
-		return nil, err
-	}
-
-	sq, args, err := tr.BindNamed(sq, transactionDTO)
-	if err != nil {
-		return nil, err
-	}
-
-	var newDTO transactionDepositDTO
-	err = tr.GetContext(ctx, &newDTO, sq, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	return fromTransactionDepositDTO(&newDTO)
-}
-
-func (r *TransactionsRepository) SaveTransactionTransfer(ctx context.Context, transaction *domainTransaction.TransactionTransfer) (*domainTransaction.TransactionTransfer, error) {
-	sq := `
-		INSERT INTO transactions_transfer 
-			(account_id, user_id, order_id, product_id, status, amount, created_at, updated_at) 
-		VALUES 
-			(:account_id, :user_id, :order_id, :product_id, :status, :amount, :created_at, :updated_at)
-		RETURNING *;
-	`
-
-	tr := r.getter.DefaultTrOrDB(ctx, r.db)
-
-	transactionDTO, err := toTransactionTransferDTO(transaction)
-	if err != nil {
-		return nil, err
-	}
-
-	sq, args, err := tr.BindNamed(sq, transactionDTO)
-	if err != nil {
-		return nil, err
-	}
-
-	var newDTO transactionTransferDTO
-	err = tr.GetContext(ctx, &newDTO, sq, args...)
-	if err != nil {
-		return nil, err
-	}
-
-	return fromTransactionTransferDTO(&newDTO)
-}
-
-var _ domainTransaction.TransactionRepository = &TransactionsRepository{}

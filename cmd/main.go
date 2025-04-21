@@ -1,9 +1,14 @@
 package main
 
-import "github.com/nktknshn/avito-internship-2022/internal/app"
+import (
+	"context"
+
+	"github.com/nktknshn/avito-internship-2022/internal/config"
+)
 
 func main() {
-	app, err := app.NewApp()
+	ctx := context.Background()
+	app, err := NewApplication(ctx, &config.Config{})
 
 	if err != nil {
 		panic(err)

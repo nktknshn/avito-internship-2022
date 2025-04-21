@@ -7,8 +7,26 @@ volumes:
     driver: local
   grafana-data:
     driver: local
-
+  prometheus-data:
+    driver: local
 services:
+
+  billing-service-http:
+    build:
+      context: ./deployment/docker/http
+    volumes:
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: ./
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env
+    environment:
+      GOCACHE: /go-cache
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres
     restart: unless-stopped
@@ -29,20 +47,22 @@ services:
       - 8082:8080
 
   prometheus:
+    container_name: prometheus_container
     image: prom/prometheus
     restart: unless-stopped
     volumes: 
-      - ./prometheus:/etc/prometheus/
+      - ./deployment/prometheus:/etc/prometheus/
       - prometheus-data:/prometheus
     ports:
       - 9090:9090
 
   grafana:
+    container_name: grafana_container
     image: grafana/grafana
     restart: unless-stopped
     volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
-      - grafana-data: /var/lib/grafana
+      - ./deployment/grafana:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=grafana

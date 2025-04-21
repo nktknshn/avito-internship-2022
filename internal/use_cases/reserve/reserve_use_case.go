@@ -9,7 +9,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
-type ReserveUseCase struct {
+type reserveUseCase struct {
 	trm             trm.Manager
 	accountRepo     domainAccount.AccountRepository
 	transactionRepo domainTransaction.TransactionRepository
@@ -19,7 +19,7 @@ func NewReserveUseCase(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionRepo domainTransaction.TransactionRepository,
-) *ReserveUseCase {
+) *reserveUseCase {
 
 	if trm == nil {
 		panic("trm == nil")
@@ -33,14 +33,14 @@ func NewReserveUseCase(
 		panic("transactionRepo == nil")
 	}
 
-	return &ReserveUseCase{
+	return &reserveUseCase{
 		trm,
 		accountRepo,
 		transactionRepo,
 	}
 }
 
-func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
+func (u *reserveUseCase) Handle(ctx context.Context, in In) error {
 
 	// а если canceled, то OrderID новый?
 	// если есть резерв с OrderID и статус не canceled, то ошибка

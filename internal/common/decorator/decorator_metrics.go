@@ -19,7 +19,7 @@ func (d *DecoratorCommandMetrics[T]) Handle(ctx context.Context, in T) error {
 
 type DecoratorQueryMetrics[T any, R any] struct {
 	base       UseCaseQueryHandler[T, R]
-	m          metrics.Metrics
+	metrics    metrics.Metrics
 	methodName string
 }
 
@@ -30,8 +30,8 @@ func (d *DecoratorQueryMetrics[T, R]) Handle(ctx context.Context, in T) (result 
 		if err != nil {
 			status = metrics.StatusError
 		}
-		d.m.IncHits(status, d.methodName)
-		d.m.ObserveResponseTime(status, d.methodName, time.Since(started).Seconds())
+		d.metrics.IncHits(status, d.methodName)
+		d.metrics.ObserveResponseTime(status, d.methodName, time.Since(started).Seconds())
 	}()
 
 	return d.base.Handle(ctx, in)

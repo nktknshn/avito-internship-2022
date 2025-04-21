@@ -9,7 +9,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
-type ReserveCancelUseCase struct {
+type reserveCancelUseCase struct {
 	trm              trm.Manager
 	accountRepo      domainAccount.AccountRepository
 	transactionsRepo domainTransaction.TransactionRepository
@@ -19,7 +19,7 @@ func NewReserveCancelUseCase(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,
-) *ReserveCancelUseCase {
+) *reserveCancelUseCase {
 
 	if trm == nil {
 		panic("trm == nil")
@@ -33,14 +33,14 @@ func NewReserveCancelUseCase(
 		panic("transactionsRepo == nil")
 	}
 
-	return &ReserveCancelUseCase{
+	return &reserveCancelUseCase{
 		trm,
 		accountRepo,
 		transactionsRepo,
 	}
 }
 
-func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
+func (u *reserveCancelUseCase) Handle(ctx context.Context, in In) error {
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 		acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
 		if err != nil {

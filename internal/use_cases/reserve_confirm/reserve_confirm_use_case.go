@@ -9,7 +9,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
-type ReserveConfirmUseCase struct {
+type reserveConfirmUseCase struct {
 	trm              trm.Manager
 	accountRepo      domainAccount.AccountRepository
 	transactionsRepo domainTransaction.TransactionRepository
@@ -19,7 +19,7 @@ func NewReserveConfirmUseCase(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,
-) *ReserveConfirmUseCase {
+) *reserveConfirmUseCase {
 
 	if trm == nil {
 		panic("trm == nil")
@@ -33,14 +33,14 @@ func NewReserveConfirmUseCase(
 		panic("transactionsRepo == nil")
 	}
 
-	return &ReserveConfirmUseCase{
+	return &reserveConfirmUseCase{
 		trm,
 		accountRepo,
 		transactionsRepo,
 	}
 }
 
-func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
+func (u *reserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 	// если amount не равен сумме резерва, то ошибка
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 		acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)

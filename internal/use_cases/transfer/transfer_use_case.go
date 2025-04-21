@@ -9,7 +9,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/domain/transaction"
 )
 
-type TransferUseCase struct {
+type transferUseCase struct {
 	trm             trm.Manager
 	accountRepo     domainAccount.AccountRepository
 	transactionRepo domainTransaction.TransactionRepository
@@ -19,7 +19,7 @@ func NewTransferUseCase(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,
-) *TransferUseCase {
+) *transferUseCase {
 
 	if trm == nil {
 		panic("trm is nil")
@@ -32,14 +32,14 @@ func NewTransferUseCase(
 		panic("transactionsRepo is nil")
 	}
 
-	return &TransferUseCase{
+	return &transferUseCase{
 		trm,
 		accountRepo,
 		transactionsRepo,
 	}
 }
 
-func (u *TransferUseCase) Handle(ctx context.Context, in In) error {
+func (u *transferUseCase) Handle(ctx context.Context, in In) error {
 
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 

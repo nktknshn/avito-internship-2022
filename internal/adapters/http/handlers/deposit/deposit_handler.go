@@ -11,7 +11,7 @@ import (
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
-type DepositHandler struct {
+type depositHandler struct {
 	auth           handlers_auth.TokenValidator
 	depositUseCase useCase
 }
@@ -20,7 +20,7 @@ type useCase interface {
 	Handle(ctx context.Context, in deposit.In) error
 }
 
-func NewDepositHandler(auth handlers_auth.TokenValidator, depositUseCase *deposit.DepositUseCase) *DepositHandler {
+func NewDepositHandler(auth handlers_auth.TokenValidator, depositUseCase *deposit.DepositUseCase) *depositHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -29,10 +29,10 @@ func NewDepositHandler(auth handlers_auth.TokenValidator, depositUseCase *deposi
 		panic("depositUseCase is nil")
 	}
 
-	return &DepositHandler{auth: auth, depositUseCase: depositUseCase}
+	return &depositHandler{auth: auth, depositUseCase: depositUseCase}
 }
 
-func (h *DepositHandler) GetHandler() http.Handler {
+func (h *depositHandler) GetHandler() http.Handler {
 	return makeDepositHandler(h.auth, h.depositUseCase)
 }
 

@@ -11,29 +11,29 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/use_cases/get_balance"
 )
 
-type GetBalanceHandler struct {
-	auth              handlers_auth.TokenValidator
-	getBalanceUseCase useCase
+type getBalanceHandler struct {
+	auth    handlers_auth.TokenValidator
+	useCase useCase
 }
 
 type useCase interface {
 	Handle(ctx context.Context, in get_balance.In) (get_balance.Out, error)
 }
 
-func NewGetBalanceHandler(auth handlers_auth.TokenValidator, getBalanceUseCase *get_balance.GetBalanceUseCase) *GetBalanceHandler {
+func NewGetBalanceHandler(auth handlers_auth.TokenValidator, useCase useCase) *getBalanceHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
 
-	if getBalanceUseCase == nil {
-		panic("getBalanceUseCase is nil")
+	if useCase == nil {
+		panic("useCase is nil")
 	}
 
-	return &GetBalanceHandler{auth: auth, getBalanceUseCase: getBalanceUseCase}
+	return &getBalanceHandler{auth: auth, useCase: useCase}
 }
 
-func (h *GetBalanceHandler) GetHandler() http.Handler {
-	return makeGetBalanceHandler(h.auth, h.getBalanceUseCase)
+func (h *getBalanceHandler) GetHandler() http.Handler {
+	return makeGetBalanceHandler(h.auth, h.useCase)
 }
 
 func makeGetBalanceHandler(auth handlers_auth.TokenValidator, u useCase) http.Handler {
