@@ -13,7 +13,7 @@ services:
 
   billing-service-http:
     build:
-      context: ./deployment/docker/http
+      context: ./deployment/docker/billing/http
     volumes:
       - ./.go/pkg:/go/pkg
       - ./.go-cache:/go-cache
