@@ -37,8 +37,8 @@ func NewAccountBalanceFromValues(available int64, reserved int64) (AccountBalanc
 
 func NewAccountBalanceEmpty() AccountBalance {
 	return AccountBalance{
-		available: 0,
-		reserved:  0,
+		available: amount.Zero(),
+		reserved:  amount.Zero(),
 	}
 }
 

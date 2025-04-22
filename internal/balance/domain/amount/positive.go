@@ -1,15 +1,17 @@
 package amount
 
 // Положительное кол-во копеек
-type AmountPositive int64
+type AmountPositive struct {
+	amount int64
+}
 
 func NewAmountPositive(amount int64) (AmountPositive, error) {
 	if amount <= 0 {
-		return 0, ErrInvalidPositiveAmount
+		return AmountPositive{}, ErrInvalidPositiveAmount
 	}
-	return AmountPositive(amount), nil
+	return AmountPositive{amount: amount}, nil
 }
 
 func (a AmountPositive) Value() int64 {
-	return int64(a)
+	return a.amount
 }

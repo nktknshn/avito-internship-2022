@@ -3,7 +3,13 @@ package amount
 import "errors"
 
 // Неотрициательное кол-во копеек
-type Amount int64
+type Amount struct {
+	amount int64
+}
+
+func Zero() Amount {
+	return Amount{amount: 0}
+}
 
 var (
 	ErrInvalidAmount         = errors.New("invalid amount")
@@ -13,14 +19,14 @@ var (
 
 func NewAmount(amount int64) (Amount, error) {
 	if amount < 0 {
-		return 0, ErrInvalidAmount
+		return Amount{}, ErrInvalidAmount
 	}
 
-	return Amount(amount), nil
+	return Amount{amount: amount}, nil
 }
 
 func (a Amount) Value() int64 {
-	return int64(a)
+	return a.amount
 }
 
 func (a Amount) LessThan(b Amount) bool {
@@ -32,12 +38,12 @@ func (a Amount) LessThanPositive(b AmountPositive) bool {
 }
 
 func (a Amount) Add(b AmountPositive) Amount {
-	return Amount(a.Value() + b.Value())
+	return Amount{amount: a.Value() + b.Value()}
 }
 
 func (a Amount) Sub(b AmountPositive) (Amount, error) {
 	if a.Value() < b.Value() {
-		return 0, ErrInsufficientAmount
+		return Amount{}, ErrInsufficientAmount
 	}
-	return Amount(a.Value() - b.Value()), nil
+	return Amount{amount: a.Value() - b.Value()}, nil
 }
