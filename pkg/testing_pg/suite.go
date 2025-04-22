@@ -60,13 +60,12 @@ func (s *TestSuitePg) ExecSql(sql string) (*ResultRows, error) {
 
 	err := sqlx_pg.NamedSelectMapScan(s.Context(), s.Conn, &rows, sql, map[string]any{})
 
-	// err := s.GetPostgresAdapter().NamedSelectMapScan(s.Context(), &rows, db.DbQuery(sql), map[string]any{})
 	if err != nil {
 		return nil, err
 	}
 
 	if len(rows) == 0 {
-		return nil, errors.New("no rows returned")
+		return &ResultRows{}, nil
 	}
 
 	headers := make([]string, 0, len(rows[0]))

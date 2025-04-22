@@ -13,9 +13,9 @@ var (
 )
 
 const (
-	AuthUserRoleAdmin   = "admin"
-	AuthUserRoleAccount = "account"
-	AuthUserRoleReport  = "report"
+	AuthUserRoleAdmin   AuthUserRole = "admin"
+	AuthUserRoleAccount AuthUserRole = "account"
+	AuthUserRoleReport  AuthUserRole = "report"
 )
 
 func (a AuthUserRole) Validate() error {
@@ -29,11 +29,11 @@ func (a AuthUserRole) Validate() error {
 
 func NewAuthUserRole(s string) (AuthUserRole, error) {
 	switch s {
-	case AuthUserRoleAdmin:
+	case AuthUserRoleAdmin.Value():
 		return AuthUserRoleAdmin, nil
-	case AuthUserRoleReport:
+	case AuthUserRoleReport.Value():
 		return AuthUserRoleReport, nil
-	case AuthUserRoleAccount:
+	case AuthUserRoleAccount.Value():
 		return AuthUserRoleAccount, nil
 	}
 

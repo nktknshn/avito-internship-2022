@@ -30,7 +30,7 @@ func NewAuthRepository(db *sqlx.DB, getter *trmsqlx.CtxGetter) *AuthRepository {
 }
 
 func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.AuthUserUsername, passwordHash domainAuth.AuthUserPasswordHash, role domainAuth.AuthUserRole) error {
-	sq := `INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)`
+	sq := `INSERT INTO auth_users (username, password_hash, role) VALUES (?, ?, ?)`
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
@@ -48,7 +48,7 @@ func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.Aut
 }
 
 func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainAuth.AuthUserUsername) (*domainAuth.AuthUser, error) {
-	sq := `SELECT id, username, password_hash, role FROM users WHERE username = ?`
+	sq := `SELECT id, username, password_hash, role FROM auth_users WHERE username = ?`
 
 	var userDTO authUserDTO
 
