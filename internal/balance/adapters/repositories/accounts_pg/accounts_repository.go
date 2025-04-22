@@ -16,6 +16,19 @@ type AccountsRepository struct {
 	getter *trmsqlx.CtxGetter
 }
 
+func NewAccountsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *AccountsRepository {
+
+	if db == nil {
+		panic("db is nil")
+	}
+
+	if c == nil {
+		panic("ctxGetter is nil")
+	}
+
+	return &AccountsRepository{db: db, getter: c}
+}
+
 func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.UserID) (*domainAccount.Account, error) {
 	sq := `SELECT id, user_id, balance_available, balance_reserved FROM accounts WHERE user_id = ? FOR UPDATE;`
 

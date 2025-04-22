@@ -13,7 +13,7 @@ type getBalanceUseCase struct {
 	accountRepo domainAccount.AccountRepository
 }
 
-func NewGetBalanceUseCase(
+func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 ) *getBalanceUseCase {

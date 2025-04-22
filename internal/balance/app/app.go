@@ -1,6 +1,8 @@
 package app
 
 import (
+	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_signup"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve"
@@ -12,11 +14,14 @@ import (
 
 // Application is a struct that contains all the use cases
 type Application struct {
-	GetBalance decorator.UseCaseQueryHandler[get_balance.In, get_balance.Out]
-	// GetReport
-	Deposit        decorator.UseCaseCommandHandler[deposit.In]
-	Reserve        decorator.UseCaseCommandHandler[reserve.In]
-	ReserveCancel  decorator.UseCaseCommandHandler[reserve_cancel.In]
-	ReserveConfirm decorator.UseCaseCommandHandler[reserve_confirm.In]
-	Transfer       decorator.UseCaseCommandHandler[transfer.In]
+	// Auth token
+	AuthSignup decorator.UseCaseCommandHandler[auth_signup.In]
+	//
+	GetBalance        decorator.UseCaseQueryHandler[get_balance.In, get_balance.Out]
+	AuthValidateToken decorator.UseCaseQueryHandler[auth_validate_token.In, auth_validate_token.Out]
+	Deposit           decorator.UseCaseCommandHandler[deposit.In]
+	Reserve           decorator.UseCaseCommandHandler[reserve.In]
+	ReserveCancel     decorator.UseCaseCommandHandler[reserve_cancel.In]
+	ReserveConfirm    decorator.UseCaseCommandHandler[reserve_confirm.In]
+	Transfer          decorator.UseCaseCommandHandler[transfer.In]
 }

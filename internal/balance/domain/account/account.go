@@ -55,6 +55,34 @@ func NewAccount(userID domain.UserID) (*Account, error) {
 	}, nil
 }
 
+func NewAccountFromValues(id int64, userID int64, balanceAvailable int64, balanceReserved int64) (*Account, error) {
+	_id, err := NewAccountID(id)
+	if err != nil {
+		return nil, err
+	}
+	_userID, err := domain.NewUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+	_balanceAvailable, err := amount.NewAmount(balanceAvailable)
+	if err != nil {
+		return nil, err
+	}
+	_balanceReserved, err := amount.NewAmount(balanceReserved)
+	if err != nil {
+		return nil, err
+	}
+	accountBalance, err := NewAccountBalance(_balanceAvailable, _balanceReserved)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Account{
+		ID:      _id,
+		UserID:  _userID,
+		Balance: accountBalance,
+	}, nil
+}
 func (ac *Account) SetBalance(ab AccountBalance) error {
 	ac.Balance = ab
 	return nil

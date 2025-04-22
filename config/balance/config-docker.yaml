@@ -1,0 +1,11 @@
+postgres:
+  addr: postgres:5432
+  user_name: balance
+  password: balance
+  database: balance
+  schema: public
+  max_idle_connections: 10
+  max_open_connections: 100
+  connection_max_lifetime: 1h
+  return_utc: true
+  migrations_dir: ./internal/balance/migrations/postgres

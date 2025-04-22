@@ -1,0 +1,15 @@
+GET http://localhost:8080/balance/1
+Authorization: Bearer 1234567890
+
+###
+
+POST http://localhost:8080/balance/deposit
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "amount": 100
+}
+
+###
+

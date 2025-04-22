@@ -1,0 +1,33 @@
+package cli
+
+import (
+	"context"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_signup"
+)
+
+type CliAdapter struct {
+	app *app.Application
+}
+
+func NewCliAdapter(app *app.Application) *CliAdapter {
+	return &CliAdapter{app: app}
+}
+
+func (a *CliAdapter) SignUp(ctx context.Context, username string, password string, role string) error {
+
+	in, err := auth_signup.NewInFromValues(username, password, role)
+
+	if err != nil {
+		return err
+	}
+
+	err = a.app.AuthSignup.Handle(ctx, in)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -18,7 +18,7 @@ type DepositUseCase struct {
 	transactionsRepo domainTransaction.TransactionRepository
 }
 
-func NewDepositUseCase(
+func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,

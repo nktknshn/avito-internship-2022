@@ -1,9 +1,9 @@
 package config
 
 type Config struct {
-	Database *ConfigDatabase `yaml:"database"`
+	Postgres *ConfigPostgres `yaml:"postgres"`
 }
 
-func (c *Config) GetDatabase() *ConfigDatabase {
-	return c.Database
+func (c *Config) GetPostgres() *ConfigPostgres {
+	return c.Postgres
 }

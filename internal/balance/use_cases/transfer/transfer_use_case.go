@@ -15,7 +15,7 @@ type transferUseCase struct {
 	transactionRepo domainTransaction.TransactionRepository
 }
 
-func NewTransferUseCase(
+func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,

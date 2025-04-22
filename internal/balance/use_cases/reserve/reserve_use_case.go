@@ -15,7 +15,7 @@ type reserveUseCase struct {
 	transactionRepo domainTransaction.TransactionRepository
 }
 
-func NewReserveUseCase(
+func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionRepo domainTransaction.TransactionRepository,

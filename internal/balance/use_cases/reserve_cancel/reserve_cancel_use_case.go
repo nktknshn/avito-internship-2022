@@ -15,7 +15,7 @@ type reserveCancelUseCase struct {
 	transactionsRepo domainTransaction.TransactionRepository
 }
 
-func NewReserveCancelUseCase(
+func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,

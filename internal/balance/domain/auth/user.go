@@ -1,19 +1,23 @@
-package domain
+package auth
 
 import "errors"
 
-type AuthUserID int
+type AuthUserID int64
+
+func (id AuthUserID) Value() int64 {
+	return int64(id)
+}
 
 const (
 	minUsernameLength = 3
-	minPasswordLength = 10
+	minPasswordLength = 8
 )
 
 var (
 	ErrInvalidAuthUserID = errors.New("invalid auth user id")
 )
 
-func NewAuthUserID(id int) (AuthUserID, error) {
+func NewAuthUserID(id int64) (AuthUserID, error) {
 	if id < 0 {
 		return 0, ErrInvalidAuthUserID
 	}
@@ -21,6 +25,10 @@ func NewAuthUserID(id int) (AuthUserID, error) {
 }
 
 type AuthUserUsername string
+
+func (u AuthUserUsername) Value() string {
+	return string(u)
+}
 
 var (
 	ErrInvalidAuthUserUsernameTooShort = errors.New("invalid auth user username: too short")
@@ -35,6 +43,10 @@ func NewAuthUserUsername(username string) (AuthUserUsername, error) {
 
 type AuthUserPassword string
 
+func (p AuthUserPassword) String() string {
+	return string(p)
+}
+
 var (
 	ErrInvalidAuthUserPasswordTooShort = errors.New("invalid auth user password: too short")
 )
@@ -47,6 +59,10 @@ func NewAuthUserPassword(password string) (AuthUserPassword, error) {
 }
 
 type AuthUserPasswordHash string
+
+func (p AuthUserPasswordHash) Value() string {
+	return string(p)
+}
 
 func NewAuthUserPasswordHash(passwordHash string) (AuthUserPasswordHash, error) {
 	return AuthUserPasswordHash(passwordHash), nil
@@ -74,7 +90,7 @@ func NewAuthUser(
 }
 
 func NewAuthUserFromValues(
-	id int,
+	id int64,
 	username string,
 	passwordHash string,
 	role string,

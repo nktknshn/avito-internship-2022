@@ -9,19 +9,23 @@ volumes:
     driver: local
   prometheus-data:
     driver: local
+  balance-service-http-data:
+    driver: local
+
 services:
 
-  billing-service-http:
+  balance-service-http:
     build:
-      context: ./deployment/docker/billing/http
+      context: ./deployment/docker/balance/http
     volumes:
-      - ./.go/pkg:/go/pkg
-      - ./.go-cache:/go-cache
-    working_dir: ./
+      - ./internal:/internal
+      # - ./.go/pkg:/go/pkg
+      # - ./.go-cache:/go-cache
+    working_dir: /internal/balance
     ports:
-      - "127.0.0.1:3000:3000"
-    env_file:
-      - .env
+      - "127.0.0.1:5000:5000"
+    # env_file:
+    #   - .env
     environment:
       GOCACHE: /go-cache
     depends_on:
@@ -31,9 +35,12 @@ services:
     image: postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_PASSWORD=demo_password
+      - POSTGRES_USER=balance
+      - POSTGRES_PASSWORD=balance
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
   
   pgadmin4:
     # profiles: [donotstart]

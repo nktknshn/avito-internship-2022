@@ -8,11 +8,11 @@ import (
 )
 
 type UseCaseCommandHandler[T any] interface {
-	Handle(ctx context.Context, cmd T) error
+	Handle(ctx context.Context, in T) error
 }
 
 type UseCaseQueryHandler[T any, R any] interface {
-	Handle(ctx context.Context, cmd T) (R, error)
+	Handle(ctx context.Context, in T) (R, error)
 }
 
 func DecorateCommand[T any](

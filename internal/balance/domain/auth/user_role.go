@@ -1,8 +1,12 @@
-package domain
+package auth
 
 import "errors"
 
 type AuthUserRole string
+
+func (r AuthUserRole) Value() string {
+	return string(r)
+}
 
 var (
 	ErrInvalidAuthUserRole = errors.New("invalid auth user role")

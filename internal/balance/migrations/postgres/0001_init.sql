@@ -1,3 +1,5 @@
+-- +goose Up
+
 CREATE TABLE accounts (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
@@ -51,3 +53,9 @@ CREATE TABLE transactions_transfer (
 CREATE INDEX idx_transactions_transfer_from_account_id ON transactions_transfer USING HASH (from_account_id);
 CREATE INDEX idx_transactions_transfer_to_account_id ON transactions_transfer USING HASH (to_account_id);
 
+-- +goose Down
+
+DROP TABLE transactions_transfer;
+DROP TABLE transactions_spend;
+DROP TABLE transactions_deposit;
+DROP TABLE accounts;

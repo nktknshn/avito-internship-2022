@@ -1,4 +1,4 @@
-package handler_reserve
+package reserve
 
 import (
 	"context"
@@ -6,13 +6,13 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type HandlerReserve struct {
-	auth           handlers_auth.TokenValidator
+	auth           handlers_auth.AuthUseCase
 	reserveUseCase useCase
 }
 
@@ -20,7 +20,7 @@ type useCase interface {
 	Handle(ctx context.Context, in reserve.In) error
 }
 
-func NewHandlerReserve(auth handlers_auth.TokenValidator, reserveUseCase useCase) *HandlerReserve {
+func New(auth handlers_auth.AuthUseCase, reserveUseCase useCase) *HandlerReserve {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -52,11 +52,11 @@ func (p payloadType) GetIn() (reserve.In, error) {
 	)
 }
 
-func makeHandlerReserve(auth handlers_auth.TokenValidator, u useCase) http.Handler {
+func makeHandlerReserve(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
-		b, _ = handlers_builder.NewWithAuth(auth, []domain.AuthUserRole{
-			domain.AuthUserRoleAdmin,
-			domain.AuthUserRoleAccount,
+		b, _ = handlers_builder.NewWithAuth(auth, []domainAuth.AuthUserRole{
+			domainAuth.AuthUserRoleAdmin,
+			domainAuth.AuthUserRoleAccount,
 		})
 		payload = ergo.PayloadAttach[payloadType](b)
 	)
