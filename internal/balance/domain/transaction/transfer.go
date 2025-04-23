@@ -91,7 +91,7 @@ func NewTransactionTransferFromValues(
 		return nil, err
 	}
 
-	_amount, err := domainAmount.NewAmountPositive(amount)
+	_amount, err := domainAmount.NewPositive(amount)
 	if err != nil {
 		return nil, err
 	}

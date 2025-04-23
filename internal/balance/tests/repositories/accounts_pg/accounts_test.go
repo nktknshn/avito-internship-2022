@@ -47,7 +47,7 @@ func (s *Suite) TestSave_Update_Success() {
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
-	amount, err := amount.NewAmountPositive(100)
+	amount, err := amount.NewPositive(100)
 	s.Require().NoError(err)
 
 	s.Require().NoError(acc.BalanceReserve(amount))

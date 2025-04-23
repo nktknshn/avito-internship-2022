@@ -1,6 +1,6 @@
 package amount
 
-import "errors"
+import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 
 // Неотрициательное кол-во копеек
 type Amount struct {
@@ -12,12 +12,12 @@ func Zero() Amount {
 }
 
 var (
-	ErrInvalidAmount         = errors.New("invalid amount")
-	ErrInvalidPositiveAmount = errors.New("invalid positive amount")
-	ErrInsufficientAmount    = errors.New("insufficient amount")
+	ErrInvalidAmount         = domainError.New("invalid amount")
+	ErrInvalidPositiveAmount = domainError.New("invalid positive amount")
+	ErrInsufficientAmount    = domainError.New("insufficient amount")
 )
 
-func NewAmount(amount int64) (Amount, error) {
+func New(amount int64) (Amount, error) {
 	if amount < 0 {
 		return Amount{}, ErrInvalidAmount
 	}

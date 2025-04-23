@@ -1,6 +1,6 @@
 package product
 
-import "errors"
+import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 
 type ProductID int64
 
@@ -9,7 +9,7 @@ func (id ProductID) Value() int64 {
 }
 
 var (
-	ErrInvalidProductID = errors.New("invalid product id")
+	ErrInvalidProductID = domainError.New("invalid product id")
 )
 
 func NewProductID(id int64) (ProductID, error) {

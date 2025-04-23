@@ -30,7 +30,7 @@ func NewInFromValues(userID int64, orderID int64, productID int64, amount int64)
 		return In{}, err
 	}
 
-	_amount, err := domainAmount.NewAmountPositive(amount)
+	_amount, err := domainAmount.NewPositive(amount)
 	if err != nil {
 		return In{}, err
 	}

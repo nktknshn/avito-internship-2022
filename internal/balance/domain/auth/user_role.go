@@ -1,6 +1,6 @@
 package auth
 
-import "errors"
+import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 
 type AuthUserRole string
 
@@ -9,7 +9,7 @@ func (r AuthUserRole) Value() string {
 }
 
 var (
-	ErrInvalidAuthUserRole = errors.New("invalid auth user role")
+	ErrInvalidAuthUserRole = domainError.New("invalid auth user role")
 )
 
 const (

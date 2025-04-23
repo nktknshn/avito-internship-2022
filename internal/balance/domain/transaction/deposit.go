@@ -1,17 +1,17 @@
 package transaction
 
 import (
-	"errors"
 	"time"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 var (
-	ErrInvalidTransactionID     = errors.New("invalid account transaction id")
-	ErrInvalidTransactionStatus = errors.New("invalid account transaction status")
+	ErrInvalidTransactionID     = domainError.New("invalid account transaction id")
+	ErrInvalidTransactionStatus = domainError.New("invalid account transaction status")
 )
 
 type DepositSource string
@@ -35,7 +35,7 @@ const (
 )
 
 var (
-	ErrInvalidTransactionDepositStatus = errors.New("invalid deposit transaction status")
+	ErrInvalidTransactionDepositStatus = domainError.New("invalid deposit transaction status")
 )
 
 func NewTransactionDepositStatus(s string) (TransactionDepositStatus, error) {
@@ -124,7 +124,7 @@ func NewTransactionDepositFromValues(
 		return nil, err
 	}
 
-	_amount, err := domainAmount.NewAmountPositive(amount)
+	_amount, err := domainAmount.NewPositive(amount)
 	if err != nil {
 		return nil, err
 	}

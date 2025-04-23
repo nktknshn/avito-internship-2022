@@ -2,12 +2,13 @@ package auth
 
 import (
 	"context"
-	"errors"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 var (
-	ErrUserNotFound = errors.New("user not found")
-	ErrDuplicateKey = errors.New("duplicate key")
+	ErrUserNotFound = domainError.New("user not found")
+	ErrDuplicateKey = domainError.New("duplicate key")
 )
 
 type AuthRepository interface {

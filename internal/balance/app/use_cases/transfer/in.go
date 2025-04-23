@@ -20,7 +20,7 @@ func NewInFromValues(from int64, to int64, amount int64) (In, error) {
 	if err != nil {
 		return In{}, err
 	}
-	_amount, err := domainAmount.NewAmountPositive(amount)
+	_amount, err := domainAmount.NewPositive(amount)
 	if err != nil {
 		return In{}, err
 	}

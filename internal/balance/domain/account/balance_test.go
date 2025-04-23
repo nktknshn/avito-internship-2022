@@ -10,9 +10,9 @@ import (
 
 // TestAccountBalance_Equality проверяет, что AccountBalance является значением, а не объектом
 func TestAccountBalance_Equality(t *testing.T) {
-	av, err := amount.NewAmount(10)
+	av, err := amount.New(10)
 	require.NoError(t, err)
-	re, err := amount.NewAmount(100)
+	re, err := amount.New(100)
 	require.NoError(t, err)
 
 	b1, err := account.NewAccountBalance(av, re)
@@ -24,4 +24,8 @@ func TestAccountBalance_Equality(t *testing.T) {
 	if b1 != b2 {
 		t.Fatalf("AccountBalance is not a real value object")
 	}
+}
+
+func TestAccountBalance_AddAmount(t *testing.T) {
+
 }

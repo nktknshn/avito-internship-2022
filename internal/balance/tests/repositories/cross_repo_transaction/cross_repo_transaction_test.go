@@ -50,6 +50,7 @@ func (s *Suite) getTrm() *manager.Manager {
 	return trm
 }
 
+// TestCrossRepoTransaction_Fail проверяет, что транзакция работает в рамках двух репозиториев
 func (s *Suite) TestCrossRepoTransaction_Fail() {
 	acc, err := domainAccount.NewAccountFromValues(0, 1, 0, 0)
 	s.Require().NoError(err)

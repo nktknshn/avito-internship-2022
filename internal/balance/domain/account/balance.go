@@ -1,14 +1,13 @@
 package account
 
 import (
-	"errors"
-
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 var (
-	ErrInsufficientBalance = errors.New("insufficent available balance")
-	ErrInsufficientReserve = errors.New("insufficent reserved balance")
+	ErrInsufficientBalance = domainError.New("insufficent available balance")
+	ErrInsufficientReserve = domainError.New("insufficent reserved balance")
 )
 
 type AccountBalance struct {
@@ -24,11 +23,11 @@ func NewAccountBalance(available amount.Amount, reserved amount.Amount) (Account
 }
 
 func NewAccountBalanceFromValues(available int64, reserved int64) (AccountBalance, error) {
-	_available, err := amount.NewAmount(available)
+	_available, err := amount.New(available)
 	if err != nil {
 		return AccountBalance{}, err
 	}
-	_reserved, err := amount.NewAmount(reserved)
+	_reserved, err := amount.New(reserved)
 	if err != nil {
 		return AccountBalance{}, err
 	}

@@ -1,6 +1,6 @@
 package auth
 
-import "errors"
+import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 
 type AuthUserID int64
 
@@ -14,7 +14,7 @@ const (
 )
 
 var (
-	ErrInvalidAuthUserID = errors.New("invalid auth user id")
+	ErrInvalidAuthUserID = domainError.New("invalid auth user id")
 )
 
 func NewAuthUserID(id int64) (AuthUserID, error) {
@@ -31,7 +31,7 @@ func (u AuthUserUsername) Value() string {
 }
 
 var (
-	ErrInvalidAuthUserUsernameTooShort = errors.New("invalid auth user username: too short")
+	ErrInvalidAuthUserUsernameTooShort = domainError.New("invalid auth user username: too short")
 )
 
 func NewAuthUserUsername(username string) (AuthUserUsername, error) {
@@ -48,7 +48,7 @@ func (p AuthUserPassword) String() string {
 }
 
 var (
-	ErrInvalidAuthUserPasswordTooShort = errors.New("invalid auth user password: too short")
+	ErrInvalidAuthUserPasswordTooShort = domainError.New("invalid auth user password: too short")
 )
 
 func NewAuthUserPassword(password string) (AuthUserPassword, error) {

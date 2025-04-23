@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"errors"
 	"strconv"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 type UserID int64
@@ -11,7 +12,7 @@ func (u UserID) Value() int64 {
 	return int64(u)
 }
 
-var ErrInvalidUserID = errors.New("invalid UserID")
+var ErrInvalidUserID = domainError.New("invalid UserID")
 
 func NewUserID(userID int64) (UserID, error) {
 	if userID <= 0 {

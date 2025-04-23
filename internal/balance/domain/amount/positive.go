@@ -1,11 +1,11 @@
 package amount
 
-// Положительное кол-во копеек
+// Кол-во копеек больше 0
 type AmountPositive struct {
 	amount int64
 }
 
-func NewAmountPositive(amount int64) (AmountPositive, error) {
+func NewPositive(amount int64) (AmountPositive, error) {
 	if amount <= 0 {
 		return AmountPositive{}, ErrInvalidPositiveAmount
 	}

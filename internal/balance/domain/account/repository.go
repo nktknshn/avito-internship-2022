@@ -2,13 +2,13 @@ package account
 
 import (
 	"context"
-	"errors"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 var (
-	ErrAccountNotFound = errors.New("account not found")
+	ErrAccountNotFound = domainError.New("account not found")
 )
 
 type AccountRepository interface {

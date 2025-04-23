@@ -1,10 +1,9 @@
 package account
 
 import (
-	"errors"
-
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 type OrderID int64
@@ -14,8 +13,8 @@ func (o OrderID) Value() int64 {
 }
 
 var (
-	ErrInvalidOrderID = errors.New("invalid order id")
-	ErrSameAccount    = errors.New("same account")
+	ErrInvalidOrderID = domainError.New("invalid order id")
+	ErrSameAccount    = domainError.New("same account")
 )
 
 func NewOrderID(id int64) (OrderID, error) {
@@ -32,7 +31,7 @@ func (a AccountID) Value() int64 {
 }
 
 var (
-	ErrInvalidAccountID = errors.New("invalid account id")
+	ErrInvalidAccountID = domainError.New("invalid account id")
 )
 
 func NewAccountID(id int64) (AccountID, error) {
@@ -64,11 +63,11 @@ func NewAccountFromValues(id int64, userID int64, balanceAvailable int64, balanc
 	if err != nil {
 		return nil, err
 	}
-	_balanceAvailable, err := amount.NewAmount(balanceAvailable)
+	_balanceAvailable, err := amount.New(balanceAvailable)
 	if err != nil {
 		return nil, err
 	}
-	_balanceReserved, err := amount.NewAmount(balanceReserved)
+	_balanceReserved, err := amount.New(balanceReserved)
 	if err != nil {
 		return nil, err
 	}
