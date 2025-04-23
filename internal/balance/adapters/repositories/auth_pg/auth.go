@@ -3,7 +3,8 @@ package auth_pg
 import (
 	"context"
 	"database/sql"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
@@ -41,7 +42,7 @@ func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.Aut
 	}
 
 	if err != nil {
-		return err
+		return errors.Wrap(err, "AuthRepository.CreateUser.ExecContext")
 	}
 
 	return nil
@@ -61,13 +62,13 @@ func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainA
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AuthRepository.GetUserByUsername.GetContext")
 	}
 
 	user, err := fromAuthUserDTO(&userDTO)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AuthRepository.GetUserByUsername.fromAuthUserDTO")
 	}
 
 	return user, nil

@@ -3,7 +3,8 @@ package accounts_pg
 import (
 	"context"
 	"database/sql"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
@@ -16,7 +17,7 @@ type AccountsRepository struct {
 	getter *trmsqlx.CtxGetter
 }
 
-func NewAccountsRepository(db *sqlx.DB, c *trmsqlx.CtxGetter) *AccountsRepository {
+func New(db *sqlx.DB, c *trmsqlx.CtxGetter) *AccountsRepository {
 
 	if db == nil {
 		panic("db is nil")
@@ -43,13 +44,13 @@ func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.User
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.GetByUserID.GetContext")
 	}
 
 	acc, err := fromAccountDTO(&accDTO)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.GetByUserID.fromAccountDTO")
 	}
 
 	return acc, nil
@@ -69,13 +70,13 @@ func (r *AccountsRepository) GetByAccountID(ctx context.Context, accountID domai
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.GetByAccountID.GetContext")
 	}
 
 	acc, err := fromAccountDTO(&accDTO)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.GetByAccountID.fromAccountDTO")
 	}
 
 	return acc, nil
@@ -86,7 +87,7 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 	accDTO, err := toAccountDTO(account)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.Save.toAccountDTO")
 	}
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
@@ -100,13 +101,13 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.Save.create")
 	}
 
 	acc, err := fromAccountDTO(newDTO)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.Save.fromAccountDTO")
 	}
 
 	return acc, nil
@@ -124,13 +125,13 @@ func (r *AccountsRepository) create(ctx context.Context, tr trmsqlx.Tr, accDto *
 	sq, args, err := tr.BindNamed(sq, accDto)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.create.BindNamed")
 	}
 
 	var newDTO accountDTO
 	err = tr.GetContext(ctx, &newDTO, sq, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.create.GetContext")
 	}
 
 	return &newDTO, nil
@@ -148,13 +149,18 @@ func (r *AccountsRepository) update(ctx context.Context, tr trmsqlx.Tr, accDto *
 
 	sq, args, err := tr.BindNamed(sq, accDto)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.update.BindNamed")
 	}
 
 	var newDTO accountDTO
 	err = tr.GetContext(ctx, &newDTO, sq, args...)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, domainAccount.ErrAccountNotFound
+	}
+
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.update.GetContext")
 	}
 
 	return &newDTO, nil

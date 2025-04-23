@@ -92,13 +92,13 @@ func (u *DepositUseCase) Handle(ctx context.Context, in In) error {
 			return err
 		}
 
-		_, err = u.transactionsRepo.SaveTransactionDeposit(ctx, transaction)
+		err = acc.BalanceDeposit(in.Amount)
 
 		if err != nil {
 			return err
 		}
 
-		err = acc.BalanceDeposit(in.Amount)
+		_, err = u.transactionsRepo.SaveTransactionDeposit(ctx, transaction)
 
 		if err != nil {
 			return err

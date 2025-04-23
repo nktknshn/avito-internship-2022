@@ -36,7 +36,7 @@ var (
 )
 
 func NewAccountID(id int64) (AccountID, error) {
-	if id <= 0 {
+	if id < 0 {
 		return 0, ErrInvalidAccountID
 	}
 	return AccountID(id), nil

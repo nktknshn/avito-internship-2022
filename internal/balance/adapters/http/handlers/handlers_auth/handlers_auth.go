@@ -3,8 +3,8 @@ package handlers_auth
 import (
 	"context"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_validate_token"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 

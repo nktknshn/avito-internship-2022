@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_signup"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 )
 
 type CliAdapter struct {

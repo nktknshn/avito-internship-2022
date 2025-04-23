@@ -1,14 +1,14 @@
 package app
 
 import (
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_signup"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_validate_token"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/deposit"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/get_balance"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve_cancel"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve_confirm"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/transfer"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 )
 

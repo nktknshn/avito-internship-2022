@@ -4,6 +4,7 @@ import (
 	"context"
 
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
+	"github.com/pkg/errors"
 )
 
 func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domainTransaction.TransactionDeposit) (*domainTransaction.TransactionDeposit, error) {
@@ -19,18 +20,18 @@ func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, tra
 
 	transactionDTO, err := toTransactionDepositDTO(transaction)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.toTransactionDepositDTO")
 	}
 
 	sq, args, err := tr.BindNamed(sq, transactionDTO)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.BindNamed")
 	}
 
 	var newDTO transactionDepositDTO
 	err = tr.GetContext(ctx, &newDTO, sq, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.GetContext")
 	}
 
 	return fromTransactionDepositDTO(&newDTO)

@@ -7,8 +7,8 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_params"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/get_balance"
 )
 
 type getBalanceHandler struct {

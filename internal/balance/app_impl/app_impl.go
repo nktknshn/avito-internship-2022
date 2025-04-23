@@ -1,4 +1,4 @@
-package service
+package app_impl
 
 import (
 	"context"
@@ -10,15 +10,15 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_signup"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/auth_validate_token"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/deposit"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/get_balance"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve_cancel"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/reserve_confirm"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/use_cases/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 	"github.com/nktknshn/avito-internship-2022/pkg/metrics_prometheus"
@@ -26,6 +26,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 )
 
+// NewApplication создает новую реализацию приложения
 func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, error) {
 
 	db, err := sqlx_pg.Connect(ctx, cfg.GetPostgres())
@@ -54,8 +55,8 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, 
 
 	// auth
 	var (
-		accountsRepository     = accounts_pg.NewAccountsRepository(db, trmsqlx.DefaultCtxGetter)
-		transactionsRepository = transactions_pg.NewTransactionsRepository(db, trmsqlx.DefaultCtxGetter)
+		accountsRepository     = accounts_pg.New(db, trmsqlx.DefaultCtxGetter)
+		transactionsRepository = transactions_pg.New(db, trmsqlx.DefaultCtxGetter)
 		authRepository         = auth_pg.NewAuthRepository(db, trmsqlx.DefaultCtxGetter)
 	)
 

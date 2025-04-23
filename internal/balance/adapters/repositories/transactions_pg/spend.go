@@ -7,6 +7,7 @@ import (
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
+	"github.com/pkg/errors"
 )
 
 func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domainAccount.OrderID) ([]*domainTransaction.TransactionSpend, error) {
@@ -23,7 +24,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 	err := tr.SelectContext(ctx, &transactions, r.db.Rebind(sq), userID, orderID)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.GetTransactionSpendByOrderID.SelectContext")
 	}
 
 	result := make([]*domainTransaction.TransactionSpend, len(transactions))
@@ -31,7 +32,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 	for i, transaction := range transactions {
 		result[i], err = fromTransactionSpendDTO(transaction)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "TransactionsRepository.GetTransactionSpendByOrderID.fromTransactionSpendDTO")
 		}
 	}
 	return result, nil
@@ -42,7 +43,7 @@ func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, trans
 
 	transactionDTO, err := toTransactionSpendDTO(transaction)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionSpend.toTransactionSpendDTO")
 	}
 
 	var newDTO *transactionSpendDTO
@@ -54,10 +55,15 @@ func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, trans
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionSpend")
 	}
 
-	return fromTransactionSpendDTO(newDTO)
+	res, err := fromTransactionSpendDTO(newDTO)
+	if err != nil {
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionSpend.fromTransactionSpendDTO")
+	}
+
+	return res, nil
 }
 
 func (r *TransactionsRepository) createTransactionSpend(ctx context.Context, tr trmsqlx.Tr, transactionDTO *transactionSpendDTO) (*transactionSpendDTO, error) {
@@ -71,14 +77,14 @@ func (r *TransactionsRepository) createTransactionSpend(ctx context.Context, tr 
 
 	sq, args, err := tr.BindNamed(sq, transactionDTO)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.createTransactionSpend.BindNamed")
 	}
 
 	var newDTO transactionSpendDTO
 	err = tr.GetContext(ctx, &newDTO, sq, args...)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.createTransactionSpend.GetContext")
 	}
 
 	return &newDTO, nil
@@ -96,13 +102,13 @@ func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr 
 
 	sq, args, err := tr.BindNamed(sq, transactionDTO)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.updateTransactionSpend.BindNamed")
 	}
 
 	var newDTO transactionSpendDTO
 	err = tr.GetContext(ctx, &newDTO, sq, args...)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "TransactionsRepository.updateTransactionSpend.GetContext")
 	}
 
 	return &newDTO, nil
