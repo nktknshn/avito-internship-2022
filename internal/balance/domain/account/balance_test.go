@@ -5,6 +5,7 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,6 +27,79 @@ func TestAccountBalance_Equality(t *testing.T) {
 	}
 }
 
-func TestAccountBalance_AddAmount(t *testing.T) {
+func TestAccountBalance_Deposit(t *testing.T) {
+	b1 := account.NewAccountBalanceZero()
+	amount1 := must.Must(amount.NewPositive(10))
 
+	b2, err := b1.Deposit(amount1)
+	require.NoError(t, err)
+	require.Equal(t, b2.GetAvailable().Value(), int64(10))
+	require.Equal(t, b2.GetReserved().Value(), int64(0))
+}
+
+func TestAccountBalance_Reserve(t *testing.T) {
+	b1, err := account.NewAccountBalanceFromValues(10, 0)
+	require.NoError(t, err)
+	amount1 := must.Must(amount.NewPositive(5))
+
+	b2, err := b1.Reserve(amount1)
+	require.NoError(t, err)
+	require.Equal(t, b2.GetAvailable().Value(), int64(5))
+	require.Equal(t, b2.GetReserved().Value(), int64(5))
+}
+
+func TestAccountBalance_ReserveCancel_Success(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(5, 5))
+	amount1 := must.Must(amount.NewPositive(5))
+
+	b2, err := b1.ReserveCancel(amount1)
+	require.NoError(t, err)
+	require.Equal(t, b2.GetAvailable().Value(), int64(10))
+	require.Equal(t, b2.GetReserved().Value(), int64(0))
+}
+
+func TestAccountBalance_ReserveCancel_InsufficientBalance(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(5, 0))
+	amount1 := must.Must(amount.NewPositive(5))
+
+	_, err := b1.ReserveCancel(amount1)
+	require.ErrorIs(t, err, account.ErrInsufficientReserveBalance)
+
+}
+
+func TestAccountBalance_ReserveConfirm_Success(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(0, 5))
+	amount1 := must.Must(amount.NewPositive(5))
+
+	b2, err := b1.ReserveConfirm(amount1)
+	require.NoError(t, err)
+
+	require.Equal(t, b2.GetAvailable().Value(), int64(0))
+	require.Equal(t, b2.GetReserved().Value(), int64(0))
+}
+
+func TestAccountBalance_ReserveConfirm_InsufficientBalance(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(0, 0))
+	amount1 := must.Must(amount.NewPositive(5))
+
+	_, err := b1.ReserveConfirm(amount1)
+	require.ErrorIs(t, err, account.ErrInsufficientReserveBalance)
+}
+
+func TestAccountBalance_Withdraw_Success(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(10, 0))
+	amount1 := must.Must(amount.NewPositive(5))
+
+	b2, err := b1.Withdraw(amount1)
+	require.NoError(t, err)
+	require.Equal(t, b2.GetAvailable().Value(), int64(5))
+	require.Equal(t, b2.GetReserved().Value(), int64(0))
+}
+
+func TestAccountBalance_Withdraw_InsufficientBalance(t *testing.T) {
+	b1 := must.Must(account.NewAccountBalanceFromValues(5, 0))
+	amount1 := must.Must(amount.NewPositive(10))
+
+	_, err := b1.Withdraw(amount1)
+	require.ErrorIs(t, err, account.ErrInsufficientAvailableBalance)
 }

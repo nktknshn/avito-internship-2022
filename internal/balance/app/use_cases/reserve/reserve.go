@@ -9,7 +9,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
-type reserveUseCase struct {
+type ReserveUseCase struct {
 	trm             trm.Manager
 	accountRepo     domainAccount.AccountRepository
 	transactionRepo domainTransaction.TransactionRepository
@@ -19,7 +19,7 @@ func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionRepo domainTransaction.TransactionRepository,
-) *reserveUseCase {
+) *ReserveUseCase {
 
 	if trm == nil {
 		panic("trm == nil")
@@ -33,27 +33,27 @@ func New(
 		panic("transactionRepo == nil")
 	}
 
-	return &reserveUseCase{
+	return &ReserveUseCase{
 		trm,
 		accountRepo,
 		transactionRepo,
 	}
 }
 
-func (u *reserveUseCase) Handle(ctx context.Context, in In) error {
+func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 
 	// а если canceled, то OrderID новый?
 	// если есть резерв с OrderID и статус не canceled, то ошибка
 
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 
-		acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
+		acc, err := u.accountRepo.GetByUserID(ctx, in.userID)
 
 		if err != nil {
 			return err
 		}
 
-		orderTransactions, err := u.transactionRepo.GetTransactionSpendByOrderID(ctx, in.UserID, in.OrderID)
+		orderTransactions, err := u.transactionRepo.GetTransactionSpendByOrderID(ctx, in.userID, in.orderID)
 
 		if err != nil {
 			return err
@@ -66,7 +66,7 @@ func (u *reserveUseCase) Handle(ctx context.Context, in In) error {
 			}
 		}
 
-		err = acc.BalanceReserve(in.Amount)
+		err = acc.BalanceReserve(in.amount)
 
 		if err != nil {
 			return err
@@ -80,10 +80,10 @@ func (u *reserveUseCase) Handle(ctx context.Context, in In) error {
 
 		transaction, err := domainTransaction.NewTransactionSpendReserved(
 			acc.ID,
-			in.UserID,
-			in.OrderID,
-			in.ProductID,
-			in.Amount,
+			in.userID,
+			in.orderID,
+			in.productID,
+			in.amount,
 			time.Now(),
 		)
 

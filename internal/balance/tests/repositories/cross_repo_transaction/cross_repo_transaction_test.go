@@ -6,13 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/avito-tech/go-transaction-manager/sql"
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
-	"github.com/avito-tech/go-transaction-manager/trm/manager"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 	"github.com/stretchr/testify/suite"
 )
@@ -41,27 +40,18 @@ func (s *Suite) TearDownTest() {
 	s.ExecSql("delete from transactions_transfer")
 }
 
-func (s *Suite) getTrm() *manager.Manager {
-	trmFactory := trmsqlx.NewFactory(s.Conn, sql.NewSavePoint())
-	trm, err := manager.New(trmFactory)
-	if err != nil {
-		panic(err)
-	}
-	return trm
-}
-
 // TestCrossRepoTransaction_Fail проверяет, что транзакция работает в рамках двух репозиториев
 func (s *Suite) TestCrossRepoTransaction_Fail() {
 	acc, err := domainAccount.NewAccountFromValues(0, 1, 0, 0)
 	s.Require().NoError(err)
 
-	trm := s.getTrm()
+	trm := helpers.GetTrm(&s.TestSuitePg)
 
 	err = trm.Do(s.Context(), func(ctx context.Context) error {
 		acc, err = s.accountsRepo.Save(ctx, acc)
 		s.Require().NoError(err)
 		ts, err := domainTransaction.NewTransactionSpendFromValues(
-			0, acc.ID.Value(), 1, 1, 1, 100, domainTransaction.TransactionSpendStatusReserved, time.Now(), time.Now(),
+			0, acc.ID.Value(), 1, 1, 1, 100, domainTransaction.TransactionSpendStatusReserved.Value(), time.Now(), time.Now(),
 		)
 		s.Require().NoError(err)
 		_, err = s.transactionsRepo.SaveTransactionSpend(ctx, ts)

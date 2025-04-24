@@ -8,7 +8,7 @@ import (
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
 
-type getBalanceUseCase struct {
+type GetBalanceUseCase struct {
 	trm         trm.Manager
 	accountRepo domainAccount.AccountRepository
 }
@@ -16,7 +16,7 @@ type getBalanceUseCase struct {
 func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
-) *getBalanceUseCase {
+) *GetBalanceUseCase {
 
 	if trm == nil {
 		panic("trm == nil")
@@ -26,7 +26,7 @@ func New(
 		panic("accountRepo == nil")
 	}
 
-	return &getBalanceUseCase{
+	return &GetBalanceUseCase{
 		trm,
 		accountRepo,
 	}
@@ -37,7 +37,7 @@ type Out struct {
 	Reserved  int64
 }
 
-func (u *getBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
+func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
 	acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
 

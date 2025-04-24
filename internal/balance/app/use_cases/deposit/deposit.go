@@ -2,8 +2,9 @@ package deposit
 
 import (
 	"context"
-	"errors"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
@@ -53,18 +54,20 @@ func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.U
 		newAccount, err := domainAccount.NewAccount(userID)
 
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "DepositUseCase.getAccountCreating.NewAccount")
 		}
 
 		acc, err = u.accountRepo.Save(ctx, newAccount)
 
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "DepositUseCase.getAccountCreating.Save")
 		}
+
+		return acc, nil
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "DepositUseCase.getAccountCreating")
 	}
 
 	return acc, nil
@@ -74,47 +77,47 @@ func (u *DepositUseCase) Handle(ctx context.Context, in In) error {
 
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 
-		acc, err := u.getAccountCreating(ctx, in.UserID)
+		acc, err := u.getAccountCreating(ctx, in.userID)
 
 		if err != nil {
-			return nil
+			return errors.Wrap(err, "DepositUseCase.Handle.getAccountCreating")
 		}
 
 		transaction, err := domainTransaction.NewTransactionDeposit(
 			acc.ID,
-			in.UserID,
-			in.Source,
-			in.Amount,
+			in.userID,
+			in.source,
+			in.amount,
 			time.Now(),
 		)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "DepositUseCase.Handle.NewTransactionDeposit")
 		}
 
-		err = acc.BalanceDeposit(in.Amount)
+		err = acc.BalanceDeposit(in.amount)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "DepositUseCase.Handle.BalanceDeposit")
 		}
 
 		_, err = u.transactionsRepo.SaveTransactionDeposit(ctx, transaction)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "DepositUseCase.Handle.SaveTransactionDeposit")
 		}
 
 		_, err = u.accountRepo.Save(ctx, acc)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "DepositUseCase.Handle.SaveAccount")
 		}
 
 		return nil
 	})
 
 	if err != nil {
-		return err
+		return errors.Wrap(err, "DepositUseCase.Handle")
 	}
 
 	return nil

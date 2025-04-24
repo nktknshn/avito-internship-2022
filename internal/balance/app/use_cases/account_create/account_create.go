@@ -27,5 +27,11 @@ type In struct {
 }
 
 func (u *AccountCreateUseCase) Handle(ctx context.Context, in In) error {
-	return nil
+	acc, err := domainAccount.NewAccount(in.UserID)
+	if err != nil {
+		return err
+	}
+
+	_, err = u.userAccountRepo.Save(ctx, acc)
+	return err
 }

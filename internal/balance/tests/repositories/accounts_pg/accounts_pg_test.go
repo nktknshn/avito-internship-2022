@@ -6,8 +6,10 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 	"github.com/stretchr/testify/suite"
 )
@@ -65,4 +67,19 @@ func (s *Suite) TestSave_NotFound() {
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().Error(err)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
+}
+
+func (s *Suite) TestGetByUserID_Success() {
+	acc, err := domainAccount.NewAccountFromValues(0, 1, 100, 0)
+	s.Require().NoError(err)
+
+	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	s.Require().NoError(err)
+
+	acc, err = s.accountsRepo.GetByUserID(context.Background(), 1)
+	s.Require().NoError(err)
+	s.Require().Greater(acc.ID, domainAccount.AccountID(0))
+	s.Require().Equal(acc.UserID, domain.UserID(1))
+	s.Require().Equal(fixtures.Amount100, acc.Balance.GetAvailable())
+	s.Require().Equal(fixtures.Amount0, acc.Balance.GetReserved())
 }

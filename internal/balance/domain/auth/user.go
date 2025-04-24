@@ -14,7 +14,8 @@ const (
 )
 
 var (
-	ErrInvalidAuthUserID = domainError.New("invalid auth user id")
+	ErrInvalidAuthUserID       = domainError.New("invalid auth user id")
+	ErrInvalidAuthUserPassword = domainError.New("invalid auth user password")
 )
 
 func NewAuthUserID(id int64) (AuthUserID, error) {

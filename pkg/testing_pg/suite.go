@@ -55,6 +55,12 @@ func (s *TestSuitePg) ExecSqlMust(sql string) *ResultRows {
 	return rows
 }
 
+func (s *TestSuitePg) ExecSqlExpectRowsLen(sql string, expectedRowsLen int) {
+	rows, err := s.ExecSql(sql)
+	s.Require().NoError(err)
+	s.Require().Equal(expectedRowsLen, len(rows.Rows))
+}
+
 func (s *TestSuitePg) ExecSql(sql string) (*ResultRows, error) {
 	rows := []map[string]any{}
 

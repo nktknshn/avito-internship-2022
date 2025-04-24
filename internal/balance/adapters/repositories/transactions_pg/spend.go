@@ -5,12 +5,11 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/pkg/errors"
 )
 
-func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domainAccount.OrderID) ([]*domainTransaction.TransactionSpend, error) {
+func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domainTransaction.TransactionSpend, error) {
 	sq := `
 		SELECT id, account_id, user_id, order_id, product_id, status, amount, created_at, updated_at 
 		FROM transactions_spend 
@@ -21,7 +20,7 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 
 	var transactions []*transactionSpendDTO
 
-	err := tr.SelectContext(ctx, &transactions, r.db.Rebind(sq), userID, orderID)
+	err := tr.SelectContext(ctx, &transactions, tr.Rebind(sq), userID, orderID)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "TransactionsRepository.GetTransactionSpendByOrderID.SelectContext")

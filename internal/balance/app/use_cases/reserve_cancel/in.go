@@ -2,7 +2,6 @@ package reserve_cancel
 
 import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 )
@@ -10,7 +9,7 @@ import (
 // Принимает id пользователя, ИД услуги, ИД заказа, сумму.
 type In struct {
 	UserID    domain.UserID
-	OrderID   domainAccount.OrderID
+	OrderID   domain.OrderID
 	ProductID domainProduct.ProductID
 	Amount    domainAmount.AmountPositive
 }
@@ -21,7 +20,7 @@ func NewInFromValues(userID int64, orderID int64, productID int64, amount int64)
 		return In{}, err
 	}
 
-	_orderID, err := domainAccount.NewOrderID(orderID)
+	_orderID, err := domain.NewOrderID(orderID)
 	if err != nil {
 		return In{}, err
 	}

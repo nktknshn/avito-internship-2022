@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrInsufficientBalance = domainError.New("insufficent available balance")
-	ErrInsufficientReserve = domainError.New("insufficent reserved balance")
+	ErrInsufficientAvailableBalance = domainError.New("insufficent available balance")
+	ErrInsufficientReserveBalance   = domainError.New("insufficent reserved balance")
 )
 
 type AccountBalance struct {
@@ -20,6 +20,13 @@ func NewAccountBalance(available amount.Amount, reserved amount.Amount) (Account
 		available: available,
 		reserved:  reserved,
 	}, nil
+}
+
+func NewAccountBalanceZero() AccountBalance {
+	return AccountBalance{
+		available: amount.Zero(),
+		reserved:  amount.Zero(),
+	}
 }
 
 func NewAccountBalanceFromValues(available int64, reserved int64) (AccountBalance, error) {
@@ -55,7 +62,7 @@ func (ac AccountBalance) Deposit(a amount.AmountPositive) (AccountBalance, error
 
 func (ac AccountBalance) Reserve(a amount.AmountPositive) (AccountBalance, error) {
 	if ac.available.LessThanPositive(a) {
-		return AccountBalance{}, ErrInsufficientBalance
+		return AccountBalance{}, ErrInsufficientAvailableBalance
 	}
 
 	newAvailable, err := ac.available.Sub(a)
@@ -68,7 +75,7 @@ func (ac AccountBalance) Reserve(a amount.AmountPositive) (AccountBalance, error
 
 func (ac AccountBalance) ReserveCancel(a amount.AmountPositive) (AccountBalance, error) {
 	if ac.reserved.LessThanPositive(a) {
-		return AccountBalance{}, ErrInsufficientReserve
+		return AccountBalance{}, ErrInsufficientReserveBalance
 	}
 
 	newReserved, err := ac.reserved.Sub(a)
@@ -81,7 +88,7 @@ func (ac AccountBalance) ReserveCancel(a amount.AmountPositive) (AccountBalance,
 
 func (ac AccountBalance) ReserveConfirm(a amount.AmountPositive) (AccountBalance, error) {
 	if ac.reserved.LessThanPositive(a) {
-		return AccountBalance{}, ErrInsufficientReserve
+		return AccountBalance{}, ErrInsufficientReserveBalance
 	}
 
 	newReserved, err := ac.reserved.Sub(a)
@@ -95,7 +102,7 @@ func (ac AccountBalance) ReserveConfirm(a amount.AmountPositive) (AccountBalance
 // Withdraw withdraws an amount from the available balance
 func (ac AccountBalance) Withdraw(a amount.AmountPositive) (AccountBalance, error) {
 	if ac.available.LessThanPositive(a) {
-		return AccountBalance{}, ErrInsufficientBalance
+		return AccountBalance{}, ErrInsufficientAvailableBalance
 	}
 	newAvailable, err := ac.available.Sub(a)
 	if err != nil {

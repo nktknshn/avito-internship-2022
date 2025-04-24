@@ -6,23 +6,10 @@ import (
 	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
-type OrderID int64
-
-func (o OrderID) Value() int64 {
-	return int64(o)
-}
-
 var (
-	ErrInvalidOrderID = domainError.New("invalid order id")
-	ErrSameAccount    = domainError.New("same account")
+	ErrSameAccount             = domainError.New("same account")
+	ErrFailedToRollbackBalance = domainError.New("failed to rollback balance")
 )
-
-func NewOrderID(id int64) (OrderID, error) {
-	if id <= 0 {
-		return 0, ErrInvalidOrderID
-	}
-	return OrderID(id), nil
-}
 
 type AccountID int64
 
@@ -82,6 +69,7 @@ func NewAccountFromValues(id int64, userID int64, balanceAvailable int64, balanc
 		Balance: accountBalance,
 	}, nil
 }
+
 func (ac *Account) SetBalance(ab AccountBalance) error {
 	ac.Balance = ab
 	return nil
@@ -151,13 +139,24 @@ func (ac *Account) Transfer(to *Account, amount amount.AmountPositive) error {
 	if ac.ID == to.ID {
 		return ErrSameAccount
 	}
+
+	originalBalance := ac.Balance
+
 	err := ac.BalanceWithdraw(amount)
+
 	if err != nil {
 		return err
 	}
+
 	err = to.BalanceDeposit(amount)
+
 	if err != nil {
+		err = ac.SetBalance(originalBalance)
+		if err != nil {
+			return ErrFailedToRollbackBalance
+		}
 		return err
 	}
+
 	return nil
 }

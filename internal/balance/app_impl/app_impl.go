@@ -10,6 +10,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
@@ -24,56 +25,57 @@ import (
 	"github.com/nktknshn/avito-internship-2022/pkg/metrics_prometheus"
 	"github.com/nktknshn/avito-internship-2022/pkg/password_hasher_argon"
 	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
+	"github.com/nktknshn/avito-internship-2022/pkg/token_generator_jwt"
 )
 
 // NewApplication создает новую реализацию приложения
 func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, error) {
 
 	db, err := sqlx_pg.Connect(ctx, cfg.GetPostgres())
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = sqlx_pg.Migrate(ctx, db.DB, cfg.GetPostgres().GetMigrationsDir())
-
 	if err != nil {
 		return nil, err
 	}
 
 	trmFactory := trmsqlx.NewFactory(db, sql.NewSavePoint())
-
 	trm, err := manager.New(trmFactory)
-
 	if err != nil {
 		return nil, err
 	}
 
+	// auth
 	var (
 		passwordHasher = password_hasher_argon.NewHasher()
+		tokenGenerator = token_generator_jwt.NewTokenGeneratorJWT[auth_signin.TokenClaims](
+			[]byte(cfg.GetJWT().GetSecret()),
+			cfg.GetJWT().GetTTL(),
+		)
+
+		authRepository = auth_pg.NewAuthRepository(db, trmsqlx.DefaultCtxGetter)
+
+		authSignup        = auth_signup.New(trm, passwordHasher, authRepository)
+		authSignin        = auth_signin.New(trm, passwordHasher, tokenGenerator, authRepository)
+		authValidateToken = auth_validate_token.New(trm, authRepository)
 	)
 
-	// auth
+	// balance
 	var (
 		accountsRepository     = accounts_pg.New(db, trmsqlx.DefaultCtxGetter)
 		transactionsRepository = transactions_pg.New(db, trmsqlx.DefaultCtxGetter)
-		authRepository         = auth_pg.NewAuthRepository(db, trmsqlx.DefaultCtxGetter)
-	)
 
-	// account
-	var (
 		getBalance     = get_balance.New(trm, accountsRepository)
 		deposit        = deposit.New(trm, accountsRepository, transactionsRepository)
 		reserve        = reserve.New(trm, accountsRepository, transactionsRepository)
 		reserveCancel  = reserve_cancel.New(trm, accountsRepository, transactionsRepository)
 		reserveConfirm = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
 		transfer       = transfer.New(trm, accountsRepository, transactionsRepository)
-
-		authSignup        = auth_signup.New(trm, passwordHasher, authRepository)
-		authValidateToken = auth_validate_token.New(trm, authRepository)
 	)
 
-	// metrics
+	// logs & metrics
 	logger := logging.NewSlog()
 	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app")
 
@@ -83,9 +85,10 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, 
 
 	return &app.Application{
 		// auth
-		AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger, "AuthValidateToken"),
+		AuthSignin:        decorator.DecorateQuery(authSignin, metricsClient, logger, "AuthSignin"),
 		AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger, "AuthSignup"),
-		//
+		AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger, "AuthValidateToken"),
+		// balance
 		GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger, "GetBalance"),
 		Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger, "Deposit"),
 		Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger, "Reserve"),

@@ -35,7 +35,7 @@ func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.Aut
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
-	_, err := tr.ExecContext(ctx, r.db.Rebind(sq), username, passwordHash, role)
+	_, err := tr.ExecContext(ctx, tr.Rebind(sq), username, passwordHash, role)
 
 	if sqlx_pg.IsDuplicateKeyError(err) {
 		return domainAuth.ErrDuplicateKey
@@ -55,7 +55,7 @@ func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainA
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
-	err := tr.GetContext(ctx, &userDTO, r.db.Rebind(sq), username)
+	err := tr.GetContext(ctx, &userDTO, tr.Rebind(sq), username)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, domainAuth.ErrUserNotFound

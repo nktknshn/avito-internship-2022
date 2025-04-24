@@ -37,7 +37,7 @@ func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.User
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
-	err := tr.GetContext(ctx, &accDTO, r.db.Rebind(sq), userID)
+	err := tr.GetContext(ctx, &accDTO, tr.Rebind(sq), userID)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, domainAccount.ErrAccountNotFound
@@ -63,7 +63,7 @@ func (r *AccountsRepository) GetByAccountID(ctx context.Context, accountID domai
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
-	err := tr.GetContext(ctx, &accDTO, r.db.Rebind(sq), accountID)
+	err := tr.GetContext(ctx, &accDTO, tr.Rebind(sq), accountID)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, domainAccount.ErrAccountNotFound
@@ -160,7 +160,7 @@ func (r *AccountsRepository) update(ctx context.Context, tr trmsqlx.Tr, accDto *
 	}
 
 	if err != nil {
-		return nil, errors.Wrap(err, "AccountsRepository.update.GetContext")
+		return nil, err
 	}
 
 	return &newDTO, nil

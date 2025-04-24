@@ -7,9 +7,9 @@ import (
 )
 
 type In struct {
-	UserID domain.UserID
-	Amount domainAmount.AmountPositive
-	Source domainTransaction.DepositSource
+	userID domain.UserID
+	amount domainAmount.AmountPositive
+	source domainTransaction.DepositSource
 }
 
 func NewInFromValues(userID int64, amount int64, source string) (In, error) {
@@ -29,8 +29,8 @@ func NewInFromValues(userID int64, amount int64, source string) (In, error) {
 	}
 
 	return In{
-		UserID: _userID,
-		Source: _source,
-		Amount: _amount,
+		userID: _userID,
+		source: _source,
+		amount: _amount,
 	}, nil
 }

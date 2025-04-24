@@ -2,16 +2,15 @@ package reserve
 
 import (
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 )
 
 type In struct {
-	UserID    domain.UserID
-	ProductID domainProduct.ProductID
-	OrderID   domainAccount.OrderID
-	Amount    domainAmount.AmountPositive
+	userID    domain.UserID
+	productID domainProduct.ProductID
+	orderID   domain.OrderID
+	amount    domainAmount.AmountPositive
 }
 
 func NewInFromValues(userID int64, productID int64, orderID int64, amount int64) (In, error) {
@@ -25,7 +24,7 @@ func NewInFromValues(userID int64, productID int64, orderID int64, amount int64)
 		return In{}, err
 	}
 
-	_orderID, err := domainAccount.NewOrderID(orderID)
+	_orderID, err := domain.NewOrderID(orderID)
 	if err != nil {
 		return In{}, err
 	}
@@ -36,9 +35,9 @@ func NewInFromValues(userID int64, productID int64, orderID int64, amount int64)
 	}
 
 	return In{
-		UserID:    _userID,
-		ProductID: _productID,
-		OrderID:   _orderID,
-		Amount:    _amount,
+		userID:    _userID,
+		productID: _productID,
+		orderID:   _orderID,
+		amount:    _amount,
 	}, nil
 }

@@ -16,13 +16,13 @@ func (s TransactionSpendStatus) Value() string {
 }
 
 const (
-	TransactionSpendStatusReserved  = "reserved"
-	TransactionSpendStatusCanceled  = "canceled"
-	TransactionSpendStatusConfirmed = "confirmed"
+	TransactionSpendStatusReserved  TransactionSpendStatus = "reserved"
+	TransactionSpendStatusCanceled  TransactionSpendStatus = "canceled"
+	TransactionSpendStatusConfirmed TransactionSpendStatus = "confirmed"
 )
 
 func NewTransactionSpendStatus(status string) (TransactionSpendStatus, error) {
-	switch status {
+	switch TransactionSpendStatus(status) {
 	case TransactionSpendStatusReserved, TransactionSpendStatusCanceled, TransactionSpendStatusConfirmed:
 		return TransactionSpendStatus(status), nil
 	default:
@@ -47,7 +47,7 @@ type TransactionSpend struct {
 	ID        TransactionSpendID
 	AccountID domainAccount.AccountID
 	UserID    domain.UserID
-	OrderID   domainAccount.OrderID
+	OrderID   domain.OrderID
 	ProductID domainProduct.ProductID
 	Amount    domainAmount.AmountPositive
 	Status    TransactionSpendStatus
@@ -58,7 +58,7 @@ type TransactionSpend struct {
 func NewTransactionSpendReserved(
 	accountID domainAccount.AccountID,
 	userID domain.UserID,
-	orderID domainAccount.OrderID,
+	orderID domain.OrderID,
 	productID domainProduct.ProductID,
 	amount domainAmount.AmountPositive,
 	now time.Time,
@@ -119,7 +119,7 @@ func NewTransactionSpendFromValues(
 		return nil, err
 	}
 
-	_orderID, err := domainAccount.NewOrderID(orderID)
+	_orderID, err := domain.NewOrderID(orderID)
 	if err != nil {
 		return nil, err
 	}
