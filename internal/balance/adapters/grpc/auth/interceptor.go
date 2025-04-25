@@ -48,6 +48,7 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		}
 
 		token := md.Get("authorization")
+
 		if len(token) == 0 {
 			return nil, status.Error(codes.Unauthenticated, "missing auth token")
 		}

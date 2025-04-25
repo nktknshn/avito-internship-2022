@@ -5,6 +5,7 @@ import (
 
 	"github.com/avito-tech/go-transaction-manager/trm"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
 
@@ -44,4 +45,8 @@ func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 		Available: acc.Balance.GetAvailable().Value(),
 		Reserved:  acc.Balance.GetReserved().Value(),
 	}, nil
+}
+
+func (u *GetBalanceUseCase) GetName() string {
+	return use_cases.GetBalance
 }

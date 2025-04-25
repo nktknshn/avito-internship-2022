@@ -98,16 +98,16 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 	return &Application{
 		Application: app.Application{
 			// auth
-			AuthSignin:        decorator.DecorateQuery(authSignin, metricsClient, logger, "AuthSignin"),
-			AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger, "AuthSignup"),
-			AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger, "AuthValidateToken"),
+			AuthSignin:        decorator.DecorateQuery(authSignin, metricsClient, logger),
+			AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger),
+			AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger),
 			// balance
-			GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger, "GetBalance"),
-			Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger, "Deposit"),
-			Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger, "Reserve"),
-			ReserveCancel:  decorator.DecorateCommand(reserveCancel, metricsClient, logger, "ReserveCancel"),
-			ReserveConfirm: decorator.DecorateCommand(reserveConfirm, metricsClient, logger, "ReserveConfirm"),
-			Transfer:       decorator.DecorateCommand(transfer, metricsClient, logger, "Transfer"),
+			GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger),
+			Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger),
+			Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger),
+			ReserveCancel:  decorator.DecorateCommand(reserveCancel, metricsClient, logger),
+			ReserveConfirm: decorator.DecorateCommand(reserveConfirm, metricsClient, logger),
+			Transfer:       decorator.DecorateCommand(transfer, metricsClient, logger),
 		},
 		MetricsHandler: metricsClient.GetHandler(),
 		Logger:         logger,

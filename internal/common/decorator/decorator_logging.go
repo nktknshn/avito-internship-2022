@@ -22,6 +22,10 @@ func (d *DecoratorCommandLogging[T]) Handle(ctx context.Context, in T) (err erro
 	return d.base.Handle(ctx, in)
 }
 
+func (d *DecoratorCommandLogging[T]) GetName() string {
+	return d.base.GetName()
+}
+
 type DecoratorQueryLogging[T any, R any] struct {
 	base       UseCaseQueryHandler[T, R]
 	logger     logging.Logger
@@ -36,4 +40,8 @@ func (d *DecoratorQueryLogging[T, R]) Handle(ctx context.Context, in T) (result 
 	}()
 	d.logger.Info(ctx, d.methodName, "in", in)
 	return d.base.Handle(ctx, in)
+}
+
+func (d *DecoratorQueryLogging[T, R]) GetName() string {
+	return d.base.GetName()
 }

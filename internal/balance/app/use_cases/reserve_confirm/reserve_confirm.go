@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
@@ -100,4 +101,8 @@ func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 	})
 
 	return err
+}
+
+func (u *ReserveConfirmUseCase) GetName() string {
+	return use_cases.ReserveConfirm
 }

@@ -47,6 +47,7 @@ func (g GrpcServer) Deposit(ctx context.Context, request *balance.DepositRequest
 	}
 
 	err = g.app.Deposit.Handle(ctx, in)
+
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

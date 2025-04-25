@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
+	"os/signal"
 
 	adapters_grpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
@@ -36,9 +38,23 @@ func main() {
 		panic(err)
 	}
 
-	server_grpc.RunGRPCServerOnAddr(cfg.GRPC.GetAddr(), app.Logger, func(server *grpc.Server) {
-		grpcServer := adapters_grpc.NewGrpcServer(app.Application)
-		balance.RegisterBalanceServiceServer(server, grpcServer)
-	})
+	server := server_grpc.RunGRPCServerOnAddr(
+		cfg.GRPC.GetAddr(),
+		app.Logger,
+		func(server *grpc.Server) {
+			grpcServer := adapters_grpc.NewGrpcServer(app.Application)
+			balance.RegisterBalanceServiceServer(server, grpcServer)
+		},
+	)
+
+	app.Logger.Info(ctx, "GRPC server started on %s", "address", server.Listen.Addr().String())
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	app.Logger.Info(ctx, "GRPC server stopped")
+
+	server.GrpcServer.GracefulStop()
 
 }

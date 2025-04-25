@@ -35,3 +35,7 @@ func (u *AccountCreateUseCase) Handle(ctx context.Context, in In) error {
 	_, err = u.userAccountRepo.Save(ctx, acc)
 	return err
 }
+
+// func (u *AccountCreateUseCase) GetName() string {
+// 	return use_cases.AccountCreate
+// }

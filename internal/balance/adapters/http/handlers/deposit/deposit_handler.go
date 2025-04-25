@@ -6,8 +6,9 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/roles"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
@@ -18,6 +19,7 @@ type depositHandler struct {
 
 type useCase interface {
 	Handle(ctx context.Context, in deposit.In) error
+	GetName() string
 }
 
 func New(auth handlers_auth.AuthUseCase, depositUseCase useCase) *depositHandler {
@@ -48,10 +50,7 @@ func (p payloadType) GetIn() (deposit.In, error) {
 
 func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
-		b, _ = handlers_builder.NewWithAuth(auth, []domainAuth.AuthUserRole{
-			domainAuth.AuthUserRoleAdmin,
-			domainAuth.AuthUserRoleAccount,
-		})
+		b, _    = handlers_builder.NewWithAuth(auth, roles.GetUseCaseAuthUserRoles(use_cases.Deposit))
 		payload = ergo.PayloadAttach[payloadType](b)
 	)
 

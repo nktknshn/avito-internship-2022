@@ -9,26 +9,25 @@ import (
 
 type UseCaseCommandHandler[T any] interface {
 	Handle(ctx context.Context, in T) error
+	GetName() string
 }
 
 type UseCaseQueryHandler[T any, R any] interface {
 	Handle(ctx context.Context, in T) (R, error)
+	GetName() string
 }
 
 func DecorateCommand[T any](
 	base UseCaseCommandHandler[T],
 	metrics metrics.Metrics,
 	logger logging.Logger,
-	methodName string,
 ) UseCaseCommandHandler[T] {
 	return &DecoratorCommandLogging[T]{
 		base: &DecoratorCommandMetrics[T]{
-			base:       base,
-			metrics:    metrics,
-			methodName: methodName,
+			base:    base,
+			metrics: metrics,
 		},
-		logger:     logger,
-		methodName: methodName,
+		logger: logger,
 	}
 }
 
@@ -36,15 +35,12 @@ func DecorateQuery[T any, R any](
 	base UseCaseQueryHandler[T, R],
 	metrics metrics.Metrics,
 	logger logging.Logger,
-	methodName string,
 ) UseCaseQueryHandler[T, R] {
 	return &DecoratorQueryLogging[T, R]{
 		base: &DecoratorQueryMetrics[T, R]{
-			base:       base,
-			metrics:    metrics,
-			methodName: methodName,
+			base:    base,
+			metrics: metrics,
 		},
-		logger:     logger,
-		methodName: methodName,
+		logger: logger,
 	}
 }

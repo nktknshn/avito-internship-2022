@@ -9,7 +9,12 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func(server *grpc.Server)) {
+type RunningServer struct {
+	GrpcServer *grpc.Server
+	Listen     net.Listener
+}
+
+func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func(server *grpc.Server)) *RunningServer {
 
 	grpcServer := grpc.NewServer(grpc.KeepaliveParams(keepalive.ServerParameters{
 		// TODO
@@ -26,9 +31,15 @@ func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func
 		logger.Fatal(context.Background(), "failed to listen: %v", "error", err)
 	}
 
-	err = grpcServer.Serve(listen)
-	if err != nil {
-		logger.Fatal(context.Background(), "failed to serve: %v", "error", err)
-	}
+	go func() {
+		err = grpcServer.Serve(listen)
+		if err != nil {
+			logger.Fatal(context.Background(), "failed to serve: %v", "error", err)
+		}
+	}()
 
+	return &RunningServer{
+		GrpcServer: grpcServer,
+		Listen:     listen,
+	}
 }

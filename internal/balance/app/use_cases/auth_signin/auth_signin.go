@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/password_hasher"
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
@@ -80,4 +81,8 @@ func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	}
 
 	return Out{Token: authToken}, nil
+}
+
+func (u *AuthSigninUseCase) GetName() string {
+	return use_cases.AuthSignin
 }

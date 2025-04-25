@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/password_hasher"
 )
@@ -48,4 +49,8 @@ func (u *AuthSignupUseCase) Handle(ctx context.Context, in In) error {
 		domainAuth.AuthUserPasswordHash(passwordHash),
 		in.role,
 	)
+}
+
+func (u *AuthSignupUseCase) GetName() string {
+	return use_cases.AuthSignup
 }
