@@ -8,7 +8,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_params"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 )
 
 type getBalanceHandler struct {
@@ -18,6 +17,7 @@ type getBalanceHandler struct {
 
 type useCase interface {
 	Handle(ctx context.Context, in get_balance.In) (get_balance.Out, error)
+	GetName() string
 }
 
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *getBalanceHandler {
@@ -38,10 +38,7 @@ func (h *getBalanceHandler) GetHandler() http.Handler {
 
 func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
-		b, _ = handlers_builder.NewWithAuth(auth, []domainAuth.AuthUserRole{
-			domainAuth.AuthUserRoleAdmin,
-			domainAuth.AuthUserRoleReport,
-		})
+		b, _        = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
 		paramUserID = handlers_params.RouterParamUserID.Attach(b)
 	)
 

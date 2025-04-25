@@ -7,7 +7,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
@@ -18,6 +17,7 @@ type TransferHandler struct {
 
 type useCase interface {
 	Handle(ctx context.Context, in transfer.In) error
+	GetName() string
 }
 
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *TransferHandler {
@@ -49,10 +49,7 @@ func (p payloadType) GetIn() (transfer.In, error) {
 
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
-		b, _ = handlers_builder.NewWithAuth(auth, []domainAuth.AuthUserRole{
-			domainAuth.AuthUserRoleAdmin,
-			domainAuth.AuthUserRoleAccount,
-		})
+		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
 		payload = ergo.PayloadAttach[payloadType](b)
 	)
 

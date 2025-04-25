@@ -7,7 +7,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
@@ -18,6 +17,7 @@ type HandlerReserveConfirm struct {
 
 type useCase interface {
 	Handle(ctx context.Context, in reserve_confirm.In) error
+	GetName() string
 }
 
 func New(auth handlers_auth.AuthUseCase, reserveConfirm useCase) *HandlerReserveConfirm {
@@ -54,10 +54,7 @@ func (p payloadType) GetIn() (reserve_confirm.In, error) {
 
 func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
-		b, _ = handlers_builder.NewWithAuth(auth, []domainAuth.AuthUserRole{
-			domainAuth.AuthUserRoleAdmin,
-			domainAuth.AuthUserRoleAccount,
-		})
+		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
 		payload = ergo.PayloadAttach[payloadType](b)
 	)
 
