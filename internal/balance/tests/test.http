@@ -1,9 +1,16 @@
-GET http://localhost:8080/balance/1
-Authorization: Bearer 1234567890
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU0OTYyNjQsImlhdCI6MTc0NTQ5MjY2NCwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.go8u0_gWXzpwMggmFO1o6o7BiSlc6AYlztiC_T10h6U
+
+GET http://localhost:8080/api/v1/balance/1
+Authorization: Bearer {{token}}
 
 ###
 
-POST http://localhost:8080/balance/deposit
+GET http://localhost:8080/api/v1/balance/1
+Authorization: Bearer {{token}}
+
+###
+
+POST http://localhost:8080/api/v1/balance/deposit
 Content-Type: application/json
 
 {
@@ -12,4 +19,3 @@ Content-Type: application/json
 }
 
 ###
-

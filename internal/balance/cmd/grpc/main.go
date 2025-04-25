@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"flag"
-	"net/http"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
+	adapters_grpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
+	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
+	"github.com/nktknshn/avito-internship-2022/pkg/server_grpc"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -22,8 +23,8 @@ func main() {
 	flag.Parse()
 
 	ctx := context.Background()
-	cfg := config.Config{}
-	err := config_cleanenv.LoadConfig(flagConfigPath, &cfg)
+
+	cfg, err := config_cleanenv.LoadConfigType[config.Config](flagConfigPath)
 
 	if err != nil {
 		panic(err)
@@ -35,13 +36,9 @@ func main() {
 		panic(err)
 	}
 
-	handlers := handlers.CreateHandlers(app)
-	router := router.CreateMuxRouter(handlers)
+	server_grpc.RunGRPCServerOnAddr(cfg.GRPC.GetAddr(), app.Logger, func(server *grpc.Server) {
+		grpcServer := adapters_grpc.NewGrpcServer(app.Application)
+		balance.RegisterBalanceServiceServer(server, grpcServer)
+	})
 
-	mux := http.NewServeMux()
-	mux.Handle("/", router)
-
-	http.ListenAndServe(":8080", mux)
-
-	_ = app
 }

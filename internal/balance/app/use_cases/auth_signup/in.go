@@ -3,9 +3,9 @@ package auth_signup
 import domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 
 type In struct {
-	Username domainAuth.AuthUserUsername
-	Password domainAuth.AuthUserPassword
-	Role     domainAuth.AuthUserRole
+	username domainAuth.AuthUserUsername
+	password domainAuth.AuthUserPassword
+	role     domainAuth.AuthUserRole
 }
 
 func NewInFromValues(username string, password string, role string) (In, error) {
@@ -22,8 +22,8 @@ func NewInFromValues(username string, password string, role string) (In, error) 
 		return In{}, err
 	}
 	return In{
-		Username: _username,
-		Password: _password,
-		Role:     _role,
+		username: _username,
+		password: _password,
+		role:     _role,
 	}, nil
 }

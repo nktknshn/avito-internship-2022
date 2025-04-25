@@ -2,6 +2,7 @@ package app_impl
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/avito-tech/go-transaction-manager/sql"
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
@@ -20,6 +21,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 	"github.com/nktknshn/avito-internship-2022/pkg/metrics_prometheus"
@@ -28,8 +30,14 @@ import (
 	"github.com/nktknshn/avito-internship-2022/pkg/token_generator_jwt"
 )
 
+type Application struct {
+	app.Application
+	MetricsHandler http.Handler
+	Logger         logging.Logger
+}
+
 // NewApplication создает новую реализацию приложения
-func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, error) {
+func NewApplication(ctx context.Context, cfg *config.Config) (*Application, error) {
 
 	db, err := sqlx_pg.Connect(ctx, cfg.GetPostgres())
 	if err != nil {
@@ -50,16 +58,20 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, 
 	// auth
 	var (
 		passwordHasher = password_hasher_argon.NewHasher()
-		tokenGenerator = token_generator_jwt.NewTokenGeneratorJWT[auth_signin.TokenClaims](
+		tokenGenerator = token_generator_jwt.NewTokenGeneratorJWT[domainAuth.AuthUserTokenClaims](
 			[]byte(cfg.GetJWT().GetSecret()),
 			cfg.GetJWT().GetTTL(),
+		)
+
+		tokenValidator = token_generator_jwt.NewTokenValidatorJWT[domainAuth.AuthUserTokenClaims](
+			[]byte(cfg.GetJWT().GetSecret()),
 		)
 
 		authRepository = auth_pg.NewAuthRepository(db, trmsqlx.DefaultCtxGetter)
 
 		authSignup        = auth_signup.New(trm, passwordHasher, authRepository)
 		authSignin        = auth_signin.New(trm, passwordHasher, tokenGenerator, authRepository)
-		authValidateToken = auth_validate_token.New(trm, authRepository)
+		authValidateToken = auth_validate_token.New(trm, tokenValidator, authRepository)
 	)
 
 	// balance
@@ -83,17 +95,21 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*app.Application, 
 		return nil, err
 	}
 
-	return &app.Application{
-		// auth
-		AuthSignin:        decorator.DecorateQuery(authSignin, metricsClient, logger, "AuthSignin"),
-		AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger, "AuthSignup"),
-		AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger, "AuthValidateToken"),
-		// balance
-		GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger, "GetBalance"),
-		Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger, "Deposit"),
-		Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger, "Reserve"),
-		ReserveCancel:  decorator.DecorateCommand(reserveCancel, metricsClient, logger, "ReserveCancel"),
-		ReserveConfirm: decorator.DecorateCommand(reserveConfirm, metricsClient, logger, "ReserveConfirm"),
-		Transfer:       decorator.DecorateCommand(transfer, metricsClient, logger, "Transfer"),
+	return &Application{
+		Application: app.Application{
+			// auth
+			AuthSignin:        decorator.DecorateQuery(authSignin, metricsClient, logger, "AuthSignin"),
+			AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger, "AuthSignup"),
+			AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger, "AuthValidateToken"),
+			// balance
+			GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger, "GetBalance"),
+			Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger, "Deposit"),
+			Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger, "Reserve"),
+			ReserveCancel:  decorator.DecorateCommand(reserveCancel, metricsClient, logger, "ReserveCancel"),
+			ReserveConfirm: decorator.DecorateCommand(reserveConfirm, metricsClient, logger, "ReserveConfirm"),
+			Transfer:       decorator.DecorateCommand(transfer, metricsClient, logger, "Transfer"),
+		},
+		MetricsHandler: metricsClient.GetHandler(),
+		Logger:         logger,
 	}, nil
 }

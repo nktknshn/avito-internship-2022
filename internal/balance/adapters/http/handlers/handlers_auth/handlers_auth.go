@@ -2,6 +2,8 @@ package handlers_auth
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
@@ -51,7 +53,23 @@ func (t *tokenData) GetUserID() domainAuth.AuthUserID {
 }
 
 func (u *UseCaseToValidateToken) ValidateToken(ctx context.Context, token string) (*TokenData, bool, error) {
-	tokenData, err := u.useCase.Handle(ctx, auth_validate_token.In{Token: token})
+
+	in, err := auth_validate_token.NewInFromValues(token)
+
+	if err != nil {
+		return nil, false, ergo.WrapWithStatusCode(err, http.StatusBadRequest)
+	}
+
+	tokenData, err := u.useCase.Handle(ctx, in)
+
+	if errors.Is(err, auth_validate_token.ErrInvalidToken) {
+		return nil, false, ergo.WrapWithStatusCode(err, http.StatusBadRequest)
+	}
+
+	if errors.Is(err, auth_validate_token.ErrTokenExpired) {
+		return nil, false, ergo.WrapWithStatusCode(err, http.StatusUnauthorized)
+	}
+
 	if err != nil {
 		return nil, false, err
 	}

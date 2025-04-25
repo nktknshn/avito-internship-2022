@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 )
 
@@ -30,4 +31,16 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 	}
 
 	return nil
+}
+
+func (a *CliAdapter) SignIn(ctx context.Context, username string, password string) (string, error) {
+	in, err := auth_signin.NewInFromValues(username, password)
+	if err != nil {
+		return "", err
+	}
+	out, err := a.app.AuthSignin.Handle(ctx, in)
+	if err != nil {
+		return "", err
+	}
+	return out.Token.String(), nil
 }

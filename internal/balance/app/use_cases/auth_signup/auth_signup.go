@@ -36,7 +36,7 @@ func New(trm trm.Manager, hasher password_hasher.Hasher, authRepo authRepo) *Aut
 }
 
 func (u *AuthSignupUseCase) Handle(ctx context.Context, in In) error {
-	passwordHash, err := u.hasher.Hash(in.Password.String())
+	passwordHash, err := u.hasher.Hash(in.password.String())
 
 	if err != nil {
 		return err
@@ -44,8 +44,8 @@ func (u *AuthSignupUseCase) Handle(ctx context.Context, in In) error {
 
 	return u.authRepo.CreateUser(
 		ctx,
-		in.Username,
+		in.username,
 		domainAuth.AuthUserPasswordHash(passwordHash),
-		in.Role,
+		in.role,
 	)
 }

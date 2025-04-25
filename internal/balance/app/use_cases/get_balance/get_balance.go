@@ -32,11 +32,6 @@ func New(
 	}
 }
 
-type Out struct {
-	Available int64
-	Reserved  int64
-}
-
 func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
 	acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)

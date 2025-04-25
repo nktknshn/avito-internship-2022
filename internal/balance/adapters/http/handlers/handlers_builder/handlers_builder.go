@@ -17,17 +17,19 @@ func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole
 	}
 
 	var (
-		b = ergo.New().WithHandlerErrorFunc(func(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
-			if ergo.IsWrappedError(err) {
-				ergo.DefaultHandlerErrorFunc(ctx, w, r, err)
-				return
-			}
-			if domainError.IsDomainError(err) {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			http.Error(w, "internal server error", http.StatusInternalServerError)
-		})
+		b = ergo.New().
+			WithHandlerResultFunc(func(ctx context.Context, w http.ResponseWriter, r *http.Request, result any) {}).
+			WithHandlerErrorFunc(func(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+				if ergo.IsWrappedError(err) {
+					ergo.DefaultHandlerErrorFunc(ctx, w, r, err)
+					return
+				}
+				if domainError.IsDomainError(err) {
+					ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.WrapWithStatusCode(err, http.StatusNotFound))
+					return
+				}
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			})
 		validator  = handlers_auth.NewUseCaseToValidateToken(auth)
 		authParser = handlers_auth.AuthParser.Attach(validator, b)
 	)

@@ -5,6 +5,16 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers"
 )
 
+// type Router struct {
+// 	Routes []Route
+// }
+
+// type Route struct {
+// 	Path    string
+// 	Method  string
+// 	Handler http.Handler
+// }
+
 func CreateMuxRouter(handlers *handlers.Handlers) *mux.Router {
 	router := mux.NewRouter()
 

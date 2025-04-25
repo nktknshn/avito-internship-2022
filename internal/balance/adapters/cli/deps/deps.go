@@ -5,7 +5,6 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/root"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
@@ -13,11 +12,11 @@ import (
 
 var (
 	_config *config.Config
-	_app    *app.Application
+	_app    *app_impl.Application
 	_cli    *cli.CliAdapter
 )
 
-func GetApplication(ctx context.Context) (*app.Application, error) {
+func GetApplication(ctx context.Context) (*app_impl.Application, error) {
 	if _app != nil {
 		return _app, nil
 	}
@@ -55,7 +54,7 @@ func GetCliAdapter(ctx context.Context) (*cli.CliAdapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	cliAdapter := cli.NewCliAdapter(app)
+	cliAdapter := cli.NewCliAdapter(&app.Application)
 	_cli = cliAdapter
 	return cliAdapter, nil
 }

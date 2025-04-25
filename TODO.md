@@ -3,11 +3,13 @@ TODO
 - [ ] метрики
 - [ ] логи
 - [ ] графана, прометей
+- [ ] swagger
 - [ ] opentracing
 - [ ] transactional outbox
-- [ ] FOR UPDATE
+- [x] FOR UPDATE
 - [ ] тесты
 - [ ] graceful shutdown
-- [ ] migrations
-- [ ] auth token blacklist
+- [x] migrations
+- [-] auth token blacklist
 - [ ] ctx timeouts
+- [ ] certs

@@ -1,5 +1,9 @@
 package errors
 
+import (
+	"errors"
+)
+
 type DomainError struct {
 	message string
 }
@@ -13,6 +17,6 @@ func (e DomainError) Error() string {
 }
 
 func IsDomainError(err error) bool {
-	_, ok := err.(DomainError)
-	return ok
+	var de DomainError
+	return errors.As(err, &de)
 }

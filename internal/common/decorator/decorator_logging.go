@@ -18,7 +18,7 @@ func (d *DecoratorCommandLogging[T]) Handle(ctx context.Context, in T) (err erro
 			d.logger.Error(ctx, d.methodName, "error", err)
 		}
 	}()
-	d.logger.Info(ctx, d.methodName, "start")
+	d.logger.Info(ctx, d.methodName, "in", in)
 	return d.base.Handle(ctx, in)
 }
 
@@ -34,6 +34,6 @@ func (d *DecoratorQueryLogging[T, R]) Handle(ctx context.Context, in T) (result 
 			d.logger.Error(ctx, d.methodName, "error", err)
 		}
 	}()
-	d.logger.Info(ctx, d.methodName, "start")
+	d.logger.Info(ctx, d.methodName, "in", in)
 	return d.base.Handle(ctx, in)
 }
