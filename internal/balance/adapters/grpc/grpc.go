@@ -35,9 +35,13 @@ func (g GrpcAdapter) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	).Unary()
 }
 
-func (g GrpcAdapter) Options() []grpc.ServerOption {
-	return []grpc.ServerOption{}
-}
+// func (g GrpcAdapter) Options() []grpc.ServerOption {
+// 	return []grpc.ServerOption{
+// 		grpc.ChainUnaryInterceptor(
+// 			g.UnaryServerInterceptor(),
+// 		),
+// 	}
+// }
 
 func (g GrpcAdapter) GetBalance(ctx context.Context, request *balance.GetBalanceRequest) (*balance.GetBalanceResponse, error) {
 

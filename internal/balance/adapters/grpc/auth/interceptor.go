@@ -30,12 +30,6 @@ func NewAuthInterceptor(authUsecase authUsecase, methodToRoles map[string][]doma
 		panic("accessibleRoles is nil")
 	}
 
-	// for method, roles := range accessibleRoles {
-	// 	if len(roles) == 0 {
-	// 		panic("roles is empty for method: " + method)
-	// 	}
-	// }
-
 	return &AuthInterceptor{authUsecase: authUsecase, methodToRoles: methodToRoles}
 }
 

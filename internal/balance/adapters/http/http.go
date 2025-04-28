@@ -1,4 +1,4 @@
-package handlers
+package http
 
 import (
 	"net/http"
@@ -17,7 +17,7 @@ type Handler interface {
 	GetHandler() http.Handler
 }
 
-type Handlers struct {
+type HttpAdapter struct {
 	GetBalance     Handler
 	Deposit        Handler
 	Reserve        Handler
@@ -27,7 +27,7 @@ type Handlers struct {
 	SignIn         Handler
 }
 
-func CreateHandlers(app *app.Application) *Handlers {
+func NewHttpAdapter(app *app.Application) *HttpAdapter {
 
 	handlerGetBalance := get_balance.New(app.AuthValidateToken, app.GetBalance)
 	handlerDeposit := deposit.New(app.AuthValidateToken, app.Deposit)
@@ -37,7 +37,7 @@ func CreateHandlers(app *app.Application) *Handlers {
 	handlerTransfer := transfer.New(app.AuthValidateToken, app.Transfer)
 	handlerSignIn := signin.New(app.AuthSignin)
 
-	return &Handlers{
+	return &HttpAdapter{
 		GetBalance:     handlerGetBalance,
 		Deposit:        handlerDeposit,
 		Reserve:        handlerReserve,

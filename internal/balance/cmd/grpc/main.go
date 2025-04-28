@@ -8,7 +8,7 @@ import (
 	"os/signal"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	adapters_grpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
+	adaptersGrpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
@@ -38,9 +38,9 @@ func main() {
 		panic(err)
 	}
 
-	grpcAdapter := adapters_grpc.New(app.Application)
+	grpcAdapter := adaptersGrpc.New(app.Application)
 
-	opts := grpcAdapter.Options()
+	opts := []grpc.ServerOption{}
 
 	opts = append(opts, grpc.KeepaliveParams(keepalive.ServerParameters{
 		Time:                  cfg.GRPC.GetKeepalive().GetTime(),

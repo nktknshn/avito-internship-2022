@@ -15,4 +15,4 @@ TODO
 - [ ] certs
 - [ ] csrf
 - [ ] panic recovery
-- [ ] validate grpc server to use cases mapping on startup
+- [x] validate grpc server to use cases mapping on startup

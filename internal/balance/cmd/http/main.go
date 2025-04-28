@@ -5,7 +5,7 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers"
+	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
@@ -35,8 +35,8 @@ func main() {
 		panic(err)
 	}
 
-	handlers := handlers.CreateHandlers(&app.Application)
-	router := router.CreateMuxRouter(handlers)
+	handlers := adaptersHttp.NewHttpAdapter(&app.Application)
+	router := router.NewMuxRouter(handlers)
 
 	mux := http.NewServeMux()
 

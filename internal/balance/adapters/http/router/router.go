@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers"
+	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 )
 
-func CreateMuxRouter(handlers *handlers.Handlers) *mux.Router {
+func NewMuxRouter(handlers *adaptersHttp.HttpAdapter) *mux.Router {
 	router := mux.NewRouter()
 
 	router.Handle("/balance/{user_id:[0-9]+}", handlers.GetBalance.GetHandler()).Methods("GET")
