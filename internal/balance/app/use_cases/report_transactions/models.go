@@ -10,7 +10,7 @@ import (
 type ReportTransactionsPage struct {
 	AccountID    domainAccount.AccountID
 	UserID       domain.UserID
-	Transactions []ReportTransactionsTransaction
+	Transactions []Transaction
 	Cursor       Cursor
 	HasMore      bool
 }
@@ -39,7 +39,7 @@ func NewCursor(cursor any) (Cursor, error) {
 // domainTransaction.TransactionDeposit
 // domainTransaction.TransactionSpend
 // domainTransaction.TransactionTransfer
-type ReportTransactionsTransaction any
+type Transaction any
 
 type SortingDirection string
 

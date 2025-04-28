@@ -3,11 +3,12 @@ package transactions_pg
 import (
 	"time"
 
+	"github.com/google/uuid"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
 type transactionTransferDTO struct {
-	ID            int64     `db:"id"`
+	ID            uuid.UUID `db:"id"`
 	FromAccountID int64     `db:"from_account_id"`
 	ToAccountID   int64     `db:"to_account_id"`
 	Amount        int64     `db:"amount"`

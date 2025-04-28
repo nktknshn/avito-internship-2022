@@ -4,6 +4,7 @@ import (
 	"context"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/google/uuid"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/pkg/errors"
@@ -47,7 +48,7 @@ func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, trans
 
 	var newDTO *transactionSpendDTO
 
-	if transactionDTO.ID == 0 {
+	if transactionDTO.ID == uuid.Nil {
 		newDTO, err = r.createTransactionSpend(ctx, tr, transactionDTO)
 	} else {
 		newDTO, err = r.updateTransactionSpend(ctx, tr, transactionDTO)

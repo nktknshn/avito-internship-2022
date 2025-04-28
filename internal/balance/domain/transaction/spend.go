@@ -3,6 +3,7 @@ package transaction
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
@@ -30,17 +31,22 @@ func NewTransactionSpendStatus(status string) (TransactionSpendStatus, error) {
 	}
 }
 
-type TransactionSpendID int64
+type TransactionSpendID uuid.UUID
 
-func (id TransactionSpendID) Value() int64 {
-	return int64(id)
+func (id TransactionSpendID) Value() uuid.UUID {
+	return uuid.UUID(id)
 }
 
-func NewTransactionSpendID(id int64) (TransactionSpendID, error) {
-	if id < 0 {
-		return 0, ErrInvalidTransactionID
-	}
+func NewTransactionSpendID(id uuid.UUID) (TransactionSpendID, error) {
 	return TransactionSpendID(id), nil
+}
+
+func NewTransactionSpendIDFromString(id string) (TransactionSpendID, error) {
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		return TransactionSpendID{}, err
+	}
+	return TransactionSpendID(uuid), nil
 }
 
 type TransactionSpend struct {
@@ -94,7 +100,7 @@ func (t *TransactionSpend) Confirm(now time.Time) error {
 }
 
 func NewTransactionSpendFromValues(
-	id int64,
+	id uuid.UUID,
 	accountID int64,
 	userID int64,
 	orderID int64,

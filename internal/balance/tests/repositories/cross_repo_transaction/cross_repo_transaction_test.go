@@ -7,6 +7,7 @@ import (
 	"time"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -51,7 +52,7 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 		acc, err = s.accountsRepo.Save(ctx, acc)
 		s.Require().NoError(err)
 		ts, err := domainTransaction.NewTransactionSpendFromValues(
-			0, acc.ID.Value(), 1, 1, 1, 100, domainTransaction.TransactionSpendStatusReserved.Value(), time.Now(), time.Now(),
+			uuid.Nil, acc.ID.Value(), 1, 1, 1, 100, domainTransaction.TransactionSpendStatusReserved.Value(), time.Now(), time.Now(),
 		)
 		s.Require().NoError(err)
 		_, err = s.transactionsRepo.SaveTransactionSpend(ctx, ts)

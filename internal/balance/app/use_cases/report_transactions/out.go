@@ -1,6 +1,10 @@
 package report_transactions
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Out struct {
 	Transactions []OutTransaction `json:"transactions"`
@@ -11,7 +15,7 @@ type Out struct {
 type OutTransaction any
 
 type OutTransactionSpend struct {
-	ID           int64     `json:"id"`
+	ID           uuid.UUID `json:"id"`
 	AccountID    int64     `json:"account_id"`
 	OrderID      int64     `json:"order_id"`
 	ProductID    int64     `json:"product_id"`
@@ -23,7 +27,7 @@ type OutTransactionSpend struct {
 }
 
 type OutTransactionDeposit struct {
-	ID        int64     `json:"id"`
+	ID        uuid.UUID `json:"id"`
 	Source    string    `json:"source"`
 	Amount    int64     `json:"amount"`
 	Status    string    `json:"status"`
@@ -32,7 +36,7 @@ type OutTransactionDeposit struct {
 }
 
 type OutTransactionTransfer struct {
-	ID        int64     `json:"id"`
+	ID        uuid.UUID `json:"id"`
 	From      int64     `json:"from"`
 	To        int64     `json:"to"`
 	Amount    int64     `json:"amount"`

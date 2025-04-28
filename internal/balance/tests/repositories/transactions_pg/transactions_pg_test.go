@@ -6,6 +6,7 @@ import (
 	"time"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -45,13 +46,13 @@ func (s *Suite) TestSaveTransactionDeposit_Success() {
 	s.Require().NoError(err)
 
 	transaction := must.Must(domainTransaction.NewTransactionDepositFromValues(
-		1, acc.ID.Value(), 1, "test", "confirmed", 100, time.Now(), time.Now(),
+		uuid.New(), acc.ID.Value(), 1, "test", "confirmed", 100, time.Now(), time.Now(),
 	))
 
 	transaction, err = s.transactionsRepo.SaveTransactionDeposit(context.Background(), transaction)
 	s.Require().NoError(err)
 
-	s.Require().Greater(transaction.ID, domainTransaction.TransactionDepositID(0))
+	s.Require().Greater(transaction.ID, domainTransaction.TransactionDepositID(uuid.Nil))
 
 	rows, err := s.ExecSql("select * from transactions_deposit")
 	s.Require().NoError(err)

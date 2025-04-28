@@ -3,6 +3,7 @@ package transaction
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
@@ -46,16 +47,13 @@ func NewTransactionDepositStatus(s string) (TransactionDepositStatus, error) {
 	return "", ErrInvalidTransactionDepositStatus
 }
 
-type TransactionDepositID int64
+type TransactionDepositID uuid.UUID
 
-func (id TransactionDepositID) Value() int64 {
-	return int64(id)
+func (id TransactionDepositID) Value() uuid.UUID {
+	return uuid.UUID(id)
 }
 
-func NewTransactionDepositID(id int64) (TransactionDepositID, error) {
-	if id < 0 {
-		return 0, ErrInvalidTransactionID
-	}
+func NewTransactionDepositID(id uuid.UUID) (TransactionDepositID, error) {
 	return TransactionDepositID(id), nil
 }
 
@@ -89,7 +87,7 @@ func NewTransactionDeposit(
 }
 
 func NewTransactionDepositFromValues(
-	id int64,
+	id uuid.UUID,
 	accountID int64,
 	userID int64,
 	depositSource string,

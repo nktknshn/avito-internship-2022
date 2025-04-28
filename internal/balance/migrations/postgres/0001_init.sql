@@ -10,7 +10,7 @@ CREATE TABLE accounts (
 CREATE INDEX idx_accounts_user_id ON accounts USING HASH (user_id);
 
 CREATE TABLE transactions_deposit (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     account_id BIGINT REFERENCES accounts(id),
     user_id BIGINT NOT NULL,
     deposit_source VARCHAR NOT NULL,
@@ -24,7 +24,7 @@ CREATE INDEX idx_transactions_deposit_account_id ON transactions_deposit USING H
 CREATE INDEX idx_transactions_deposit_user_id ON transactions_deposit USING HASH (user_id);
 
 CREATE TABLE transactions_spend (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     account_id BIGINT REFERENCES accounts(id),
     user_id BIGINT NOT NULL,
     order_id BIGINT NOT NULL,
@@ -41,7 +41,7 @@ CREATE INDEX idx_transactions_spend_order_id ON transactions_spend USING HASH (o
 CREATE INDEX idx_transactions_spend_product_id ON transactions_spend USING HASH (product_id);
 
 CREATE TABLE transactions_transfer (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     from_account_id BIGINT REFERENCES accounts(id),
     to_account_id BIGINT REFERENCES accounts(id),
     amount BIGINT NOT NULL,

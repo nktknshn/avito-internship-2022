@@ -3,21 +3,19 @@ package transaction
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 )
 
-type TransactionTransferID int64
+type TransactionTransferID uuid.UUID
 
-func (id TransactionTransferID) Value() int64 {
-	return int64(id)
+func (id TransactionTransferID) Value() uuid.UUID {
+	return uuid.UUID(id)
 }
 
-func NewTransactionTransferID(id int64) (TransactionTransferID, error) {
-	if id < 0 {
-		return 0, ErrInvalidTransactionID
-	}
+func NewTransactionTransferID(id uuid.UUID) (TransactionTransferID, error) {
 	return TransactionTransferID(id), nil
 }
 
@@ -67,7 +65,7 @@ func NewTransactionTransfer(
 }
 
 func NewTransactionTransferFromValues(
-	id int64,
+	id uuid.UUID,
 	fromAccountID int64,
 	toAccountID int64,
 	amount int64,
