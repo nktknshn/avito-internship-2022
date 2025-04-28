@@ -64,5 +64,5 @@ func (u *AuthValidateTokenUseCase) Handle(ctx context.Context, in In) (Out, erro
 }
 
 func (u *AuthValidateTokenUseCase) GetName() string {
-	return use_cases.AuthValidateToken
+	return use_cases.NameAuthValidateToken
 }

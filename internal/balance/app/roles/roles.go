@@ -7,13 +7,13 @@ import (
 
 // пустой слайс означает, что метод доступен без авторизации
 var useCaseRoles = map[string][]auth.AuthUserRole{
-	use_cases.GetBalance:     {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.Deposit:        {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.Reserve:        {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.ReserveCancel:  {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.ReserveConfirm: {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.Transfer:       {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
-	use_cases.AuthSignin:     {},
+	use_cases.NameGetBalance:     {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameDeposit:        {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameReserve:        {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameReserveCancel:  {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameReserveConfirm: {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameTransfer:       {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
+	use_cases.NameAuthSignin:     {},
 }
 
 func GetUseCaseAuthUserRoles(useCase string) ([]auth.AuthUserRole, bool) {

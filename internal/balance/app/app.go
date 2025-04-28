@@ -13,13 +13,13 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 )
 
-// Application is a struct that contains all the use cases
+// Application это интерфейс приложения со всеми используемыми в приложении use case
 type Application struct {
-	// Auth token
+	// Auth
 	AuthSignin        decorator.UseCaseQueryHandler[auth_signin.In, auth_signin.Out]
 	AuthSignup        decorator.UseCaseCommandHandler[auth_signup.In]
 	AuthValidateToken decorator.UseCaseQueryHandler[auth_validate_token.In, auth_validate_token.Out]
-	//
+	// Balance
 	GetBalance     decorator.UseCaseQueryHandler[get_balance.In, get_balance.Out]
 	Deposit        decorator.UseCaseCommandHandler[deposit.In]
 	Reserve        decorator.UseCaseCommandHandler[reserve.In]

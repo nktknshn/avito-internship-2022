@@ -46,7 +46,7 @@ func New(
 }
 
 func (u *DepositUseCase) GetName() string {
-	return use_cases.Deposit
+	return use_cases.NameDeposit
 }
 
 // getAccountCreating returns an account for the user.

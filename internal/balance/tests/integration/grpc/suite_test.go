@@ -8,7 +8,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -66,6 +65,6 @@ func (s *GrpcTestSuite) TearDownTest() {
 	s.listen.Close()
 }
 
-func (s *GrpcTestSuite) setupAuth(returnOut auth_validate_token.Out, returnErr error) {
-	s.app.AuthValidateTokenUseCaseMock.On("Handle", mock.Anything, authIn).Return(returnOut, returnErr)
+func (s *GrpcTestSuite) setupAuth(token string, returnOut auth_validate_token.Out, returnErr error) {
+	s.app.SetupAuth(token, returnOut, returnErr)
 }

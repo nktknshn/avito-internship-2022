@@ -1,13 +1,13 @@
 package use_cases
 
 const (
-	Deposit           = "Deposit"
-	GetBalance        = "GetBalance"
-	Reserve           = "Reserve"
-	ReserveCancel     = "ReserveCancel"
-	ReserveConfirm    = "ReserveConfirm"
-	Transfer          = "Transfer"
-	AuthSignin        = "AuthSignIn"
-	AuthSignup        = "AuthSignUp"
-	AuthValidateToken = "AuthValidateToken"
+	NameDeposit           = "Deposit"
+	NameGetBalance        = "GetBalance"
+	NameReserve           = "Reserve"
+	NameReserveCancel     = "ReserveCancel"
+	NameReserveConfirm    = "ReserveConfirm"
+	NameTransfer          = "Transfer"
+	NameAuthSignin        = "AuthSignIn"
+	NameAuthSignup        = "AuthSignUp"
+	NameAuthValidateToken = "AuthValidateToken"
 )

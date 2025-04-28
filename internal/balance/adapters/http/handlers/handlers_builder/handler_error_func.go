@@ -10,12 +10,17 @@ import (
 
 func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
 	if ergo.IsWrappedError(err) {
+		// если ошибка обернута с http статусом, то используем его
 		ergo.DefaultHandlerErrorFunc(ctx, w, r, err)
 		return
 	}
+
 	if domainError.IsDomainError(err) {
+		// если ошибка домена, то используем http статус 404
 		ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.WrapWithStatusCode(err, http.StatusNotFound))
 		return
 	}
-	http.Error(w, "internal server error", http.StatusInternalServerError)
+
+	// если ошибка не обернута с http статусом, то используем http статус 500
+	ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.InternalServerError(err))
 }

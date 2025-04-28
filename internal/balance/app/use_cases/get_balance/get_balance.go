@@ -48,5 +48,5 @@ func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 }
 
 func (u *GetBalanceUseCase) GetName() string {
-	return use_cases.GetBalance
+	return use_cases.NameGetBalance
 }

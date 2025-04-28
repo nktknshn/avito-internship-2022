@@ -84,5 +84,5 @@ func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 }
 
 func (u *AuthSigninUseCase) GetName() string {
-	return use_cases.AuthSignin
+	return use_cases.NameAuthSignin
 }

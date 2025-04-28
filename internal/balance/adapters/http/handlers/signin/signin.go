@@ -65,5 +65,5 @@ func makeHandlerSignIn(u usecase) http.Handler {
 }
 
 func (h *HandlerSignIn) GetName() string {
-	return use_cases.AuthSignin
+	return use_cases.NameAuthSignin
 }

@@ -105,5 +105,5 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 }
 
 func (u *ReserveUseCase) GetName() string {
-	return use_cases.Reserve
+	return use_cases.NameReserve
 }

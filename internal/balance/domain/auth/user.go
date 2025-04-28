@@ -1,8 +1,16 @@
 package auth
 
-import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+import (
+	"fmt"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+)
 
 type AuthUserID int64
+
+func (id AuthUserID) String() string {
+	return fmt.Sprintf("%d", id)
+}
 
 func (id AuthUserID) Value() int64 {
 	return int64(id)

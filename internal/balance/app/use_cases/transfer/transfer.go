@@ -97,5 +97,5 @@ func (u *transferUseCase) Handle(ctx context.Context, in In) error {
 }
 
 func (u *transferUseCase) GetName() string {
-	return use_cases.Transfer
+	return use_cases.NameTransfer
 }

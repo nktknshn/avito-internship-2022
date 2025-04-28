@@ -14,6 +14,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
+	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -66,7 +67,7 @@ func (m *GetBalanceUseCaseMock) Handle(ctx context.Context, in get_balance.In) (
 }
 
 func (m *GetBalanceUseCaseMock) GetName() string {
-	return use_cases.GetBalance
+	return use_cases.NameGetBalance
 }
 
 type ReserveUseCaseMock struct {
@@ -79,7 +80,7 @@ func (m *ReserveUseCaseMock) Handle(ctx context.Context, in reserve.In) error {
 }
 
 func (m *ReserveUseCaseMock) GetName() string {
-	return use_cases.Reserve
+	return use_cases.NameReserve
 }
 
 type DepositUseCaseMock struct {
@@ -92,7 +93,7 @@ func (m *DepositUseCaseMock) Handle(ctx context.Context, in deposit.In) error {
 }
 
 func (m *DepositUseCaseMock) GetName() string {
-	return use_cases.Deposit
+	return use_cases.NameDeposit
 }
 
 type TransferUseCaseMock struct {
@@ -105,7 +106,7 @@ func (m *TransferUseCaseMock) Handle(ctx context.Context, in transfer.In) error 
 }
 
 func (m *TransferUseCaseMock) GetName() string {
-	return use_cases.Transfer
+	return use_cases.NameTransfer
 }
 
 type ReserveCancelUseCaseMock struct {
@@ -118,7 +119,7 @@ func (m *ReserveCancelUseCaseMock) Handle(ctx context.Context, in reserve_cancel
 }
 
 func (m *ReserveCancelUseCaseMock) GetName() string {
-	return use_cases.ReserveCancel
+	return use_cases.NameReserveCancel
 }
 
 type ReserveConfirmUseCaseMock struct {
@@ -131,7 +132,7 @@ func (m *ReserveConfirmUseCaseMock) Handle(ctx context.Context, in reserve_confi
 }
 
 func (m *ReserveConfirmUseCaseMock) GetName() string {
-	return use_cases.ReserveConfirm
+	return use_cases.NameReserveConfirm
 }
 
 type AuthSigninUseCaseMock struct {
@@ -144,7 +145,7 @@ func (m *AuthSigninUseCaseMock) Handle(ctx context.Context, in auth_signin.In) (
 }
 
 func (m *AuthSigninUseCaseMock) GetName() string {
-	return use_cases.AuthSignin
+	return use_cases.NameAuthSignin
 }
 
 type AuthSignupUseCaseMock struct {
@@ -157,7 +158,7 @@ func (m *AuthSignupUseCaseMock) Handle(ctx context.Context, in auth_signup.In) e
 }
 
 func (m *AuthSignupUseCaseMock) GetName() string {
-	return use_cases.AuthSignup
+	return use_cases.NameAuthSignup
 }
 
 type AuthValidateTokenUseCaseMock struct {
@@ -170,5 +171,10 @@ func (m *AuthValidateTokenUseCaseMock) Handle(ctx context.Context, in auth_valid
 }
 
 func (m *AuthValidateTokenUseCaseMock) GetName() string {
-	return use_cases.AuthValidateToken
+	return use_cases.NameAuthValidateToken
+}
+
+func (app *AppMocked) SetupAuth(token string, returnOut auth_validate_token.Out, returnErr error) {
+	authIn := must.Must(auth_validate_token.NewInFromValues(token))
+	app.AuthValidateTokenUseCaseMock.On("Handle", mock.Anything, authIn).Return(returnOut, returnErr)
 }
