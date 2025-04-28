@@ -10,9 +10,9 @@ import (
 func (r *TransactionsRepository) SaveTransactionTransfer(ctx context.Context, transaction *domainTransaction.TransactionTransfer) (*domainTransaction.TransactionTransfer, error) {
 	sq := `
 		INSERT INTO transactions_transfer 
-			(account_id, user_id, order_id, product_id, status, amount, created_at, updated_at) 
+			(from_account_id, to_account_id, amount, status, created_at, updated_at) 
 		VALUES 
-			(:account_id, :user_id, :order_id, :product_id, :status, :amount, :created_at, :updated_at)
+			(:from_account_id, :to_account_id, :amount, :status, :created_at, :updated_at)
 		RETURNING *;
 	`
 
