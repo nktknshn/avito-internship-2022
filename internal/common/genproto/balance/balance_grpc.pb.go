@@ -26,6 +26,7 @@ const (
 	BalanceService_ReserveCancel_FullMethodName  = "/balance.BalanceService/ReserveCancel"
 	BalanceService_ReserveConfirm_FullMethodName = "/balance.BalanceService/ReserveConfirm"
 	BalanceService_Transfer_FullMethodName       = "/balance.BalanceService/Transfer"
+	BalanceService_AuthSignIn_FullMethodName     = "/balance.BalanceService/AuthSignIn"
 )
 
 // BalanceServiceClient is the client API for BalanceService service.
@@ -38,6 +39,7 @@ type BalanceServiceClient interface {
 	ReserveCancel(ctx context.Context, in *ReserveCancelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ReserveConfirm(ctx context.Context, in *ReserveConfirmRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AuthSignIn(ctx context.Context, in *AuthSignInRequest, opts ...grpc.CallOption) (*AuthSignInResponse, error)
 }
 
 type balanceServiceClient struct {
@@ -108,6 +110,16 @@ func (c *balanceServiceClient) Transfer(ctx context.Context, in *TransferRequest
 	return out, nil
 }
 
+func (c *balanceServiceClient) AuthSignIn(ctx context.Context, in *AuthSignInRequest, opts ...grpc.CallOption) (*AuthSignInResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AuthSignInResponse)
+	err := c.cc.Invoke(ctx, BalanceService_AuthSignIn_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BalanceServiceServer is the server API for BalanceService service.
 // All implementations should embed UnimplementedBalanceServiceServer
 // for forward compatibility.
@@ -118,6 +130,7 @@ type BalanceServiceServer interface {
 	ReserveCancel(context.Context, *ReserveCancelRequest) (*emptypb.Empty, error)
 	ReserveConfirm(context.Context, *ReserveConfirmRequest) (*emptypb.Empty, error)
 	Transfer(context.Context, *TransferRequest) (*emptypb.Empty, error)
+	AuthSignIn(context.Context, *AuthSignInRequest) (*AuthSignInResponse, error)
 }
 
 // UnimplementedBalanceServiceServer should be embedded to have
@@ -144,6 +157,9 @@ func (UnimplementedBalanceServiceServer) ReserveConfirm(context.Context, *Reserv
 }
 func (UnimplementedBalanceServiceServer) Transfer(context.Context, *TransferRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Transfer not implemented")
+}
+func (UnimplementedBalanceServiceServer) AuthSignIn(context.Context, *AuthSignInRequest) (*AuthSignInResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthSignIn not implemented")
 }
 func (UnimplementedBalanceServiceServer) testEmbeddedByValue() {}
 
@@ -273,6 +289,24 @@ func _BalanceService_Transfer_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BalanceService_AuthSignIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthSignInRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BalanceServiceServer).AuthSignIn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BalanceService_AuthSignIn_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BalanceServiceServer).AuthSignIn(ctx, req.(*AuthSignInRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BalanceService_ServiceDesc is the grpc.ServiceDesc for BalanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -303,6 +337,10 @@ var BalanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Transfer",
 			Handler:    _BalanceService_Transfer_Handler,
+		},
+		{
+			MethodName: "AuthSignIn",
+			Handler:    _BalanceService_AuthSignIn_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

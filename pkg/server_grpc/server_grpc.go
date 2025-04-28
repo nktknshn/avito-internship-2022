@@ -6,7 +6,6 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/keepalive"
 )
 
 type RunningServer struct {
@@ -14,15 +13,9 @@ type RunningServer struct {
 	Listen     net.Listener
 }
 
-func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func(server *grpc.Server)) *RunningServer {
+func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func(server *grpc.Server), opts ...grpc.ServerOption) *RunningServer {
 
-	grpcServer := grpc.NewServer(grpc.KeepaliveParams(keepalive.ServerParameters{
-		// TODO
-		// MaxConnectionIdle: s.cfg.Server.MaxConnectionIdle * time.Minute,
-		// Timeout:           s.cfg.Server.Timeout * time.Second,
-		// MaxConnectionAge:  s.cfg.Server.MaxConnectionAge * time.Minute,
-		// Time:              s.cfg.Server.Timeout * time.Minute,
-	}))
+	grpcServer := grpc.NewServer(opts...)
 
 	registerServer(grpcServer)
 

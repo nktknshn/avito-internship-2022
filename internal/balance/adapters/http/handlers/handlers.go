@@ -8,6 +8,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_confirm"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
 )
@@ -23,15 +24,18 @@ type Handlers struct {
 	ReserveCancel  Handler
 	ReserveConfirm Handler
 	Transfer       Handler
+	SignIn         Handler
 }
 
 func CreateHandlers(app *app.Application) *Handlers {
+
 	handlerGetBalance := get_balance.New(app.AuthValidateToken, app.GetBalance)
 	handlerDeposit := deposit.New(app.AuthValidateToken, app.Deposit)
 	handlerReserve := reserve.New(app.AuthValidateToken, app.Reserve)
 	handlerReserveCancel := reserve_cancel.New(app.AuthValidateToken, app.ReserveCancel)
 	handlerReserveConfirm := reserve_confirm.New(app.AuthValidateToken, app.ReserveConfirm)
 	handlerTransfer := transfer.New(app.AuthValidateToken, app.Transfer)
+	handlerSignIn := signin.New(app.AuthSignin)
 
 	return &Handlers{
 		GetBalance:     handlerGetBalance,
@@ -40,5 +44,6 @@ func CreateHandlers(app *app.Application) *Handlers {
 		ReserveCancel:  handlerReserveCancel,
 		ReserveConfirm: handlerReserveConfirm,
 		Transfer:       handlerTransfer,
+		SignIn:         handlerSignIn,
 	}
 }

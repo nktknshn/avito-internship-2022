@@ -13,30 +13,30 @@ import (
 )
 
 type AuthInterceptor struct {
-	authUsecase     authUsecase
-	accessibleRoles map[string][]domainAuth.AuthUserRole
+	authUsecase   authUsecase
+	methodToRoles map[string][]domainAuth.AuthUserRole
 }
 
 type authUsecase interface {
 	Handle(ctx context.Context, in auth_validate_token.In) (auth_validate_token.Out, error)
 }
 
-func NewAuthInterceptor(authUsecase authUsecase, accessibleRoles map[string][]domainAuth.AuthUserRole) *AuthInterceptor {
+func NewAuthInterceptor(authUsecase authUsecase, methodToRoles map[string][]domainAuth.AuthUserRole) *AuthInterceptor {
 	if authUsecase == nil {
 		panic("authUsecase is nil")
 	}
 
-	if accessibleRoles == nil {
+	if methodToRoles == nil {
 		panic("accessibleRoles is nil")
 	}
 
-	for method, roles := range accessibleRoles {
-		if len(roles) == 0 {
-			panic("roles is empty for method: " + method)
-		}
-	}
+	// for method, roles := range accessibleRoles {
+	// 	if len(roles) == 0 {
+	// 		panic("roles is empty for method: " + method)
+	// 	}
+	// }
 
-	return &AuthInterceptor{authUsecase: authUsecase, accessibleRoles: accessibleRoles}
+	return &AuthInterceptor{authUsecase: authUsecase, methodToRoles: methodToRoles}
 }
 
 func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
@@ -45,6 +45,16 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
 			return nil, status.Error(codes.Unauthenticated, "missing auth token")
+		}
+
+		accessibleRoles, ok := i.methodToRoles[info.FullMethod]
+
+		if !ok {
+			return nil, status.Error(codes.Unauthenticated, "missing accessible roles")
+		}
+
+		if len(accessibleRoles) == 0 {
+			return handler(ctx, req)
 		}
 
 		token := md.Get("authorization")
@@ -61,12 +71,6 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		out, err := i.authUsecase.Handle(ctx, in)
 		if err != nil {
 			return nil, status.Error(codes.Unauthenticated, "invalid auth token")
-		}
-
-		accessibleRoles, ok := i.accessibleRoles[info.FullMethod]
-
-		if !ok {
-			return nil, status.Error(codes.Unauthenticated, "missing accessible roles")
 		}
 
 		if !slices.Contains(accessibleRoles, out.Role) {

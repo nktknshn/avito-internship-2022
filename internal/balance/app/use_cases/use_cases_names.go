@@ -7,7 +7,7 @@ const (
 	ReserveCancel     = "ReserveCancel"
 	ReserveConfirm    = "ReserveConfirm"
 	Transfer          = "Transfer"
-	AuthSignin        = "AuthSignin"
-	AuthSignup        = "AuthSignup"
+	AuthSignin        = "AuthSignIn"
+	AuthSignup        = "AuthSignUp"
 	AuthValidateToken = "AuthValidateToken"
 )

@@ -5,7 +5,7 @@ import (
 )
 
 type In struct {
-	UserID domain.UserID
+	userID domain.UserID
 }
 
 func NewInFromValues(userID int64) (In, error) {
@@ -13,7 +13,7 @@ func NewInFromValues(userID int64) (In, error) {
 	if err != nil {
 		return In{}, err
 	}
-	return In{UserID: _userID}, nil
+	return In{userID: _userID}, nil
 }
 
 type Out struct {

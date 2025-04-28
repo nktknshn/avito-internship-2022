@@ -1,15 +1,16 @@
 package handlers_builder
 
 import (
-	"context"
-	"net/http"
-
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/roles"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
+
+func NewPublic() *ergo.Builder {
+	return ergo.New().
+		WithHandlerErrorFunc(handlerErrorFunc)
+}
 
 func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole) (*ergo.Builder, *handlers_auth.AttachedAuthParser) {
 
@@ -19,18 +20,7 @@ func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole
 
 	var (
 		b = ergo.New().
-			WithHandlerResultFunc(func(ctx context.Context, w http.ResponseWriter, r *http.Request, result any) {}).
-			WithHandlerErrorFunc(func(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
-				if ergo.IsWrappedError(err) {
-					ergo.DefaultHandlerErrorFunc(ctx, w, r, err)
-					return
-				}
-				if domainError.IsDomainError(err) {
-					ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.WrapWithStatusCode(err, http.StatusNotFound))
-					return
-				}
-				http.Error(w, "internal server error", http.StatusInternalServerError)
-			})
+			WithHandlerErrorFunc(handlerErrorFunc)
 		validator  = handlers_auth.NewUseCaseToValidateToken(auth)
 		authParser = handlers_auth.AuthParser.Attach(validator, b)
 	)
@@ -42,6 +32,6 @@ func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole
 }
 
 func NewWithAuthForUseCase(auth handlers_auth.AuthUseCase, useCase string) (*ergo.Builder, *handlers_auth.AttachedAuthParser) {
-	roles := roles.GetUseCaseAuthUserRoles(useCase)
+	roles := roles.GetUseCaseAuthUserRolesMust(useCase)
 	return NewWithAuth(auth, roles)
 }

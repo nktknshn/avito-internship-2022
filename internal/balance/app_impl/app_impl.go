@@ -36,7 +36,7 @@ type Application struct {
 	Logger         logging.Logger
 }
 
-// NewApplication создает новую реализацию приложения
+// NewApplication создает новую реализацию приложения для использования в адаптерах
 func NewApplication(ctx context.Context, cfg *config.Config) (*Application, error) {
 
 	db, err := sqlx_pg.Connect(ctx, cfg.GetPostgres())

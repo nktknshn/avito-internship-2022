@@ -25,4 +25,10 @@ prometheus:
 
 grpc:
   addr: 127.0.0.1:8083
+  keepalive:
+    timeout: 10s
+    max_connection_idle: 10s
+    max_connection_age: 10s
+    max_connection_age_grace: 10s
 
+mode: dev

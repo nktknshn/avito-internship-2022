@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	"flag"
+	"net"
 	"os"
 	"os/signal"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	adapters_grpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
-	"github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
-	"github.com/nktknshn/avito-internship-2022/pkg/server_grpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
 )
 
 var (
@@ -26,28 +28,55 @@ func main() {
 
 	ctx := context.Background()
 
-	cfg, err := config_cleanenv.LoadConfigType[config.Config](flagConfigPath)
-
+	cfg, err := config.LoadConfig(flagConfigPath)
 	if err != nil {
 		panic(err)
 	}
 
-	app, err := app_impl.NewApplication(ctx, &cfg)
-
+	app, err := app_impl.NewApplication(ctx, cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	server := server_grpc.RunGRPCServerOnAddr(
-		cfg.GRPC.GetAddr(),
-		app.Logger,
-		func(server *grpc.Server) {
-			grpcServer := adapters_grpc.NewGrpcServer(app.Application)
-			balance.RegisterBalanceServiceServer(server, grpcServer)
-		},
+	grpcAdapter := adapters_grpc.New(app.Application)
+
+	opts := grpcAdapter.Options()
+
+	opts = append(opts, grpc.KeepaliveParams(keepalive.ServerParameters{
+		Time:                  cfg.GRPC.GetKeepalive().GetTime(),
+		Timeout:               cfg.GRPC.GetKeepalive().GetTimeout(),
+		MaxConnectionIdle:     cfg.GRPC.GetKeepalive().GetMaxConnectionIdle(),
+		MaxConnectionAge:      cfg.GRPC.GetKeepalive().GetMaxConnectionAge(),
+		MaxConnectionAgeGrace: cfg.GRPC.GetKeepalive().GetMaxConnectionAgeGrace(),
+	}))
+
+	opts = append(opts, grpc.UnaryInterceptor(
+		grpc_middleware.ChainUnaryServer(
+			// grpc_ctxtags.UnaryServerInterceptor(),
+			grpcAdapter.UnaryServerInterceptor(),
+		)),
 	)
 
-	app.Logger.Info(ctx, "GRPC server started on %s", "address", server.Listen.Addr().String())
+	grpcServer := grpc.NewServer(opts...)
+
+	balance.RegisterBalanceServiceServer(grpcServer, grpcAdapter)
+
+	if cfg.GetMode() == "dev" {
+		reflection.Register(grpcServer)
+	}
+
+	listen, err := net.Listen("tcp", cfg.GRPC.GetAddr())
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		app.Logger.Info(ctx, "GRPC server started", "address", listen.Addr().String())
+		err = grpcServer.Serve(listen)
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
@@ -55,6 +84,6 @@ func main() {
 
 	app.Logger.Info(ctx, "GRPC server stopped")
 
-	server.GrpcServer.GracefulStop()
+	grpcServer.GracefulStop()
 
 }

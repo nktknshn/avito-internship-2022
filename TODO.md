@@ -13,3 +13,6 @@ TODO
 - [-] auth token blacklist
 - [ ] ctx timeouts
 - [ ] certs
+- [ ] csrf
+- [ ] panic recovery
+- [ ] validate grpc server to use cases mapping on startup

@@ -5,16 +5,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers"
 )
 
-// type Router struct {
-// 	Routes []Route
-// }
-
-// type Route struct {
-// 	Path    string
-// 	Method  string
-// 	Handler http.Handler
-// }
-
 func CreateMuxRouter(handlers *handlers.Handlers) *mux.Router {
 	router := mux.NewRouter()
 
@@ -25,6 +15,8 @@ func CreateMuxRouter(handlers *handlers.Handlers) *mux.Router {
 	router.Handle("/balance/reserve/cancel", handlers.ReserveCancel.GetHandler()).Methods("POST")
 	router.Handle("/balance/reserve/confirm", handlers.ReserveConfirm.GetHandler()).Methods("POST")
 	router.Handle("/balance/transfer", handlers.Transfer.GetHandler()).Methods("POST")
+
+	router.Handle("/signin", handlers.SignIn.GetHandler()).Methods("POST")
 
 	return router
 }

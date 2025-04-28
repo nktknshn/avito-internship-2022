@@ -6,8 +6,8 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_params"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type getBalanceHandler struct {
@@ -39,12 +39,14 @@ func (h *getBalanceHandler) GetHandler() http.Handler {
 func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _        = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
-		paramUserID = handlers_params.RouterParamUserID.Attach(b)
+		paramUserID = ergo.RouterParamInt64("user_id").Attach(b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
-		return u.Handle(r.Context(), get_balance.In{
-			UserID: paramUserID.Get(r),
-		})
+		in, err := get_balance.NewInFromValues(paramUserID.Get(r))
+		if err != nil {
+			return nil, ergo.NewError(http.StatusBadRequest, err)
+		}
+		return u.Handle(r.Context(), in)
 	})
 }

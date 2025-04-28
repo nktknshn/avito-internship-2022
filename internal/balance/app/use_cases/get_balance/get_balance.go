@@ -35,7 +35,7 @@ func New(
 
 func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
-	acc, err := u.accountRepo.GetByUserID(ctx, in.UserID)
+	acc, err := u.accountRepo.GetByUserID(ctx, in.userID)
 
 	if err != nil {
 		return Out{}, err

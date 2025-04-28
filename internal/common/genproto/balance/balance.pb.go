@@ -442,6 +442,102 @@ func (x *TransferRequest) GetAmount() int64 {
 	return 0
 }
 
+type AuthSignInRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthSignInRequest) Reset() {
+	*x = AuthSignInRequest{}
+	mi := &file_balance_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthSignInRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthSignInRequest) ProtoMessage() {}
+
+func (x *AuthSignInRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthSignInRequest.ProtoReflect.Descriptor instead.
+func (*AuthSignInRequest) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *AuthSignInRequest) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *AuthSignInRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type AuthSignInResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthSignInResponse) Reset() {
+	*x = AuthSignInResponse{}
+	mi := &file_balance_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthSignInResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthSignInResponse) ProtoMessage() {}
+
+func (x *AuthSignInResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthSignInResponse.ProtoReflect.Descriptor instead.
+func (*AuthSignInResponse) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *AuthSignInResponse) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
 var File_balance_proto protoreflect.FileDescriptor
 
 const file_balance_proto_rawDesc = "" +
@@ -477,7 +573,12 @@ const file_balance_proto_rawDesc = "" +
 	"\x0fTransferRequest\x12\x12\n" +
 	"\x04from\x18\x01 \x01(\x03R\x04from\x12\x0e\n" +
 	"\x02to\x18\x02 \x01(\x03R\x02to\x12\x16\n" +
-	"\x06amount\x18\x03 \x01(\x03R\x06amount2\xab\x03\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\"K\n" +
+	"\x11AuthSignInRequest\x12\x1a\n" +
+	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"*\n" +
+	"\x12AuthSignInResponse\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2\xf4\x03\n" +
 	"\x0eBalanceService\x12G\n" +
 	"\n" +
 	"GetBalance\x12\x1a.balance.GetBalanceRequest\x1a\x1b.balance.GetBalanceResponse\"\x00\x12<\n" +
@@ -485,7 +586,9 @@ const file_balance_proto_rawDesc = "" +
 	"\aReserve\x12\x17.balance.ReserveRequest\x1a\x16.google.protobuf.Empty\"\x00\x12H\n" +
 	"\rReserveCancel\x12\x1d.balance.ReserveCancelRequest\x1a\x16.google.protobuf.Empty\"\x00\x12J\n" +
 	"\x0eReserveConfirm\x12\x1e.balance.ReserveConfirmRequest\x1a\x16.google.protobuf.Empty\"\x00\x12>\n" +
-	"\bTransfer\x12\x18.balance.TransferRequest\x1a\x16.google.protobuf.Empty\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
+	"\bTransfer\x12\x18.balance.TransferRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n" +
+	"\n" +
+	"AuthSignIn\x12\x1a.balance.AuthSignInRequest\x1a\x1b.balance.AuthSignInResponse\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
 
 var (
 	file_balance_proto_rawDescOnce sync.Once
@@ -499,7 +602,7 @@ func file_balance_proto_rawDescGZIP() []byte {
 	return file_balance_proto_rawDescData
 }
 
-var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_balance_proto_goTypes = []any{
 	(*GetBalanceRequest)(nil),     // 0: balance.GetBalanceRequest
 	(*GetBalanceResponse)(nil),    // 1: balance.GetBalanceResponse
@@ -508,7 +611,9 @@ var file_balance_proto_goTypes = []any{
 	(*ReserveCancelRequest)(nil),  // 4: balance.ReserveCancelRequest
 	(*ReserveConfirmRequest)(nil), // 5: balance.ReserveConfirmRequest
 	(*TransferRequest)(nil),       // 6: balance.TransferRequest
-	(*emptypb.Empty)(nil),         // 7: google.protobuf.Empty
+	(*AuthSignInRequest)(nil),     // 7: balance.AuthSignInRequest
+	(*AuthSignInResponse)(nil),    // 8: balance.AuthSignInResponse
+	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
 }
 var file_balance_proto_depIdxs = []int32{
 	0, // 0: balance.BalanceService.GetBalance:input_type -> balance.GetBalanceRequest
@@ -517,14 +622,16 @@ var file_balance_proto_depIdxs = []int32{
 	4, // 3: balance.BalanceService.ReserveCancel:input_type -> balance.ReserveCancelRequest
 	5, // 4: balance.BalanceService.ReserveConfirm:input_type -> balance.ReserveConfirmRequest
 	6, // 5: balance.BalanceService.Transfer:input_type -> balance.TransferRequest
-	1, // 6: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
-	7, // 7: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
-	7, // 8: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
-	7, // 9: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
-	7, // 10: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
-	7, // 11: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
+	7, // 6: balance.BalanceService.AuthSignIn:input_type -> balance.AuthSignInRequest
+	1, // 7: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
+	9, // 8: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
+	9, // 9: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
+	9, // 10: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
+	9, // 11: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
+	9, // 12: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
+	8, // 13: balance.BalanceService.AuthSignIn:output_type -> balance.AuthSignInResponse
+	7, // [7:14] is the sub-list for method output_type
+	0, // [0:7] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -541,7 +648,7 @@ func file_balance_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_balance_proto_rawDesc), len(file_balance_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
