@@ -32,7 +32,7 @@ func (s TransactionDepositStatus) Value() string {
 }
 
 const (
-	TransactionDepositStatusConfirmed = "confirmed"
+	TransactionDepositStatusConfirmed TransactionDepositStatus = "confirmed"
 )
 
 var (
@@ -41,7 +41,7 @@ var (
 
 func NewTransactionDepositStatus(s string) (TransactionDepositStatus, error) {
 	switch s {
-	case TransactionDepositStatusConfirmed:
+	case TransactionDepositStatusConfirmed.Value():
 		return TransactionDepositStatusConfirmed, nil
 	}
 	return "", ErrInvalidTransactionDepositStatus

@@ -23,8 +23,8 @@ type TransactionTransferStatus string
 
 func NewTransactionTransferStatus(s string) (TransactionTransferStatus, error) {
 	switch s {
-	case TransactionTransferStatusConfirmed:
-		return TransactionTransferStatus(s), nil
+	case TransactionTransferStatusConfirmed.Value():
+		return TransactionTransferStatusConfirmed, nil
 	default:
 		return "", ErrInvalidTransactionStatus
 	}
@@ -35,7 +35,7 @@ func (s TransactionTransferStatus) Value() string {
 }
 
 const (
-	TransactionTransferStatusConfirmed = "confirmed"
+	TransactionTransferStatusConfirmed TransactionTransferStatus = "confirmed"
 )
 
 type TransactionTransfer struct {
