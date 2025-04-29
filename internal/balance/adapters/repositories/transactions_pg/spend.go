@@ -12,7 +12,17 @@ import (
 
 func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domainTransaction.TransactionSpend, error) {
 	sq := `
-		SELECT id, account_id, user_id, order_id, product_id, status, amount, created_at, updated_at 
+		SELECT 
+			id, 
+			account_id, 
+			user_id, 
+			order_id, 
+			product_id, 
+			product_title, 
+			status, 
+			amount, 
+			created_at, 
+			updated_at 
 		FROM transactions_spend 
 		WHERE user_id = ? AND order_id = ? FOR UPDATE;
 	`
@@ -69,9 +79,9 @@ func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, trans
 func (r *TransactionsRepository) createTransactionSpend(ctx context.Context, tr trmsqlx.Tr, transactionDTO *transactionSpendDTO) (*transactionSpendDTO, error) {
 	sq := `
 		INSERT INTO transactions_spend 
-			(account_id, user_id, order_id, product_id, status, amount, created_at, updated_at) 
+			(account_id, user_id, order_id, product_id, product_title, status, amount, created_at, updated_at) 
 		VALUES 
-			(:account_id, :user_id, :order_id, :product_id, :status, :amount, :created_at, :updated_at)
+			(:account_id, :user_id, :order_id, :product_id, :product_title, :status, :amount, :created_at, :updated_at)
 		RETURNING *;
 	`
 
@@ -95,7 +105,7 @@ func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr 
 		UPDATE transactions_spend 
 		SET 
 			status = :status, 
-			updated_at = :updated_at 
+			updated_at = :updated_at
 		WHERE id = :id 
 		RETURNING *;
 	`

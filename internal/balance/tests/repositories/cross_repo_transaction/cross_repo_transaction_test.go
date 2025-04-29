@@ -12,6 +12,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 	"github.com/stretchr/testify/suite"
@@ -52,7 +53,15 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 		acc, err = s.accountsRepo.Save(ctx, acc)
 		s.Require().NoError(err)
 		ts, err := domainTransaction.NewTransactionSpendFromValues(
-			uuid.Nil, acc.ID.Value(), 1, 1, 1, 100, domainTransaction.TransactionSpendStatusReserved.Value(), time.Now(), time.Now(),
+			uuid.Nil,
+			acc.ID.Value(),
+			fixtures.UserID_i64,
+			fixtures.OrderID_i64,
+			fixtures.ProductID_i64,
+			fixtures.ProductTitle_str,
+			fixtures.AmountPositive_i64,
+			domainTransaction.TransactionSpendStatusReserved.Value(),
+			time.Now(), time.Now(),
 		)
 		s.Require().NoError(err)
 		_, err = s.transactionsRepo.SaveTransactionSpend(ctx, ts)

@@ -9,7 +9,8 @@ func (id ProductID) Value() int64 {
 }
 
 var (
-	ErrInvalidProductID = domainError.New("invalid product id")
+	ErrInvalidProductID    = domainError.New("invalid product id")
+	ErrInvalidProductTitle = domainError.New("invalid product title")
 )
 
 func NewProductID(id int64) (ProductID, error) {
@@ -19,9 +20,15 @@ func NewProductID(id int64) (ProductID, error) {
 	return ProductID(id), nil
 }
 
-type ProductName string
+type ProductTitle string
 
-type Product struct {
-	ID   ProductID
-	Name ProductName
+func (t ProductTitle) Value() string {
+	return string(t)
+}
+
+func NewProductTitle(title string) (ProductTitle, error) {
+	// if len(title) == 0 {
+	// 	return "", ErrInvalidProductTitle
+	// }
+	return ProductTitle(title), nil
 }

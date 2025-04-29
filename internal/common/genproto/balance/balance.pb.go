@@ -182,8 +182,9 @@ type ReserveRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ProductId     int64                  `protobuf:"varint,2,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
-	OrderId       int64                  `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	Amount        int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	ProductTitle  string                 `protobuf:"bytes,3,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
+	OrderId       int64                  `protobuf:"varint,4,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -230,6 +231,13 @@ func (x *ReserveRequest) GetProductId() int64 {
 		return x.ProductId
 	}
 	return 0
+}
+
+func (x *ReserveRequest) GetProductTitle() string {
+	if x != nil {
+		return x.ProductTitle
+	}
+	return ""
 }
 
 func (x *ReserveRequest) GetOrderId() int64 {
@@ -551,13 +559,14 @@ const file_balance_proto_rawDesc = "" +
 	"\x0eDepositRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x16\n" +
-	"\x06source\x18\x03 \x01(\tR\x06source\"{\n" +
+	"\x06source\x18\x03 \x01(\tR\x06source\"\xa0\x01\n" +
 	"\x0eReserveRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x1d\n" +
 	"\n" +
-	"product_id\x18\x02 \x01(\x03R\tproductId\x12\x19\n" +
-	"\border_id\x18\x03 \x01(\x03R\aorderId\x12\x16\n" +
-	"\x06amount\x18\x04 \x01(\x03R\x06amount\"\x81\x01\n" +
+	"product_id\x18\x02 \x01(\x03R\tproductId\x12#\n" +
+	"\rproduct_title\x18\x03 \x01(\tR\fproductTitle\x12\x19\n" +
+	"\border_id\x18\x04 \x01(\x03R\aorderId\x12\x16\n" +
+	"\x06amount\x18\x05 \x01(\x03R\x06amount\"\x81\x01\n" +
 	"\x14ReserveCancelRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x19\n" +
 	"\border_id\x18\x02 \x01(\x03R\aorderId\x12\x1d\n" +

@@ -50,15 +50,16 @@ func NewTransactionSpendIDFromString(id string) (TransactionSpendID, error) {
 }
 
 type TransactionSpend struct {
-	ID        TransactionSpendID
-	AccountID domainAccount.AccountID
-	UserID    domain.UserID
-	OrderID   domain.OrderID
-	ProductID domainProduct.ProductID
-	Amount    domainAmount.AmountPositive
-	Status    TransactionSpendStatus
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID           TransactionSpendID
+	AccountID    domainAccount.AccountID
+	UserID       domain.UserID
+	OrderID      domain.OrderID
+	ProductID    domainProduct.ProductID
+	ProductTitle domainProduct.ProductTitle
+	Amount       domainAmount.AmountPositive
+	Status       TransactionSpendStatus
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func NewTransactionSpendReserved(
@@ -66,18 +67,20 @@ func NewTransactionSpendReserved(
 	userID domain.UserID,
 	orderID domain.OrderID,
 	productID domainProduct.ProductID,
+	productTitle domainProduct.ProductTitle,
 	amount domainAmount.AmountPositive,
 	now time.Time,
 ) (*TransactionSpend, error) {
 	return &TransactionSpend{
-		AccountID: accountID,
-		UserID:    userID,
-		OrderID:   orderID,
-		ProductID: productID,
-		Amount:    amount,
-		Status:    TransactionSpendStatusReserved,
-		CreatedAt: now,
-		UpdatedAt: now,
+		AccountID:    accountID,
+		UserID:       userID,
+		OrderID:      orderID,
+		ProductID:    productID,
+		ProductTitle: productTitle,
+		Amount:       amount,
+		Status:       TransactionSpendStatusReserved,
+		CreatedAt:    now,
+		UpdatedAt:    now,
 	}, nil
 }
 
@@ -105,6 +108,7 @@ func NewTransactionSpendFromValues(
 	userID int64,
 	orderID int64,
 	productID int64,
+	productTitle string,
 	amount int64,
 	status string,
 	createdAt time.Time,
@@ -145,15 +149,21 @@ func NewTransactionSpendFromValues(
 		return nil, err
 	}
 
+	_productTitle, err := domainProduct.NewProductTitle(productTitle)
+	if err != nil {
+		return nil, err
+	}
+
 	return &TransactionSpend{
-		ID:        _id,
-		AccountID: _accountID,
-		UserID:    _userID,
-		OrderID:   _orderID,
-		ProductID: _productID,
-		Amount:    _amount,
-		Status:    _status,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		ID:           _id,
+		AccountID:    _accountID,
+		UserID:       _userID,
+		OrderID:      _orderID,
+		ProductID:    _productID,
+		ProductTitle: _productTitle,
+		Amount:       _amount,
+		Status:       _status,
+		CreatedAt:    createdAt,
+		UpdatedAt:    updatedAt,
 	}, nil
 }

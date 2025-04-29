@@ -15,14 +15,14 @@ var (
 	ErrInvalidTransactionStatus = domainError.New("invalid account transaction status")
 )
 
-type DepositSource string
+type TransactionDepositSource string
 
-func (s DepositSource) Value() string {
+func (s TransactionDepositSource) Value() string {
 	return string(s)
 }
 
-func NewDepositSource(s string) (DepositSource, error) {
-	return DepositSource(s), nil
+func NewDepositSource(s string) (TransactionDepositSource, error) {
+	return TransactionDepositSource(s), nil
 }
 
 type TransactionDepositStatus string
@@ -61,7 +61,7 @@ type TransactionDeposit struct {
 	ID            TransactionDepositID
 	AccountID     domainAccount.AccountID
 	UserID        domain.UserID
-	DepositSource DepositSource
+	DepositSource TransactionDepositSource
 	Status        TransactionDepositStatus
 	Amount        domainAmount.AmountPositive
 	CreatedAt     time.Time
@@ -71,7 +71,7 @@ type TransactionDeposit struct {
 func NewTransactionDeposit(
 	accountID domainAccount.AccountID,
 	userID domain.UserID,
-	source DepositSource,
+	source TransactionDepositSource,
 	amount domainAmount.AmountPositive,
 	now time.Time,
 ) (*TransactionDeposit, error) {

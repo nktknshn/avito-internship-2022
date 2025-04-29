@@ -7,19 +7,25 @@ import (
 )
 
 type In struct {
-	userID    domain.UserID
-	productID domainProduct.ProductID
-	orderID   domain.OrderID
-	amount    domainAmount.AmountPositive
+	userID       domain.UserID
+	productID    domainProduct.ProductID
+	productTitle domainProduct.ProductTitle
+	orderID      domain.OrderID
+	amount       domainAmount.AmountPositive
 }
 
-func NewInFromValues(userID int64, productID int64, orderID int64, amount int64) (In, error) {
+func NewInFromValues(userID int64, productID int64, productTitle string, orderID int64, amount int64) (In, error) {
 	_userID, err := domain.NewUserID(userID)
 	if err != nil {
 		return In{}, err
 	}
 
 	_productID, err := domainProduct.NewProductID(productID)
+	if err != nil {
+		return In{}, err
+	}
+
+	_productTitle, err := domainProduct.NewProductTitle(productTitle)
 	if err != nil {
 		return In{}, err
 	}
@@ -35,9 +41,10 @@ func NewInFromValues(userID int64, productID int64, orderID int64, amount int64)
 	}
 
 	return In{
-		userID:    _userID,
-		productID: _productID,
-		orderID:   _orderID,
-		amount:    _amount,
+		userID:       _userID,
+		productID:    _productID,
+		productTitle: _productTitle,
+		orderID:      _orderID,
+		amount:       _amount,
 	}, nil
 }

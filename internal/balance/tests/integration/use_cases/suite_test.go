@@ -12,6 +12,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
@@ -51,7 +52,7 @@ func (s *SuiteTest) TearDownTest() {
 }
 
 func (s *SuiteTest) newAccount(mods ...func(*domainAccount.Account)) *domainAccount.Account {
-	acc := must.Must(domainAccount.NewAccount(userID))
+	acc := must.Must(domainAccount.NewAccount(fixtures.UserID))
 	for _, mod := range mods {
 		mod(acc)
 	}

@@ -37,16 +37,18 @@ func (h *HandlerReserve) GetHandler() http.Handler {
 }
 
 type payloadType struct {
-	UserID    int64 `json:"user_id"`
-	ProductID int64 `json:"product_id"`
-	OrderID   int64 `json:"order_id"`
-	Amount    int64 `json:"amount"`
+	UserID       int64  `json:"user_id"`
+	ProductID    int64  `json:"product_id"`
+	ProductTitle string `json:"product_title"`
+	OrderID      int64  `json:"order_id"`
+	Amount       int64  `json:"amount"`
 }
 
 func (p payloadType) GetIn() (reserve.In, error) {
 	return reserve.NewInFromValues(
 		p.UserID,
 		p.ProductID,
+		p.ProductTitle,
 		p.OrderID,
 		p.Amount,
 	)

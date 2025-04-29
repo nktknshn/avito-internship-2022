@@ -29,6 +29,7 @@ CREATE TABLE transactions_spend (
     user_id BIGINT NOT NULL,
     order_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
+    product_title TEXT NOT NULL,
     status VARCHAR(255) NOT NULL,
     amount BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL,

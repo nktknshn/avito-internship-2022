@@ -75,7 +75,13 @@ func (g GrpcAdapter) Deposit(ctx context.Context, request *balance.DepositReques
 
 func (g GrpcAdapter) Reserve(ctx context.Context, request *balance.ReserveRequest) (*empty.Empty, error) {
 
-	in, err := reserve.NewInFromValues(request.UserId, request.ProductId, request.OrderId, request.Amount)
+	in, err := reserve.NewInFromValues(
+		request.UserId,
+		request.ProductId,
+		request.ProductTitle,
+		request.OrderId,
+		request.Amount,
+	)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

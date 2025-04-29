@@ -11,6 +11,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
@@ -46,21 +47,28 @@ func (s *Suite) TestSaveTransactionDeposit_Success() {
 	s.Require().NoError(err)
 
 	transaction := must.Must(domainTransaction.NewTransactionDepositFromValues(
-		uuid.New(), acc.ID.Value(), 1, "test", "confirmed", 100, time.Now(), time.Now(),
+		uuid.New(),
+		acc.ID.Value(),
+		fixtures.UserID_i64,
+		fixtures.DepositSource_str,
+		domainTransaction.TransactionDepositStatusConfirmed.Value(),
+		fixtures.AmountPositive100_i64,
+		time.Now(),
+		time.Now(),
 	))
 
 	transaction, err = s.transactionsRepo.SaveTransactionDeposit(context.Background(), transaction)
 	s.Require().NoError(err)
 
-	s.Require().Greater(transaction.ID, domainTransaction.TransactionDepositID(uuid.Nil))
+	s.Require().NotEqual(transaction.ID, domainTransaction.TransactionDepositID(uuid.Nil))
 
 	rows, err := s.ExecSql("select * from transactions_deposit")
 	s.Require().NoError(err)
 	s.Require().Equal(1, len(rows.Rows))
-	s.Require().Equal(transaction.ID.Value(), rows.Rows[0]["id"])
+	s.Require().Equal(transaction.ID.Value().String(), rows.Rows[0]["id"])
 	s.Require().Equal(acc.ID.Value(), rows.Rows[0]["account_id"])
-	s.Require().Equal(int64(1), rows.Rows[0]["user_id"])
-	s.Require().Equal("test", rows.Rows[0]["deposit_source"])
-	s.Require().Equal("confirmed", rows.Rows[0]["status"])
-	s.Require().Equal(int64(100), rows.Rows[0]["amount"])
+	s.Require().Equal(fixtures.UserID_i64, rows.Rows[0]["user_id"])
+	s.Require().Equal(fixtures.DepositSource_str, rows.Rows[0]["deposit_source"])
+	s.Require().Equal(domainTransaction.TransactionDepositStatusConfirmed.Value(), rows.Rows[0]["status"])
+	s.Require().Equal(fixtures.AmountPositive100_i64, rows.Rows[0]["amount"])
 }

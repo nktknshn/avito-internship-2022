@@ -15,4 +15,5 @@ TODO
 - [ ] certs
 - [ ] csrf
 - [ ] panic recovery
+- [ ] tests coverage
 - [x] validate grpc server to use cases mapping on startup

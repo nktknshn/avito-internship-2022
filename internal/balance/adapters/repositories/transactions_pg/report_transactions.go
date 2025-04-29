@@ -9,84 +9,67 @@ import (
 
 var sqlQuery = `
 	WITH combined_transactions AS (
-            -- Deposit transactions
-            SELECT 
-                'deposit' as transaction_type,
-                td.id,
-                user_id,
-                account_id,
-				CAST(NULL as bigint) as order_id,
-				CAST(NULL as bigint) as product_id,
-                CAST(NULL as bigint) as to_account_id,
-				CAST(NULL as bigint) as from_account_id,
-                amount,
-                status,
-                created_at,
-				updated_at
-            FROM transactions_deposit td
-            WHERE user_id = :user_id
+		SELECT
+			'deposit' as transaction_type,
+			td.id,
+			td.user_id,
+			td.account_id,
+			td.deposit_source,
+			CAST(NULL as bigint) as order_id,
+			CAST(NULL as bigint) as product_id,
+			CAST(NULL as text) as product_title,
+			CAST(NULL as bigint) as to_account_id,
+			CAST(NULL as bigint) as from_account_id,
+			td.amount,
+			td.status,
+			td.created_at,
+			td.updated_at
+		FROM transactions_deposit td
+		WHERE td.user_id = :user_id
 
-            UNION ALL
+		UNION ALL
 
-            -- Spend transactions
-            SELECT 
-                'spend' as transaction_type,
-                ts.id,
-                user_id,
-                account_id,
-				order_id,
-				product_id,
-                CAST(NULL as bigint) as to_account_id,
-                CAST(NULL as bigint) as from_account_id,
-                amount,
-                status,
-                created_at,
-				updated_at
-            FROM transactions_spend ts
-            WHERE user_id = :user_id
+		SELECT
+			'spend' as transaction_type,
+			ts.id,
+			ts.user_id,
+			ts.account_id,
+			CAST(NULL as varchar) as deposit_source,
+			ts.order_id,
+			ts.product_id,
+			ts.product_title,
+			CAST(NULL as bigint) as to_account_id,
+			CAST(NULL as bigint) as from_account_id,
+			ts.amount,
+			ts.status,
+			ts.created_at,
+			ts.updated_at
+		FROM transactions_spend ts
+		WHERE ts.user_id = :user_id
 
-            UNION ALL
+		UNION ALL
 
-            -- Transfer transactions (as sender)
-            SELECT 
-                'transfer' as transaction_type,
-                tt.id,
-                a1.user_id,
-				CAST(NULL as bigint) as order_id,
-				CAST(NULL as bigint) as product_id,
-				CAST(NULL as bigint) as account_id,
-                from_account_id,
-                to_account_id,
-                amount,
-                status,
-                created_at,
-				updated_at
-            FROM transactions_transfer tt
-            JOIN accounts a1 ON tt.from_account_id = a1.id
-            WHERE a1.user_id = :user_id
-
-            UNION ALL
-
-            -- Transfer transactions (as receiver)
-            SELECT 
-                'transfer' as transaction_type,
-                tt.id,
-                a2.user_id,
-				CAST(NULL as bigint) as account_id,
-				CAST(NULL as bigint) as order_id,
-				CAST(NULL as bigint) as product_id,
-                to_account_id,
-                from_account_id,
-                amount,
-                status,
-                created_at,
-				updated_at
-            FROM transactions_transfer tt
-            JOIN accounts a2 ON tt.to_account_id = a2.id
-            WHERE a2.user_id = :user_id
-        )
-        SELECT *
-        FROM combined_transactions
+		SELECT
+			'transfer' as transaction_type,
+			tt.id,
+			a1.user_id,
+			tt.from_account_id as account_id,
+			CAST(NULL as varchar) as deposit_source,
+			CAST(NULL as bigint) as order_id,
+			CAST(NULL as bigint) as product_id,
+			CAST(NULL as text) as product_title,
+			tt.to_account_id,
+			tt.from_account_id,
+			tt.amount,
+			tt.status,
+			tt.created_at,
+			tt.updated_at
+		FROM transactions_transfer tt
+		JOIN accounts a1 ON tt.from_account_id = a1.id OR tt.to_account_id = a1.id
+		WHERE a1.user_id = :user_id
+	)
+	SELECT *
+	FROM combined_transactions
 `
 
 func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, userID domain.UserID, query report_transactions.GetTransactionsQuery) (report_transactions.ReportTransactionsPage, error) {

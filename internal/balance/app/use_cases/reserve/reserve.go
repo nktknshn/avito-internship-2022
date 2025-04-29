@@ -84,6 +84,7 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 			in.userID,
 			in.orderID,
 			in.productID,
+			in.productTitle,
 			in.amount,
 			time.Now(),
 		)
