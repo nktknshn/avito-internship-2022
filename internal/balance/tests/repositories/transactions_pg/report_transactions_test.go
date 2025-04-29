@@ -72,19 +72,8 @@ func (s *Suite) generateTransactions() {
 
 func (s *Suite) TestReportTransactions_Success() {
 
-	acc, err := s.accountsRepo.Save(s.Context(), &domainAccount.Account{
-		UserID: fixtures.UserID,
-	})
-
-	s.Require().NoError(err)
-	s.Require().NotNil(acc)
-
-	acc2, err := s.accountsRepo.Save(s.Context(), &domainAccount.Account{
-		UserID: fixtures.UserID_2,
-	})
-
-	s.Require().NoError(err)
-	s.Require().NotNil(acc2)
+	acc := s.getAccount1()
+	acc2 := s.getAccount2()
 
 	tc := time.Now()
 	tu := tc.Add(time.Second)
@@ -106,7 +95,6 @@ func (s *Suite) TestReportTransactions_Success() {
 
 	trSpend_saved, err := s.transactionsRepo.SaveTransactionSpend(s.Context(), trSpend)
 	s.Require().NoError(err)
-	s.Require().NotNil(trSpend_saved)
 
 	trDeposit, err := domainTransaction.NewTransactionDepositFromValues(
 		uuid.Nil,
@@ -123,7 +111,6 @@ func (s *Suite) TestReportTransactions_Success() {
 
 	trDeposit_saved, err := s.transactionsRepo.SaveTransactionDeposit(s.Context(), trDeposit)
 	s.Require().NoError(err)
-	s.Require().NotNil(trDeposit_saved)
 
 	trTransfer, err := domainTransaction.NewTransactionTransferFromValues(
 		uuid.Nil,
@@ -139,7 +126,6 @@ func (s *Suite) TestReportTransactions_Success() {
 
 	trTransfer_saved, err := s.transactionsRepo.SaveTransactionTransfer(s.Context(), trTransfer)
 	s.Require().NoError(err)
-	s.Require().NotNil(trTransfer_saved)
 
 	trTransferReceive, err := domainTransaction.NewTransactionTransferFromValues(
 		uuid.Nil,
@@ -155,7 +141,6 @@ func (s *Suite) TestReportTransactions_Success() {
 
 	trTransferReceive_saved, err := s.transactionsRepo.SaveTransactionTransfer(s.Context(), trTransferReceive)
 	s.Require().NoError(err)
-	s.Require().NotNil(trTransferReceive_saved)
 
 	//
 	report, err := s.transactionsRepo.GetTransactionsByUserID(s.Context(), fixtures.UserID, report_transactions.GetTransactionsQuery{
@@ -167,6 +152,7 @@ func (s *Suite) TestReportTransactions_Success() {
 
 	s.Require().Equal(len(report.Transactions), 4)
 
+	// Проверяем, что все транзакции нормально демаршалятся
 	for _, transaction := range report.Transactions {
 		switch t := transaction.(type) {
 		case *domainTransaction.TransactionSpend:
