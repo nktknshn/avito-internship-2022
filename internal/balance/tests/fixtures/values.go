@@ -4,7 +4,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
-	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
@@ -39,11 +38,6 @@ var (
 	//
 	ProductTitle_str string                     = "Product Title"
 	ProductTitle     domainProduct.ProductTitle = domainProduct.ProductTitle(ProductTitle_str)
-	//
-	Amount_i64 int64               = 1
-	Amount_str string              = "1"
-	Amount     domainAmount.Amount = must.Must(domainAmount.New(1))
-
 	//
 	DepositSource_str string                                     = "credit_card"
 	DepositSource     domainTransaction.TransactionDepositSource = domainTransaction.TransactionDepositSource(DepositSource_str)

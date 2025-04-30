@@ -21,7 +21,7 @@ import (
 
 func TestUseCases(t *testing.T) {
 	s := new(SuiteTest)
-	s.SetPostgresMigrationsDir("../../../migrations/postgres")
+	s.SetPostgresMigrationsDir("../../migrations/postgres")
 	suite.Run(t, s)
 }
 

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e 
+
+rm -rf coverage
+mkdir coverage
+
+go test ./internal/balance/tests/... \
+    -coverpkg github.com/nktknshn/avito-internship-2022/internal/balance/... \
+    -coverprofile=coverage/coverage.txt
+
+go tool cover -func=coverage/coverage.txt
+
+rm -rf coverage

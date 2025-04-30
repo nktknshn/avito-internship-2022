@@ -6,6 +6,10 @@ import (
 )
 
 var (
+	Amount_i64 int64               = 1
+	Amount_str string              = "1"
+	Amount     domainAmount.Amount = must.Must(domainAmount.New(1))
+	//
 	Amount0_i64 int64               = 0
 	Amount0_str string              = "0"
 	Amount0     domainAmount.Amount = must.Must(domainAmount.New(0))
