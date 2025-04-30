@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrReportTransactionsCursorInvalid = domainError.New("report transactions cursor invalid")
+	ErrCursorInvalid        = domainError.New("report transactions cursor is invalid")
+	ErrSortingCursorInvalid = domainError.New("report transactions sorting and cursor combination is invalid")
 )
 
 type GetTransactionsQuery struct {

@@ -16,7 +16,11 @@ type ReportTransactionsPage struct {
 }
 
 // Limit
-type Limit int
+type Limit uint64
+
+func (l Limit) Value() uint64 {
+	return uint64(l)
+}
 
 func NewLimit(limit int) (Limit, error) {
 	if limit <= 0 {
@@ -32,6 +36,8 @@ const (
 // Реализуется в репозитории
 type Cursor any
 
+var CursorEmpty = Cursor(nil)
+
 func NewCursor(cursor any) (Cursor, error) {
 	return cursor, nil
 }
@@ -42,6 +48,18 @@ func NewCursor(cursor any) (Cursor, error) {
 type Transaction any
 
 type SortingDirection string
+
+func (s SortingDirection) IsZero() bool {
+	return s == ""
+}
+
+func (s SortingDirection) IsAsc() bool {
+	return s == SortingDirectionAsc
+}
+
+func (s SortingDirection) IsDesc() bool {
+	return s == SortingDirectionDesc
+}
 
 func NewSortingDirection(direction string) (SortingDirection, error) {
 	switch SortingDirection(direction) {
@@ -60,15 +78,25 @@ const (
 type Sorting string
 
 const (
-	SortingCreatedAt Sorting = "created_at"
 	SortingUpdatedAt Sorting = "updated_at"
 	SortingAmount    Sorting = "amount"
-	SortingStatus    Sorting = "status"
 )
+
+func (s Sorting) IsZero() bool {
+	return s == ""
+}
+
+func (s Sorting) IsAmount() bool {
+	return s == SortingAmount
+}
+
+func (s Sorting) IsUpdatedAt() bool {
+	return s == SortingUpdatedAt
+}
 
 func NewSorting(sorting string) (Sorting, error) {
 	switch Sorting(sorting) {
-	case SortingCreatedAt, SortingUpdatedAt, SortingAmount, SortingStatus:
+	case SortingUpdatedAt, SortingAmount:
 		return Sorting(sorting), nil
 	default:
 		return "", errors.New("invalid sorting")
