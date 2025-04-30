@@ -48,11 +48,15 @@ func Connect(ctx context.Context, cfg PostgresCfg) (*sqlx.DB, error) {
 
 	conn := sqlx.NewDb(db, "pgx")
 
-	err = conn.PingContext(ctx)
-	if err != nil {
-		// log.Errorf("db.PingContext(ctx): %v", err)
-		return nil, err
+	for range 10 {
+		err = conn.PingContext(ctx)
+		if err != nil {
+			time.Sleep(time.Second * 1)
+			continue
+		}
+		break
 	}
+
 	conn.SetMaxOpenConns(cfg.GetMaxOpenConnections())
 	conn.SetMaxIdleConns(cfg.GetMaxIdleConnections())
 	conn.SetConnMaxLifetime(cfg.GetConnectionMaxLifetime())

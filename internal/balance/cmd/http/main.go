@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"net/http"
 
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
@@ -42,8 +43,12 @@ func main() {
 
 	prefix := cfg.GetHTTP().GetApiPrefix()
 
-	mux.Handle(prefix, http.StripPrefix(prefix, router))
+	mux.Handle(prefix+"/", http.StripPrefix(prefix, router))
 	mux.Handle("/metrics", app.MetricsHandler)
+
+	fmt.Println(prefix)
+
+	app.Logger.Info(ctx, "Starting server on", "addr", cfg.GetHTTP().GetAddr())
 
 	http.ListenAndServe(cfg.GetHTTP().GetAddr(), mux)
 

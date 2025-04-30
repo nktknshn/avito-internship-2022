@@ -7,7 +7,7 @@ TODO
 - [ ] opentracing
 - [ ] transactional outbox
 - [x] FOR UPDATE
-- [ ] тесты
+- [ ] more test coverage
 - [ ] graceful shutdown
 - [x] migrations
 - [-] auth token blacklist
@@ -15,5 +15,5 @@ TODO
 - [ ] certs
 - [ ] csrf
 - [ ] panic recovery
-- [ ] tests coverage
+- [x] view tests coverage
 - [x] validate grpc server to use cases mapping on startup

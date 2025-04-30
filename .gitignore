@@ -1,3 +1,6 @@
 coverage.out
 coverage.txt
 coverage/
+
+.go-pkg/
+.go-cache/

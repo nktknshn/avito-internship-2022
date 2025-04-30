@@ -16,7 +16,7 @@ jwt:
 
 http:
   addr: 127.0.0.1:8080
-  api_prefix: /api/v1
+  api_prefix: /api/v1/
   handler_timeout: 10s
 
 prometheus:

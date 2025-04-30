@@ -1,0 +1,31 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYwMjg3OTMsImlhdCI6MTc0NjAyNTE5MywiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.tHmXcKoKo3zk43dpq0GtCNk_QTRa16IwHA1N4W-MDaA
+
+###
+
+GET http://127.0.0.1:5050/api/v1/balance/1
+Authorization: Bearer {{token}} 
+
+###
+
+GET http://127.0.0.1:5050/api/v1/balance/0
+
+###
+
+POST http://localhost:5050/api/v1/balance/deposit
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "user_id": 1,
+    "amount": 100
+}
+
+###
+
+POST http://localhost:5050/api/v1/signin
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin1234"
+}

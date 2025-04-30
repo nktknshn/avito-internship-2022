@@ -9,3 +9,26 @@ postgres:
   connection_max_lifetime: 1h
   return_utc: true
   migrations_dir: ./internal/balance/migrations/postgres
+
+jwt:
+  secret: "secret_key"
+  ttl: 1h
+
+http:
+  addr: 0.0.0.0:8080
+  api_prefix: /api/v1
+  handler_timeout: 10s
+
+prometheus:
+  port: 8081
+  path: /metrics
+
+grpc:
+  addr: 0.0.0.0:8083
+  keepalive:
+    timeout: 10s
+    max_connection_idle: 10s
+    max_connection_age: 10s
+    max_connection_age_grace: 10s
+
+mode: dev

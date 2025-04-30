@@ -17,21 +17,25 @@ services:
   balance-service-http:
     build:
       context: ./deployment/docker/balance/http
+      dockerfile: Dockerfile
     volumes:
-      - ./internal:/internal
-      # - ./.go/pkg:/go/pkg
-      # - ./.go-cache:/go-cache
-    working_dir: /internal/balance
+      - ./:/balance
+      - ./config/balance:/config/balance
+      - ./.go-pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /balance
     ports:
-      - "127.0.0.1:5000:5000"
+      - 5050:8080
     # env_file:
     #   - .env
     environment:
       GOCACHE: /go-cache
-    depends_on:
-      - postgres
+      GOPATH: /go/pkg
+    # depends_on:
+    #   - postgres
 
   postgres:
+    # profiles: [donotstart]
     image: postgres
     restart: unless-stopped
     environment:
@@ -54,6 +58,7 @@ services:
       - 8082:8080
 
   prometheus:
+    # profiles: [donotstart]
     container_name: prometheus_container
     image: prom/prometheus
     restart: unless-stopped
@@ -64,6 +69,7 @@ services:
       - 9090:9090
 
   grafana:
+    # profiles: [donotstart]
     container_name: grafana_container
     image: grafana/grafana
     restart: unless-stopped

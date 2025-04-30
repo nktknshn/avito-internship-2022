@@ -3,7 +3,6 @@ module github.com/nktknshn/avito-internship-2022
 go 1.24.2
 
 require (
-	github.com/Masterminds/squirrel v1.5.4
 	github.com/avito-tech/go-transaction-manager v1.5.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.4
@@ -13,7 +12,7 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/nktknshn/go-ergo-handler v0.2.1
+	github.com/nktknshn/go-ergo-handler v0.3.0
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.24.2
@@ -46,8 +45,6 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
-	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
-	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/moby/sys/user v0.3.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
@@ -73,4 +70,4 @@ require (
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
 
-replace github.com/nktknshn/go-ergo-handler => /home/user/Workspace/cv/go-ergo-handler
+// replace github.com/nktknshn/go-ergo-handler => /home/user/Workspace/cv/go-ergo-handler
