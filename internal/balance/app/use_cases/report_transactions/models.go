@@ -73,6 +73,7 @@ const (
 type Sorting string
 
 const (
+	SortingEmpty     Sorting = ""
 	SortingUpdatedAt Sorting = "updated_at"
 	SortingAmount    Sorting = "amount"
 )

@@ -158,11 +158,13 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 
 	queryArgs := map[string]any{
 		"user_id": userID,
-		"limit":   query.Limit.Value(),
 	}
 
-	if query.Limit.Value() > 0 {
-		qb.Limit = fmt.Sprintf("%d", query.Limit)
+	queryLimit := query.Limit.Value()
+
+	if queryLimit > 0 {
+		qb.Limit = fmt.Sprintf("%d", queryLimit+1)
+		queryArgs["limit"] = queryLimit + 1
 	}
 
 	sorting := report_transactions.SortingUpdatedAt
@@ -203,8 +205,16 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		}, nil
 	}
 
-	result := report_transactions.ReportTransactionsPage{
-		Transactions: make([]report_transactions.Transaction, len(transactions)),
+	var result report_transactions.ReportTransactionsPage
+
+	if queryLimit > 0 {
+		resultLength := min(len(transactions), int(queryLimit))
+		result.Transactions = make([]report_transactions.Transaction, resultLength)
+		result.HasMore = len(transactions) > int(queryLimit)
+		transactions = transactions[:resultLength]
+	} else {
+		result.Transactions = make([]report_transactions.Transaction, len(transactions))
+		result.HasMore = false
 	}
 
 	for i, transaction := range transactions {
@@ -214,6 +224,11 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		}
 		result.Transactions[i] = model
 
+		if i < len(transactions)-1 {
+			continue
+		}
+
+		// устанавливаем курсор
 		if sorting.IsAmount() {
 			nextCursor, err := marshalCursor(&cursorUnion{
 				Amount: &cursorAmount{
@@ -240,8 +255,6 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 			result.Cursor = nextCursor
 		}
 	}
-
-	result.HasMore = len(transactions) == int(query.Limit)
 
 	return result, nil
 }

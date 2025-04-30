@@ -36,6 +36,7 @@ func (s *Suite) TestReportTransactions_Sorting_Amount() {
 	}
 
 	trs := []*transactionWrapper{
+		// несколько транзакций с одинаковым amount
 		tSpend(acc1, int64(55), rtime()),
 		tSpend(acc1, int64(55), rtime()),
 		tSpend(acc1, int64(55), rtime()),
@@ -45,10 +46,11 @@ func (s *Suite) TestReportTransactions_Sorting_Amount() {
 		tSpend(acc1, rInt64(1, 100), rtime()),
 		tSpend(acc1, rInt64(1, 100), rtime()),
 		tSpend(acc1, rInt64(1, 100), rtime()),
-		tDeposit(acc1, rInt64(1, 100), rtime()),
-		tDeposit(acc1, rInt64(1, 100), rtime()),
-		tSpend(acc1, rInt64(1, 100), rtime()),
-		tTransfer(acc2, acc1, rInt64(1, 200), rtime()),
+		// несколько транзакций с одинаковым updated_at
+		tDeposit(acc1, rInt64(1, 100), tu),
+		tDeposit(acc1, rInt64(1, 100), tu),
+		tSpend(acc1, rInt64(1, 100), tu),
+		tTransfer(acc2, acc1, rInt64(1, 200), tu),
 		tTransfer(acc2, acc1, rInt64(1, 200), rtime()),
 		tSpend(acc1, rInt64(1, 100), rtime()),
 		tSpend(acc1, rInt64(1, 100), rtime()),
@@ -83,7 +85,12 @@ func (s *Suite) TestReportTransactions_Sorting_Amount() {
 
 	testCases := []testCase{
 		{
-			testName:         "Sorting AmountA sc",
+			// Без указания сортировки и лимита, сортировка по updated_at desc и возвращаются все транзакции
+			testName: "No sorting and limit",
+			expected: trs_saved_sortedUpdatedAtDesc,
+		},
+		{
+			testName:         "Sorting Amount Asc",
 			sorting:          report_transactions.SortingAmount,
 			sortingDirection: report_transactions.SortingDirectionAsc,
 			limit:            100,
@@ -111,28 +118,28 @@ func (s *Suite) TestReportTransactions_Sorting_Amount() {
 			expected:         trs_saved_sortedUpdatedAtDesc,
 		},
 		{
-			testName:         "Sorting AmountAsc pagination limit 3",
+			testName:         "Sorting Amount Asc pagination limit 3",
 			sorting:          report_transactions.SortingAmount,
 			sortingDirection: report_transactions.SortingDirectionAsc,
 			limit:            3,
 			expected:         trs_saved_sortedAmountAsc,
 		},
 		{
-			testName:         "Sorting AmountDesc pagination limit 3",
+			testName:         "Sorting Amount Desc pagination limit 3",
 			sorting:          report_transactions.SortingAmount,
 			sortingDirection: report_transactions.SortingDirectionDesc,
 			limit:            3,
 			expected:         trs_saved_sortedAmountDesc,
 		},
 		{
-			testName:         "Sorting UpdatedAtAsc pagination limit 3",
+			testName:         "Sorting UpdatedAt Asc pagination limit 3",
 			sorting:          report_transactions.SortingUpdatedAt,
 			sortingDirection: report_transactions.SortingDirectionAsc,
 			limit:            3,
 			expected:         trs_saved_sortedUpdatedAtAsc,
 		},
 		{
-			testName:         "Sorting UpdatedAtDesc pagination limit 3",
+			testName:         "Sorting UpdatedAt Desc pagination limit 3",
 			sorting:          report_transactions.SortingUpdatedAt,
 			sortingDirection: report_transactions.SortingDirectionDesc,
 			limit:            3,
