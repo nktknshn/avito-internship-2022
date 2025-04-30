@@ -2,14 +2,9 @@ package report_transactions
 
 import (
 	"errors"
-
-	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
 
 type ReportTransactionsPage struct {
-	AccountID    domainAccount.AccountID
-	UserID       domain.UserID
 	Transactions []Transaction
 	Cursor       Cursor
 	HasMore      bool

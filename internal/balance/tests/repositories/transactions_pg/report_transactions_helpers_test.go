@@ -187,16 +187,19 @@ func transactionsEqual(a []*transactionWrapper, b []report_transactions.Transact
 		switch tr_b := b[i].(type) {
 		case *domainTransaction.TransactionSpend:
 			if tr.isSpend() && tr_b.ID.Value() == tr.getID() {
-				return true
+				continue
 			}
+			return false
 		case *domainTransaction.TransactionDeposit:
 			if tr.isDeposit() && tr_b.ID.Value() == tr.getID() {
-				return true
+				continue
 			}
+			return false
 		case *domainTransaction.TransactionTransfer:
 			if tr.isTransfer() && tr_b.ID.Value() == tr.getID() {
-				return true
+				continue
 			}
+			return false
 		default:
 			panic(fmt.Sprintf("unknown transaction type: %T", tr_b))
 		}

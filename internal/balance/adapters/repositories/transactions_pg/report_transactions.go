@@ -75,32 +75,28 @@ var sqlQuery = `SELECT * FROM combined_transactions t`
 
 func (r *TransactionsRepository) setReportTransactionsCursor(
 	qb *select_query_builder.SelectQueryBuilder,
-	query report_transactions.GetTransactionsQuery,
+	sorting report_transactions.Sorting,
+	sortingDirection report_transactions.SortingDirection,
+	queryCursor report_transactions.Cursor,
 	queryArgs map[string]any,
 ) error {
-	if query.Cursor == nil {
+	if queryCursor == nil {
 		return nil
 	}
 
-	cursor, err := unmarshalCursor(query.Cursor)
+	cursor, err := unmarshalCursor(queryCursor)
 
 	if err != nil {
 		return err
 	}
 
 	// валидируем комбинацию сортировки и курсора
-	if !cursor.IsZero() && !query.Sorting.IsZero() {
-		if cursor.IsAmount() && !query.Sorting.IsAmount() {
+	if !cursor.IsZero() && !sorting.IsZero() {
+		if cursor.IsAmount() && !sorting.IsAmount() {
 			return report_transactions.ErrSortingCursorInvalid
-		} else if cursor.IsUpdatedAt() && !query.Sorting.IsUpdatedAt() {
+		} else if cursor.IsUpdatedAt() && !sorting.IsUpdatedAt() {
 			return report_transactions.ErrSortingCursorInvalid
 		}
-	}
-
-	sortingDirection := report_transactions.SortingDirectionAsc
-
-	if !query.SortingDirection.IsZero() {
-		sortingDirection = query.SortingDirection
 	}
 
 	if cursor.IsAmount() {
@@ -120,28 +116,21 @@ func (r *TransactionsRepository) setReportTransactionsCursor(
 			qb.And("(t.updated_at = :cursor_updated_at AND t.id < :cursor_id) OR t.updated_at < :cursor_updated_at")
 		}
 		queryArgs["cursor_updated_at"] = cursor.UpdatedAt.UpdatedAt
+		queryArgs["cursor_id"] = cursor.UpdatedAt.ID
 	}
 
 	return nil
 }
 
-func (r *TransactionsRepository) setReportTransactionsSorting(qb *select_query_builder.SelectQueryBuilder, query report_transactions.GetTransactionsQuery) {
-	sortingDirection := report_transactions.SortingDirectionAsc
+func (r *TransactionsRepository) setReportTransactionsSorting(qb *select_query_builder.SelectQueryBuilder, sorting report_transactions.Sorting, sortingDirection report_transactions.SortingDirection) {
 
-	if !query.SortingDirection.IsZero() {
-		sortingDirection = query.SortingDirection
+	if sortingDirection.IsAsc() {
+		qb.Order = "t.updated_at ASC, t.id ASC"
+	} else {
+		qb.Order = "t.updated_at DESC, t.id DESC"
 	}
 
-	if query.Sorting.IsZero() {
-		if sortingDirection.IsAsc() {
-			qb.Order = "t.updated_at ASC, t.id ASC"
-		} else {
-			qb.Order = "t.updated_at DESC, t.id DESC"
-		}
-		return
-	}
-
-	if query.Sorting.IsAmount() {
+	if sorting.IsAmount() {
 		if sortingDirection.IsAsc() {
 			qb.Order = "t.amount ASC, t.id ASC"
 		} else {
@@ -150,7 +139,7 @@ func (r *TransactionsRepository) setReportTransactionsSorting(qb *select_query_b
 		return
 	}
 
-	if query.Sorting.IsUpdatedAt() {
+	if sorting.IsUpdatedAt() {
 		if sortingDirection.IsAsc() {
 			qb.Order = "t.updated_at ASC, t.id ASC"
 		} else {
@@ -176,8 +165,19 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		qb.Limit = fmt.Sprintf("%d", query.Limit)
 	}
 
-	r.setReportTransactionsCursor(qb, query, queryArgs)
-	r.setReportTransactionsSorting(qb, query)
+	sorting := report_transactions.SortingUpdatedAt
+	sortingDirection := report_transactions.SortingDirectionDesc
+
+	if !query.SortingDirection.IsZero() {
+		sortingDirection = query.SortingDirection
+	}
+
+	if !query.Sorting.IsZero() {
+		sorting = query.Sorting
+	}
+
+	r.setReportTransactionsCursor(qb, sorting, sortingDirection, query.Cursor, queryArgs)
+	r.setReportTransactionsSorting(qb, sorting, sortingDirection)
 
 	transactions := []reportTransactionDTO{}
 
@@ -195,17 +195,53 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		return report_transactions.ReportTransactionsPage{}, err
 	}
 
-	models := make([]report_transactions.Transaction, len(transactions))
+	if len(transactions) == 0 {
+		return report_transactions.ReportTransactionsPage{
+			Transactions: []report_transactions.Transaction{},
+			HasMore:      false,
+			Cursor:       nil,
+		}, nil
+	}
+
+	result := report_transactions.ReportTransactionsPage{
+		Transactions: make([]report_transactions.Transaction, len(transactions)),
+	}
 
 	for i, transaction := range transactions {
 		model, err := fromReportTransactionDTO(&transaction)
 		if err != nil {
 			return report_transactions.ReportTransactionsPage{}, err
 		}
-		models[i] = model
+		result.Transactions[i] = model
+
+		if sorting.IsAmount() {
+			nextCursor, err := marshalCursor(&cursorUnion{
+				Amount: &cursorAmount{
+					Amount: transaction.Amount,
+					ID:     transaction.ID,
+				},
+			})
+			if err != nil {
+				return report_transactions.ReportTransactionsPage{}, err
+			}
+			result.Cursor = nextCursor
+		}
+
+		if sorting.IsUpdatedAt() {
+			nextCursor, err := marshalCursor(&cursorUnion{
+				UpdatedAt: &cursorUpdatedAt{
+					UpdatedAt: transaction.UpdatedAt,
+					ID:        transaction.ID,
+				},
+			})
+			if err != nil {
+				return report_transactions.ReportTransactionsPage{}, err
+			}
+			result.Cursor = nextCursor
+		}
 	}
 
-	return report_transactions.ReportTransactionsPage{
-		Transactions: models,
-	}, nil
+	result.HasMore = len(transactions) == int(query.Limit)
+
+	return result, nil
 }

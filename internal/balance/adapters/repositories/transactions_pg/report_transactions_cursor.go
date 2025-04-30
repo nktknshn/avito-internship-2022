@@ -12,7 +12,7 @@ import (
 
 type cursorAmount struct {
 	ID     uuid.UUID `json:"id"`
-	Amount uint64    `json:"amount"`
+	Amount int64     `json:"amount"`
 }
 
 type cursorUpdatedAt struct {
@@ -72,4 +72,29 @@ func unmarshalCursor(cursor report_transactions.Cursor) (*cursorUnion, error) {
 	}
 
 	return nil, report_transactions.ErrCursorInvalid
+}
+
+// преобразуем в json и кодируем в base64
+func marshalCursor(cursor *cursorUnion) (report_transactions.Cursor, error) {
+	if cursor.IsZero() {
+		return report_transactions.CursorEmpty, nil
+	}
+
+	if cursor.IsAmount() {
+		cursorBytes, err := json.Marshal(cursor.Amount)
+		if err != nil {
+			return "", err
+		}
+		return base64.StdEncoding.EncodeToString(cursorBytes), nil
+	}
+
+	if cursor.IsUpdatedAt() {
+		cursorBytes, err := json.Marshal(cursor.UpdatedAt)
+		if err != nil {
+			return "", err
+		}
+		return base64.StdEncoding.EncodeToString(cursorBytes), nil
+	}
+
+	return "", report_transactions.ErrCursorInvalid
 }
