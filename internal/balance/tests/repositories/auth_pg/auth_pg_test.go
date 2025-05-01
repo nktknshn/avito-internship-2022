@@ -66,5 +66,5 @@ func (s *TestSuiteAuthPg) TestCreateAccount_DuplicateUsername() {
 	s.NoError(err)
 	err = s.repo.CreateUser(context.Background(), "test", "test", "test")
 	s.Error(err)
-	s.Require().True(errors.Is(err, domainAuth.ErrDuplicateKey))
+	s.Require().True(errors.Is(err, domainAuth.ErrDuplicateUsername))
 }

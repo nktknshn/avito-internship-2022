@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	ErrUserNotFound = domainError.New("user not found")
-	ErrDuplicateKey = domainError.New("duplicate key")
+	ErrUserNotFound      = domainError.New("user not found")
+	ErrDuplicateUsername = domainError.New("duplicate username")
 )
 
 type AuthRepository interface {

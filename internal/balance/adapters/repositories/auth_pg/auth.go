@@ -38,7 +38,7 @@ func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.Aut
 	_, err := tr.ExecContext(ctx, tr.Rebind(sq), username, passwordHash, role)
 
 	if sqlx_pg.IsDuplicateKeyError(err) {
-		return domainAuth.ErrDuplicateKey
+		return domainAuth.ErrDuplicateUsername
 	}
 
 	if err != nil {

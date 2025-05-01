@@ -43,12 +43,18 @@ func (u *AuthSignupUseCase) Handle(ctx context.Context, in In) error {
 		return err
 	}
 
-	return u.authRepo.CreateUser(
+	err = u.authRepo.CreateUser(
 		ctx,
 		in.username,
 		domainAuth.AuthUserPasswordHash(passwordHash),
 		in.role,
 	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *AuthSignupUseCase) GetName() string {
