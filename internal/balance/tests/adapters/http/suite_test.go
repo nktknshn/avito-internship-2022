@@ -1,6 +1,8 @@
 package http_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -29,6 +31,15 @@ func (s *HttpTestSuite) SetupTest() {
 	s.setRouteParams(map[string]string{})
 }
 
+func (s *HttpTestSuite) requestAuthPayload(h adaptersHttp.Handler, payload map[string]any) (*http.Request, *httptest.ResponseRecorder) {
+	jsonPayload, _ := json.Marshal(payload)
+	req, _ := http.NewRequest("", "", bytes.NewBuffer(jsonPayload))
+	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)
+	resp := httptest.NewRecorder()
+	h.GetHandler().ServeHTTP(resp, req)
+	return req, resp
+}
+
 func (s *HttpTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
 	req, _ := http.NewRequest("", "", nil)
 	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)
@@ -39,6 +50,14 @@ func (s *HttpTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *htt
 
 func (s *HttpTestSuite) request(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
 	req, _ := http.NewRequest("", "", nil)
+	resp := httptest.NewRecorder()
+	h.GetHandler().ServeHTTP(resp, req)
+	return req, resp
+}
+
+func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any) (*http.Request, *httptest.ResponseRecorder) {
+	jsonPayload, _ := json.Marshal(payload)
+	req, _ := http.NewRequest("", "", bytes.NewBuffer(jsonPayload))
 	resp := httptest.NewRecorder()
 	h.GetHandler().ServeHTTP(resp, req)
 	return req, resp
