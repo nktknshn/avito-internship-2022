@@ -28,6 +28,7 @@ const (
 	BalanceService_Transfer_FullMethodName           = "/balance.BalanceService/Transfer"
 	BalanceService_AuthSignIn_FullMethodName         = "/balance.BalanceService/AuthSignIn"
 	BalanceService_ReportTransactions_FullMethodName = "/balance.BalanceService/ReportTransactions"
+	BalanceService_ReportRevenue_FullMethodName      = "/balance.BalanceService/ReportRevenue"
 )
 
 // BalanceServiceClient is the client API for BalanceService service.
@@ -42,6 +43,7 @@ type BalanceServiceClient interface {
 	Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AuthSignIn(ctx context.Context, in *AuthSignInRequest, opts ...grpc.CallOption) (*AuthSignInResponse, error)
 	ReportTransactions(ctx context.Context, in *ReportTransactionsRequest, opts ...grpc.CallOption) (*ReportTransactionsResponse, error)
+	ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error)
 }
 
 type balanceServiceClient struct {
@@ -132,6 +134,16 @@ func (c *balanceServiceClient) ReportTransactions(ctx context.Context, in *Repor
 	return out, nil
 }
 
+func (c *balanceServiceClient) ReportRevenue(ctx context.Context, in *ReportRevenueRequest, opts ...grpc.CallOption) (*ReportRevenueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReportRevenueResponse)
+	err := c.cc.Invoke(ctx, BalanceService_ReportRevenue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BalanceServiceServer is the server API for BalanceService service.
 // All implementations should embed UnimplementedBalanceServiceServer
 // for forward compatibility.
@@ -144,6 +156,7 @@ type BalanceServiceServer interface {
 	Transfer(context.Context, *TransferRequest) (*emptypb.Empty, error)
 	AuthSignIn(context.Context, *AuthSignInRequest) (*AuthSignInResponse, error)
 	ReportTransactions(context.Context, *ReportTransactionsRequest) (*ReportTransactionsResponse, error)
+	ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error)
 }
 
 // UnimplementedBalanceServiceServer should be embedded to have
@@ -176,6 +189,9 @@ func (UnimplementedBalanceServiceServer) AuthSignIn(context.Context, *AuthSignIn
 }
 func (UnimplementedBalanceServiceServer) ReportTransactions(context.Context, *ReportTransactionsRequest) (*ReportTransactionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportTransactions not implemented")
+}
+func (UnimplementedBalanceServiceServer) ReportRevenue(context.Context, *ReportRevenueRequest) (*ReportRevenueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportRevenue not implemented")
 }
 func (UnimplementedBalanceServiceServer) testEmbeddedByValue() {}
 
@@ -341,6 +357,24 @@ func _BalanceService_ReportTransactions_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BalanceService_ReportRevenue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportRevenueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BalanceServiceServer).ReportRevenue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BalanceService_ReportRevenue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BalanceServiceServer).ReportRevenue(ctx, req.(*ReportRevenueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BalanceService_ServiceDesc is the grpc.ServiceDesc for BalanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -379,6 +413,10 @@ var BalanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReportTransactions",
 			Handler:    _BalanceService_ReportTransactions_Handler,
+		},
+		{
+			MethodName: "ReportRevenue",
+			Handler:    _BalanceService_ReportRevenue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -17,6 +17,7 @@ service BalanceService {
     rpc AuthSignIn(AuthSignInRequest) returns (AuthSignInResponse) {}
 
     rpc ReportTransactions(ReportTransactionsRequest) returns (ReportTransactionsResponse) {}
+    rpc ReportRevenue(ReportRevenueRequest) returns (ReportRevenueResponse) {}
 }
 
 message GetBalanceRequest {
@@ -115,6 +116,19 @@ message ReportTransactionsTransactionTransfer {
     string updated_at = 7;
 }
 
+message ReportRevenueRequest {
+    int32 year = 1;
+    int32 month = 2;
+}
+
+message ReportRevenueResponse {
+    repeated ReportRevenueRecord records = 1;
+}
+
+message ReportRevenueRecord {
+    string product_title = 1;
+    int64 total_revenue = 2;
+}
 
 message AuthSignInRequest {
     string username = 1;

@@ -5,6 +5,7 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_cancel"
@@ -26,6 +27,7 @@ type HttpAdapter struct {
 	ReserveConfirm     Handler
 	Transfer           Handler
 	ReportTransactions Handler
+	ReportRevenue      Handler
 	SignIn             Handler
 }
 
@@ -39,6 +41,7 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 	handlerTransfer := transfer.New(app.AuthValidateToken, app.Transfer)
 	handlerSignIn := signin.New(app.AuthSignin)
 	handlerReportTransactions := report_transactions.New(app.AuthValidateToken, app.ReportTransactions)
+	handlerReportRevenue := report_revenue.New(app.AuthValidateToken, app.ReportRevenue)
 
 	return &HttpAdapter{
 		GetBalance:         handlerGetBalance,
@@ -49,5 +52,6 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 		Transfer:           handlerTransfer,
 		SignIn:             handlerSignIn,
 		ReportTransactions: handlerReportTransactions,
+		ReportRevenue:      handlerReportRevenue,
 	}
 }

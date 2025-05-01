@@ -10,6 +10,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -216,6 +217,32 @@ func (g GrpcAdapter) ReportTransactions(ctx context.Context, request *balance.Re
 		Transactions: transactions,
 		Cursor:       string(out.Cursor),
 		HasMore:      out.HasMore,
+	}, nil
+}
+
+func (g GrpcAdapter) ReportRevenue(ctx context.Context, request *balance.ReportRevenueRequest) (*balance.ReportRevenueResponse, error) {
+
+	in, err := report_revenue.NewInFromValues(int(request.Year), int(request.Month))
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	out, err := g.app.ReportRevenue.Handle(ctx, in)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	records := make([]*balance.ReportRevenueRecord, len(out.Records))
+
+	for i, record := range out.Records {
+		records[i] = &balance.ReportRevenueRecord{
+			ProductTitle: record.ProductTitle,
+			TotalRevenue: record.TotalRevenue,
+		}
+	}
+
+	return &balance.ReportRevenueResponse{
+		Records: records,
 	}, nil
 }
 

@@ -968,6 +968,154 @@ func (x *ReportTransactionsTransactionTransfer) GetUpdatedAt() string {
 	return ""
 }
 
+type ReportRevenueRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Year          int32                  `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
+	Month         int32                  `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportRevenueRequest) Reset() {
+	*x = ReportRevenueRequest{}
+	mi := &file_balance_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportRevenueRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportRevenueRequest) ProtoMessage() {}
+
+func (x *ReportRevenueRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportRevenueRequest.ProtoReflect.Descriptor instead.
+func (*ReportRevenueRequest) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ReportRevenueRequest) GetYear() int32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+func (x *ReportRevenueRequest) GetMonth() int32 {
+	if x != nil {
+		return x.Month
+	}
+	return 0
+}
+
+type ReportRevenueResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Records       []*ReportRevenueRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportRevenueResponse) Reset() {
+	*x = ReportRevenueResponse{}
+	mi := &file_balance_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportRevenueResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportRevenueResponse) ProtoMessage() {}
+
+func (x *ReportRevenueResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportRevenueResponse.ProtoReflect.Descriptor instead.
+func (*ReportRevenueResponse) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ReportRevenueResponse) GetRecords() []*ReportRevenueRecord {
+	if x != nil {
+		return x.Records
+	}
+	return nil
+}
+
+type ReportRevenueRecord struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProductTitle  string                 `protobuf:"bytes,1,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
+	TotalRevenue  int64                  `protobuf:"varint,2,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportRevenueRecord) Reset() {
+	*x = ReportRevenueRecord{}
+	mi := &file_balance_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportRevenueRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportRevenueRecord) ProtoMessage() {}
+
+func (x *ReportRevenueRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportRevenueRecord.ProtoReflect.Descriptor instead.
+func (*ReportRevenueRecord) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *ReportRevenueRecord) GetProductTitle() string {
+	if x != nil {
+		return x.ProductTitle
+	}
+	return ""
+}
+
+func (x *ReportRevenueRecord) GetTotalRevenue() int64 {
+	if x != nil {
+		return x.TotalRevenue
+	}
+	return 0
+}
+
 type AuthSignInRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
@@ -978,7 +1126,7 @@ type AuthSignInRequest struct {
 
 func (x *AuthSignInRequest) Reset() {
 	*x = AuthSignInRequest{}
-	mi := &file_balance_proto_msgTypes[13]
+	mi := &file_balance_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -990,7 +1138,7 @@ func (x *AuthSignInRequest) String() string {
 func (*AuthSignInRequest) ProtoMessage() {}
 
 func (x *AuthSignInRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_balance_proto_msgTypes[13]
+	mi := &file_balance_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1003,7 +1151,7 @@ func (x *AuthSignInRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthSignInRequest.ProtoReflect.Descriptor instead.
 func (*AuthSignInRequest) Descriptor() ([]byte, []int) {
-	return file_balance_proto_rawDescGZIP(), []int{13}
+	return file_balance_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *AuthSignInRequest) GetUsername() string {
@@ -1029,7 +1177,7 @@ type AuthSignInResponse struct {
 
 func (x *AuthSignInResponse) Reset() {
 	*x = AuthSignInResponse{}
-	mi := &file_balance_proto_msgTypes[14]
+	mi := &file_balance_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1041,7 +1189,7 @@ func (x *AuthSignInResponse) String() string {
 func (*AuthSignInResponse) ProtoMessage() {}
 
 func (x *AuthSignInResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_balance_proto_msgTypes[14]
+	mi := &file_balance_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1054,7 +1202,7 @@ func (x *AuthSignInResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthSignInResponse.ProtoReflect.Descriptor instead.
 func (*AuthSignInResponse) Descriptor() ([]byte, []int) {
-	return file_balance_proto_rawDescGZIP(), []int{14}
+	return file_balance_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *AuthSignInResponse) GetToken() string {
@@ -1148,12 +1296,20 @@ const file_balance_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x06 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\a \x01(\tR\tupdatedAt\"K\n" +
+	"updated_at\x18\a \x01(\tR\tupdatedAt\"@\n" +
+	"\x14ReportRevenueRequest\x12\x12\n" +
+	"\x04year\x18\x01 \x01(\x05R\x04year\x12\x14\n" +
+	"\x05month\x18\x02 \x01(\x05R\x05month\"O\n" +
+	"\x15ReportRevenueResponse\x126\n" +
+	"\arecords\x18\x01 \x03(\v2\x1c.balance.ReportRevenueRecordR\arecords\"_\n" +
+	"\x13ReportRevenueRecord\x12#\n" +
+	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12#\n" +
+	"\rtotal_revenue\x18\x02 \x01(\x03R\ftotalRevenue\"K\n" +
 	"\x11AuthSignInRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"*\n" +
 	"\x12AuthSignInResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2\xd5\x04\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2\xa7\x05\n" +
 	"\x0eBalanceService\x12G\n" +
 	"\n" +
 	"GetBalance\x12\x1a.balance.GetBalanceRequest\x1a\x1b.balance.GetBalanceResponse\"\x00\x12<\n" +
@@ -1164,7 +1320,8 @@ const file_balance_proto_rawDesc = "" +
 	"\bTransfer\x12\x18.balance.TransferRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n" +
 	"\n" +
 	"AuthSignIn\x12\x1a.balance.AuthSignInRequest\x1a\x1b.balance.AuthSignInResponse\"\x00\x12_\n" +
-	"\x12ReportTransactions\x12\".balance.ReportTransactionsRequest\x1a#.balance.ReportTransactionsResponse\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
+	"\x12ReportTransactions\x12\".balance.ReportTransactionsRequest\x1a#.balance.ReportTransactionsResponse\"\x00\x12P\n" +
+	"\rReportRevenue\x12\x1d.balance.ReportRevenueRequest\x1a\x1e.balance.ReportRevenueResponse\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
 
 var (
 	file_balance_proto_rawDescOnce sync.Once
@@ -1178,7 +1335,7 @@ func file_balance_proto_rawDescGZIP() []byte {
 	return file_balance_proto_rawDescData
 }
 
-var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_balance_proto_goTypes = []any{
 	(*GetBalanceRequest)(nil),                     // 0: balance.GetBalanceRequest
 	(*GetBalanceResponse)(nil),                    // 1: balance.GetBalanceResponse
@@ -1193,36 +1350,42 @@ var file_balance_proto_goTypes = []any{
 	(*ReportTransactionsTransactionDeposit)(nil),  // 10: balance.ReportTransactionsTransactionDeposit
 	(*ReportTransactionsTransactionSpend)(nil),    // 11: balance.ReportTransactionsTransactionSpend
 	(*ReportTransactionsTransactionTransfer)(nil), // 12: balance.ReportTransactionsTransactionTransfer
-	(*AuthSignInRequest)(nil),                     // 13: balance.AuthSignInRequest
-	(*AuthSignInResponse)(nil),                    // 14: balance.AuthSignInResponse
-	(*emptypb.Empty)(nil),                         // 15: google.protobuf.Empty
+	(*ReportRevenueRequest)(nil),                  // 13: balance.ReportRevenueRequest
+	(*ReportRevenueResponse)(nil),                 // 14: balance.ReportRevenueResponse
+	(*ReportRevenueRecord)(nil),                   // 15: balance.ReportRevenueRecord
+	(*AuthSignInRequest)(nil),                     // 16: balance.AuthSignInRequest
+	(*AuthSignInResponse)(nil),                    // 17: balance.AuthSignInResponse
+	(*emptypb.Empty)(nil),                         // 18: google.protobuf.Empty
 }
 var file_balance_proto_depIdxs = []int32{
 	9,  // 0: balance.ReportTransactionsResponse.transactions:type_name -> balance.ReportTransactionsTransaction
 	10, // 1: balance.ReportTransactionsTransaction.deposit:type_name -> balance.ReportTransactionsTransactionDeposit
 	11, // 2: balance.ReportTransactionsTransaction.spend:type_name -> balance.ReportTransactionsTransactionSpend
 	12, // 3: balance.ReportTransactionsTransaction.transfer:type_name -> balance.ReportTransactionsTransactionTransfer
-	0,  // 4: balance.BalanceService.GetBalance:input_type -> balance.GetBalanceRequest
-	2,  // 5: balance.BalanceService.Deposit:input_type -> balance.DepositRequest
-	3,  // 6: balance.BalanceService.Reserve:input_type -> balance.ReserveRequest
-	4,  // 7: balance.BalanceService.ReserveCancel:input_type -> balance.ReserveCancelRequest
-	5,  // 8: balance.BalanceService.ReserveConfirm:input_type -> balance.ReserveConfirmRequest
-	6,  // 9: balance.BalanceService.Transfer:input_type -> balance.TransferRequest
-	13, // 10: balance.BalanceService.AuthSignIn:input_type -> balance.AuthSignInRequest
-	7,  // 11: balance.BalanceService.ReportTransactions:input_type -> balance.ReportTransactionsRequest
-	1,  // 12: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
-	15, // 13: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
-	15, // 14: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
-	15, // 15: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
-	15, // 16: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
-	15, // 17: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
-	14, // 18: balance.BalanceService.AuthSignIn:output_type -> balance.AuthSignInResponse
-	8,  // 19: balance.BalanceService.ReportTransactions:output_type -> balance.ReportTransactionsResponse
-	12, // [12:20] is the sub-list for method output_type
-	4,  // [4:12] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	15, // 4: balance.ReportRevenueResponse.records:type_name -> balance.ReportRevenueRecord
+	0,  // 5: balance.BalanceService.GetBalance:input_type -> balance.GetBalanceRequest
+	2,  // 6: balance.BalanceService.Deposit:input_type -> balance.DepositRequest
+	3,  // 7: balance.BalanceService.Reserve:input_type -> balance.ReserveRequest
+	4,  // 8: balance.BalanceService.ReserveCancel:input_type -> balance.ReserveCancelRequest
+	5,  // 9: balance.BalanceService.ReserveConfirm:input_type -> balance.ReserveConfirmRequest
+	6,  // 10: balance.BalanceService.Transfer:input_type -> balance.TransferRequest
+	16, // 11: balance.BalanceService.AuthSignIn:input_type -> balance.AuthSignInRequest
+	7,  // 12: balance.BalanceService.ReportTransactions:input_type -> balance.ReportTransactionsRequest
+	13, // 13: balance.BalanceService.ReportRevenue:input_type -> balance.ReportRevenueRequest
+	1,  // 14: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
+	18, // 15: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
+	18, // 16: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
+	18, // 17: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
+	18, // 18: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
+	18, // 19: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
+	17, // 20: balance.BalanceService.AuthSignIn:output_type -> balance.AuthSignInResponse
+	8,  // 21: balance.BalanceService.ReportTransactions:output_type -> balance.ReportTransactionsResponse
+	14, // 22: balance.BalanceService.ReportRevenue:output_type -> balance.ReportRevenueResponse
+	14, // [14:23] is the sub-list for method output_type
+	5,  // [5:14] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_balance_proto_init() }
@@ -1241,7 +1404,7 @@ func file_balance_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_balance_proto_rawDesc), len(file_balance_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

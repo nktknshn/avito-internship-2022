@@ -5,7 +5,7 @@ type In struct {
 	month Month
 }
 
-func NewIn(year int, month int) (In, error) {
+func NewInFromValues(year int, month int) (In, error) {
 	_year, err := NewYear(year)
 	if err != nil {
 		return In{}, err

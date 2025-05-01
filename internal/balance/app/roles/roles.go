@@ -14,6 +14,7 @@ var useCaseRoles = map[string][]auth.AuthUserRole{
 	use_cases.NameReserveConfirm:     {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
 	use_cases.NameTransfer:           {auth.AuthUserRoleAccount, auth.AuthUserRoleAdmin},
 	use_cases.NameReportTransactions: {auth.AuthUserRoleReport, auth.AuthUserRoleAdmin},
+	use_cases.NameReportRevenue:      {auth.AuthUserRoleReport, auth.AuthUserRoleAdmin},
 	use_cases.NameAuthSignin:         {},
 }
 
