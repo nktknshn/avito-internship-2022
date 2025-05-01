@@ -2,11 +2,13 @@ package reserve_confirm
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
@@ -61,9 +63,15 @@ func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.H
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
 		err = u.Handle(r.Context(), in)
+
+		if errors.Is(err, domainAccount.ErrAccountNotFound) {
+			return nil, ergo.NewError(http.StatusNotFound, err)
+		}
+
 		if err != nil {
 			return nil, err
 		}
+
 		return nil, nil
 	})
 }

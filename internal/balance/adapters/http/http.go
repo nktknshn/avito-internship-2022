@@ -28,7 +28,7 @@ type HttpAdapter struct {
 	Transfer           Handler
 	ReportTransactions Handler
 	ReportRevenue      Handler
-	SignIn             Handler
+	AuthSignIn         Handler
 }
 
 func NewHttpAdapter(app *app.Application) *HttpAdapter {
@@ -50,7 +50,7 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 		ReserveCancel:      handlerReserveCancel,
 		ReserveConfirm:     handlerReserveConfirm,
 		Transfer:           handlerTransfer,
-		SignIn:             handlerSignIn,
+		AuthSignIn:         handlerSignIn,
 		ReportTransactions: handlerReportTransactions,
 		ReportRevenue:      handlerReportRevenue,
 	}

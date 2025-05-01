@@ -14,11 +14,19 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func returnSuccess[T any](out T) []any {
+func returnNilError() []any {
+	return []any{nil}
+}
+
+func returnError(err error) []any {
+	return []any{err}
+}
+
+func returnSuccess2[T any](out T) []any {
 	return []any{out, nil}
 }
 
-func returnError[T any](err error) []any {
+func returnError2[T any](err error) []any {
 	var zero T
 	return []any{zero, err}
 }
@@ -32,7 +40,7 @@ func (s *HttpTestSuite) TestGetBalance() {
 			name:       "success",
 			expectCode: http.StatusOK,
 			auth:       true,
-			useCaseReturn: returnSuccess(get_balance.Out{
+			useCaseReturn: returnSuccess2(get_balance.Out{
 				Available: 100,
 				Reserved:  0,
 			}),
@@ -43,7 +51,7 @@ func (s *HttpTestSuite) TestGetBalance() {
 			name:          "not found",
 			auth:          true,
 			expectCode:    http.StatusNotFound,
-			useCaseReturn: returnError[get_balance.Out](domainAccount.ErrAccountNotFound),
+			useCaseReturn: returnError2[get_balance.Out](domainAccount.ErrAccountNotFound),
 			expectErr:     domainAccount.ErrAccountNotFound.Error(),
 			routeParams:   routeParams,
 		},
@@ -52,14 +60,14 @@ func (s *HttpTestSuite) TestGetBalance() {
 			auth:          true,
 			expectCode:    http.StatusBadRequest,
 			expectErr:     "invalid int64 value: invalid_user_id",
-			useCaseReturn: returnError[get_balance.Out](domain.ErrInvalidUserID),
+			useCaseReturn: returnError2[get_balance.Out](domain.ErrInvalidUserID),
 			routeParams:   map[string]string{"user_id": "invalid_user_id"},
 		},
 		{
 			name:          "not found",
 			auth:          true,
 			expectCode:    http.StatusNotFound,
-			useCaseReturn: returnError[get_balance.Out](domainAccount.ErrAccountNotFound),
+			useCaseReturn: returnError2[get_balance.Out](domainAccount.ErrAccountNotFound),
 			expectErr:     domainAccount.ErrAccountNotFound.Error(),
 			routeParams:   map[string]string{"user_id": fixtures.UserID_str},
 		},
@@ -74,7 +82,7 @@ func (s *HttpTestSuite) TestGetBalance() {
 			name:          "use case internal server error",
 			auth:          true,
 			expectCode:    http.StatusInternalServerError,
-			useCaseReturn: returnError[get_balance.Out](errors.New("internal server error")),
+			useCaseReturn: returnError2[get_balance.Out](errors.New("internal server error")),
 			expectErr:     "internal server error",
 			routeParams:   routeParams,
 		},

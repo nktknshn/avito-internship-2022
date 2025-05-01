@@ -21,7 +21,7 @@ func (s *HttpTestSuite) TestReportRevenue() {
 			auth:       true,
 			url:        validUrl,
 			expectCode: http.StatusOK,
-			useCaseReturn: returnSuccess(report_revenue.Out{
+			useCaseReturn: returnSuccess2(report_revenue.Out{
 				Records: []report_revenue.OutRecord{
 					{
 						ProductTitle: fixtures.ProductTitle_str,
@@ -87,7 +87,7 @@ func (s *HttpTestSuite) TestReportRevenue() {
 			auth:          true,
 			url:           validUrl,
 			expectCode:    http.StatusInternalServerError,
-			useCaseReturn: returnError[report_revenue.Out](errors.New("some error")),
+			useCaseReturn: returnError2[report_revenue.Out](errors.New("some error")),
 			expectErr:     "internal server error",
 		},
 	}

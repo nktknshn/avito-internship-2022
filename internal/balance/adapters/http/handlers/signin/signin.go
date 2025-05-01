@@ -2,11 +2,13 @@ package signin
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
@@ -57,6 +59,9 @@ func makeHandlerSignIn(u usecase) http.Handler {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
 		out, err := u.Handle(r.Context(), in)
+		if errors.Is(err, domainAuth.ErrInvalidAuthUserPassword) {
+			return nil, ergo.NewError(http.StatusUnauthorized, err)
+		}
 		if err != nil {
 			return nil, ergo.NewError(http.StatusInternalServerError, err)
 		}

@@ -14,9 +14,12 @@ var (
 	AuthUserID_str string                = "1"
 	AuthUserID     domainAuth.AuthUserID = 1
 	//
-	AccountID_i64 int64                   = 1
-	AccountID_str string                  = "1"
-	AccountID     domainAccount.AccountID = 1
+	AccountID_i64   int64                   = 1
+	AccountID_str   string                  = "1"
+	AccountID       domainAccount.AccountID = 1
+	AccountID_2_i64 int64                   = 2
+	AccountID_2_str string                  = "2"
+	AccountID_2     domainAccount.AccountID = 2
 	//
 	UserID_i64 int64         = 1
 	UserID_str string        = "1"

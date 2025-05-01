@@ -8,7 +8,7 @@ type In struct {
 }
 
 type Out struct {
-	Token domainAuth.AuthUserToken
+	Token domainAuth.AuthUserToken `json:"token"`
 }
 
 func NewInFromValues(username string, password string) (In, error) {

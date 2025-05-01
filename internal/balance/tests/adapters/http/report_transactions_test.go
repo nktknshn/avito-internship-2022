@@ -38,7 +38,7 @@ func (s *HttpTestSuite) TestReportTransactions() {
 			name:        "success",
 			url:         validUrl,
 			routeParams: validRouteParams,
-			useCaseReturn: returnSuccess(report_transactions.Out{
+			useCaseReturn: returnSuccess2(report_transactions.Out{
 				Cursor:  "cursor",
 				HasMore: true,
 				Transactions: []report_transactions.OutTransaction{
@@ -70,7 +70,7 @@ func (s *HttpTestSuite) TestReportTransactions() {
 			auth:          true,
 			url:           validUrl,
 			routeParams:   validRouteParams,
-			useCaseReturn: returnError[report_transactions.Out](domainAccount.ErrAccountNotFound),
+			useCaseReturn: returnError2[report_transactions.Out](domainAccount.ErrAccountNotFound),
 			expectCode:    http.StatusNotFound,
 			expectErr:     domainAccount.ErrAccountNotFound.Error(),
 		},

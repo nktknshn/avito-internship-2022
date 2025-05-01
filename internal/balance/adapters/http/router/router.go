@@ -18,7 +18,7 @@ func NewMuxRouter(handlers *adaptersHttp.HttpAdapter) *mux.Router {
 
 	router.Handle("/report/transactions/{user_id:[0-9]+}", handlers.ReportTransactions.GetHandler()).Methods("GET")
 	router.Handle("/report/revenue", handlers.ReportRevenue.GetHandler()).Methods("GET")
-	router.Handle("/signin", handlers.SignIn.GetHandler()).Methods("POST")
+	router.Handle("/signin", handlers.AuthSignIn.GetHandler()).Methods("POST")
 
 	return router
 }
