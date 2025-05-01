@@ -10,6 +10,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -31,6 +32,7 @@ type AppMocked struct {
 	AuthSignupUseCaseMock         *AuthSignupUseCaseMock
 	AuthValidateTokenUseCaseMock  *AuthValidateTokenUseCaseMock
 	ReportTransactionsUseCaseMock *ReportTransactionsUseCaseMock
+	ReportRevenueUseCaseMock      *ReportRevenueUseCaseMock
 }
 
 func NewMockedApp() *AppMocked {
@@ -45,6 +47,7 @@ func NewMockedApp() *AppMocked {
 		AuthSignupUseCaseMock:         &AuthSignupUseCaseMock{},
 		AuthValidateTokenUseCaseMock:  &AuthValidateTokenUseCaseMock{},
 		ReportTransactionsUseCaseMock: &ReportTransactionsUseCaseMock{},
+		ReportRevenueUseCaseMock:      &ReportRevenueUseCaseMock{},
 	}
 
 	a.Application.GetBalance = a.GetBalanceUseCaseMock
@@ -54,6 +57,7 @@ func NewMockedApp() *AppMocked {
 	a.Application.ReserveCancel = a.ReserveCancelUseCaseMock
 	a.Application.ReserveConfirm = a.ReserveConfirmUseCaseMock
 	a.Application.ReportTransactions = a.ReportTransactionsUseCaseMock
+	a.Application.ReportRevenue = a.ReportRevenueUseCaseMock
 
 	a.Application.AuthSignin = a.AuthSigninUseCaseMock
 	a.Application.AuthSignup = a.AuthSignupUseCaseMock
@@ -195,4 +199,17 @@ func (m *ReportTransactionsUseCaseMock) Handle(ctx context.Context, in report_tr
 
 func (m *ReportTransactionsUseCaseMock) GetName() string {
 	return use_cases.NameReportTransactions
+}
+
+type ReportRevenueUseCaseMock struct {
+	mock.Mock
+}
+
+func (m *ReportRevenueUseCaseMock) Handle(ctx context.Context, in report_revenue.In) (report_revenue.Out, error) {
+	args := m.Called(ctx, in)
+	return args.Get(0).(report_revenue.Out), args.Error(1)
+}
+
+func (m *ReportRevenueUseCaseMock) GetName() string {
+	return use_cases.NameReportRevenue
 }

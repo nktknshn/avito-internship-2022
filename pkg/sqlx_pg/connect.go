@@ -2,6 +2,7 @@ package sqlx_pg
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	pfgxStdlib "github.com/jackc/pgx/v5/stdlib"
@@ -47,6 +48,16 @@ func Connect(ctx context.Context, cfg PostgresCfg) (*sqlx.DB, error) {
 	db := pfgxStdlib.OpenDB(*pgxConfig, opts...)
 
 	conn := sqlx.NewDb(db, "pgx")
+
+	tz, err := GetTimezone(ctx, conn)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if tz != "UTC" {
+		return nil, errors.New("postgres timezone is not UTC")
+	}
 
 	retryCount := 1
 

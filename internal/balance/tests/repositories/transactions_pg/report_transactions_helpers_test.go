@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
@@ -18,6 +19,17 @@ type transactionWrapper struct {
 	trSpend    *domainTransaction.TransactionSpend
 	trDeposit  *domainTransaction.TransactionDeposit
 	trTransfer *domainTransaction.TransactionTransfer
+}
+
+func (tw *transactionWrapper) setProduct(p *struct {
+	productID   int64
+	productName string
+}) *transactionWrapper {
+	if tw.isSpend() {
+		tw.trSpend.ProductID = domainProduct.ProductID(p.productID)
+		tw.trSpend.ProductTitle = domainProduct.ProductTitle(p.productName)
+	}
+	return tw
 }
 
 func (tw *transactionWrapper) isSpend() bool {

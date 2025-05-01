@@ -6,6 +6,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -28,4 +29,5 @@ type Application struct {
 	ReserveConfirm     decorator.UseCaseCommandHandler[reserve_confirm.In]
 	Transfer           decorator.UseCaseCommandHandler[transfer.In]
 	ReportTransactions decorator.UseCaseQueryHandler[report_transactions.In, report_transactions.Out]
+	ReportRevenue      decorator.UseCaseQueryHandler[report_revenue.In, report_revenue.Out]
 }

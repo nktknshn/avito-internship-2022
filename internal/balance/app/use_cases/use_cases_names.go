@@ -11,4 +11,5 @@ const (
 	NameAuthSignup         = "AuthSignUp"
 	NameAuthValidateToken  = "AuthValidateToken"
 	NameReportTransactions = "ReportTransactions"
+	NameReportRevenue      = "ReportRevenue"
 )

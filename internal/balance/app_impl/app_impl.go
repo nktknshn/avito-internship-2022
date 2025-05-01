@@ -16,6 +16,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -87,6 +88,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 		reserveConfirm     = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
 		transfer           = transfer.New(trm, accountsRepository, transactionsRepository)
 		reportTransactions = report_transactions.New(transactionsRepository)
+		reportRevenue      = report_revenue.New(transactionsRepository)
 	)
 
 	// logs & metrics
@@ -111,6 +113,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 			ReserveConfirm:     decorator.DecorateCommand(reserveConfirm, metricsClient, logger),
 			Transfer:           decorator.DecorateCommand(transfer, metricsClient, logger),
 			ReportTransactions: decorator.DecorateQuery(reportTransactions, metricsClient, logger),
+			ReportRevenue:      decorator.DecorateQuery(reportRevenue, metricsClient, logger),
 		},
 		MetricsHandler: metricsClient.GetHandler(),
 		Logger:         logger,
