@@ -9,17 +9,23 @@ import (
 )
 
 var (
-	AuthToken      string                = "token"
-	AuthUserID_i64 int64                 = 1
-	AuthUserID_str string                = "1"
-	AuthUserID     domainAuth.AuthUserID = 1
+	AuthToken              string                  = "token"
+	AuthUserID_i64         int64                   = 1
+	AuthUserID_str         string                  = "1"
+	AuthUserID             domainAuth.AuthUserID   = 1
+	AuthUserID_i64_invalid int64                   = -1
+	AuthUserID_str_invalid string                  = "-1"
+	AuthUserRole_str       string                  = "admin"
+	AuthUserRole           domainAuth.AuthUserRole = domainAuth.AuthUserRoleAdmin
 	//
-	AccountID_i64   int64                   = 1
-	AccountID_str   string                  = "1"
-	AccountID       domainAccount.AccountID = 1
-	AccountID_2_i64 int64                   = 2
-	AccountID_2_str string                  = "2"
-	AccountID_2     domainAccount.AccountID = 2
+	AccountID_i64         int64                   = 1
+	AccountID_str         string                  = "1"
+	AccountID             domainAccount.AccountID = 1
+	AccountID_2_i64       int64                   = 2
+	AccountID_2_str       string                  = "2"
+	AccountID_2           domainAccount.AccountID = 2
+	AccountID_i64_invalid int64                   = -1
+	AccountID_str_invalid string                  = "-1"
 	//
 	UserID_i64 int64         = 1
 	UserID_str string        = "1"

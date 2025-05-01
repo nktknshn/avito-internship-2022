@@ -34,7 +34,12 @@ func (s *Suite) TearDownTest() {
 }
 
 func (s *Suite) TestSave_Create_Success() {
-	acc, err := domainAccount.NewAccountFromValues(0, 1, 100, 0)
+	acc, err := domainAccount.NewAccountFromValues(
+		0,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
@@ -43,7 +48,13 @@ func (s *Suite) TestSave_Create_Success() {
 }
 
 func (s *Suite) TestSave_Update_Success() {
-	acc, err := domainAccount.NewAccountFromValues(0, 1, 100, 0)
+	acc, err := domainAccount.NewAccountFromValues(
+		0,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
+
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
@@ -61,7 +72,13 @@ func (s *Suite) TestSave_Update_Success() {
 }
 
 func (s *Suite) TestSave_NotFound() {
-	acc, err := domainAccount.NewAccountFromValues(1, 1, 100, 0)
+	acc, err := domainAccount.NewAccountFromValues(
+		1,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
+
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
@@ -70,7 +87,12 @@ func (s *Suite) TestSave_NotFound() {
 }
 
 func (s *Suite) TestGetByUserID_Success() {
-	acc, err := domainAccount.NewAccountFromValues(0, 1, 100, 0)
+	acc, err := domainAccount.NewAccountFromValues(
+		0,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
@@ -82,4 +104,29 @@ func (s *Suite) TestGetByUserID_Success() {
 	s.Require().Equal(acc.UserID, domain.UserID(1))
 	s.Require().Equal(fixtures.Amount100, acc.Balance.GetAvailable())
 	s.Require().Equal(fixtures.Amount0, acc.Balance.GetReserved())
+}
+
+func (s *Suite) TestGetByAccountID_Success() {
+	acc, err := domainAccount.NewAccountFromValues(
+		0,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
+
+	s.Require().NoError(err)
+
+	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	s.Require().NoError(err)
+
+	acc, err = s.accountsRepo.GetByAccountID(context.Background(), acc.ID)
+	s.Require().NoError(err)
+	s.Require().Equal(acc.ID, acc.ID)
+}
+
+func (s *Suite) TestGetByAccountID_NotFound() {
+	acc, err := s.accountsRepo.GetByAccountID(context.Background(), 1)
+	s.Require().Error(err)
+	s.Require().Nil(acc)
+	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
