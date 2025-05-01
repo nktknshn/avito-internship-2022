@@ -23,6 +23,7 @@ func (s *Suite) TearDownTest() {
 }
 
 func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
+	// Если время сохраняется в TIMESTAMPTZ, то оно сохраняется в UTC, конвертируя часовой пояс.
 	_, err := s.ExecSql(`
 		CREATE TABLE test_time_tz (
 			created_at TIMESTAMPTZ NOT NULL
@@ -55,7 +56,7 @@ func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
 }
 
 func (s *Suite) TestTimeSaveAndGet_TIMESTAMP() {
-	// Проверяем поведение для TIMESTAMP
+	// Если время сохраняется в TIMESTAMP, то оно сохраняется в часовом поясе в UTC, а таймзона отбрасывается.
 	_, err := s.ExecSql(`
 		CREATE TABLE test_time (
 			created_at TIMESTAMP NOT NULL
