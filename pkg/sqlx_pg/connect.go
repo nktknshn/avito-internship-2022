@@ -48,7 +48,9 @@ func Connect(ctx context.Context, cfg PostgresCfg) (*sqlx.DB, error) {
 
 	conn := sqlx.NewDb(db, "pgx")
 
-	for range 10 {
+	retryCount := 1
+
+	for range retryCount {
 		err = conn.PingContext(ctx)
 		if err != nil {
 			time.Sleep(time.Second * 1)
