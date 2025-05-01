@@ -1,6 +1,9 @@
 package fixtures
 
 import (
+	"time"
+
+	"github.com/google/uuid"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
@@ -29,4 +32,13 @@ var (
 	AmountPositive100_i64 int64                       = 100
 	AmountPositive100_str string                      = "100"
 	AmountPositive100     domainAmount.AmountPositive = must.Must(domainAmount.NewPositive(100))
+	//
+	UUID_1     uuid.UUID = uuid.MustParse("123e4567-e89b-12d3-a456-426614174000")
+	UUID_1_str string    = "123e4567-e89b-12d3-a456-426614174000"
+	//
+	UUID_2     uuid.UUID = uuid.MustParse("123e4567-e89b-12d3-a456-426614174001")
+	UUID_2_str string    = "123e4567-e89b-12d3-a456-426614174001"
+	//
+	Time_1     time.Time = time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
+	Time_1_str string    = Time_1.Format(time.RFC3339)
 )

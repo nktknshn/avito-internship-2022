@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -14,10 +15,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) SetupSubTest() {
-	s.SetupTest()
-}
-
 func (s *HttpTestSuite) TestDeposit() {
 
 	var validPayload = map[string]any{
@@ -26,7 +23,7 @@ func (s *HttpTestSuite) TestDeposit() {
 		"source":  fixtures.DepositSource_str,
 	}
 
-	testCases := []testCaseCommand{
+	testCases := []testCase{
 		{
 			name:       "success",
 			payload:    validPayload,
@@ -103,7 +100,9 @@ func (s *HttpTestSuite) TestDeposit() {
 		},
 	}
 
-	s.runTestCasesCommand(func() *mock.Mock {
+	s.runTestCases(func() *mock.Mock {
 		return &s.app.DepositUseCaseMock.Mock
+	}, func() adaptersHttp.Handler {
+		return s.httpAdapter.Deposit
 	}, testCases)
 }

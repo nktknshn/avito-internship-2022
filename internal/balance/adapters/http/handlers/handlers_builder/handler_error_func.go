@@ -29,5 +29,5 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	}
 
 	// если ошибка не обернута с http статусом, то используем http статус 500
-	ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.InternalServerError(err))
+	ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.NewInternalServerError(err))
 }

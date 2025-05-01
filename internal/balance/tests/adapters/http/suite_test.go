@@ -18,27 +18,17 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type testCaseCommand struct {
-	name    string
-	payload map[string]any
-	// useCaseErr error
+type testCase struct {
+	name          string
+	payload       map[string]any
+	url           string
+	routeParams   map[string]string
 	useCaseReturn []any
 	expectCode    int
 	expectErr     string
+	expectBody    map[string]any
 	auth          bool
 	authRole      domainAuth.AuthUserRole
-}
-
-type testCaseQuery struct {
-	name        string
-	query       map[string]string
-	routeParams map[string]string
-	useCaseOut  any
-	useCaseErr  error
-	expectCode  int
-	expectErr   string
-	auth        bool
-	authRole    domainAuth.AuthUserRole
 }
 
 func TestHttpTestSuite(t *testing.T) {
@@ -57,9 +47,20 @@ func (s *HttpTestSuite) SetupTest() {
 	s.setRouteParams(map[string]string{})
 }
 
-func (s *HttpTestSuite) runTestCasesCommand(useCase func() *mock.Mock, testCases []testCaseCommand) {
+func (s *HttpTestSuite) SetupSubTest() {
+	s.SetupTest()
+}
+
+func (s *HttpTestSuite) runTestCases(useCase func() *mock.Mock, handler func() adaptersHttp.Handler, testCases []testCase) {
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
+
+			if len(tc.routeParams) > 0 {
+				s.setRouteParams(tc.routeParams)
+			} else {
+				s.setRouteParams(map[string]string{})
+			}
+
 			if tc.auth && !tc.authRole.IsEmpty() {
 				s.setupAuthRole(tc.authRole)
 			} else if tc.auth {
@@ -67,6 +68,7 @@ func (s *HttpTestSuite) runTestCasesCommand(useCase func() *mock.Mock, testCases
 			}
 
 			useCaseReturn := []any{nil}
+
 			if tc.useCaseReturn != nil {
 				useCaseReturn = tc.useCaseReturn
 			}
@@ -76,25 +78,28 @@ func (s *HttpTestSuite) runTestCasesCommand(useCase func() *mock.Mock, testCases
 			var resp *httptest.ResponseRecorder
 
 			if tc.auth {
-				_, resp = s.requestAuthPayload(s.httpAdapter.Deposit, tc.payload)
+				_, resp = s.requestAuthPayload(handler(), tc.payload, tc.url)
 			} else {
-				_, resp = s.requestPayload(s.httpAdapter.Deposit, tc.payload)
+				_, resp = s.requestPayload(handler(), tc.payload, tc.url)
 			}
 
+			// fmt.Println(resp.Body.String())
 			s.Require().Equal(tc.expectCode, resp.Code)
 
 			if tc.expectErr != "" {
 				s.Require().JSONEq(ejson(tc.expectErr), resp.Body.String())
+			} else if tc.expectBody == nil {
+				s.Require().JSONEq(rjsonStr(`{}`), resp.Body.String())
 			} else {
-				s.Require().Equal(rjsonStr(`{}`), resp.Body.String())
+				s.Require().JSONEq(rjson(tc.expectBody), resp.Body.String())
 			}
 		})
 	}
 }
 
-func (s *HttpTestSuite) requestAuthPayload(h adaptersHttp.Handler, payload map[string]any) (*http.Request, *httptest.ResponseRecorder) {
+func (s *HttpTestSuite) requestAuthPayload(h adaptersHttp.Handler, payload map[string]any, url string) (*http.Request, *httptest.ResponseRecorder) {
 	jsonPayload, _ := json.Marshal(payload)
-	req, _ := http.NewRequest("", "", bytes.NewBuffer(jsonPayload))
+	req, _ := http.NewRequest("", url, bytes.NewBuffer(jsonPayload))
 	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)
 	resp := httptest.NewRecorder()
 	h.GetHandler().ServeHTTP(resp, req)
@@ -116,9 +121,9 @@ func (s *HttpTestSuite) request(h adaptersHttp.Handler) (*http.Request, *httptes
 	return req, resp
 }
 
-func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any) (*http.Request, *httptest.ResponseRecorder) {
+func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any, url string) (*http.Request, *httptest.ResponseRecorder) {
 	jsonPayload, _ := json.Marshal(payload)
-	req, _ := http.NewRequest("", "", bytes.NewBuffer(jsonPayload))
+	req, _ := http.NewRequest("", url, bytes.NewBuffer(jsonPayload))
 	resp := httptest.NewRecorder()
 	h.GetHandler().ServeHTTP(resp, req)
 	return req, resp

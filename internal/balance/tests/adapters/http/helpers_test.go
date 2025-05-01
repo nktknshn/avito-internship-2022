@@ -10,7 +10,7 @@ func ejsonStr(res string) string {
 	return `{"error":"` + res + `"}`
 }
 
-func rjson(res string) string {
+func rjson(res map[string]any) string {
 	json, err := json.Marshal(map[string]any{
 		"result": res,
 	})

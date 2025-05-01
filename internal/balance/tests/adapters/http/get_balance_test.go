@@ -1,58 +1,78 @@
 package http_test
 
 import (
+	"errors"
 	"net/http"
 
+	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/stretchr/testify/mock"
 )
 
+func returnSuccess[T any](out T) []any {
+	return []any{out, nil}
+}
+
+func returnError[T any](err error) []any {
+	var zero T
+	return []any{zero, err}
+}
+
 func (s *HttpTestSuite) TestGetBalance() {
-	// testCases := []testCaseQuery{
-	// 	{
-	// 		name:        "success",
-	// 		query:       map[string]string{"user_id": fixtures.UserID_str},
-	// 		expectCode:  http.StatusOK,
-	// 		expectErr:   "",
-	// 		auth:        true,
-	// 		authRole:    domainAuth.AuthUserRoleAdmin,
-	// 		routeParams: map[string]string{"user_id": fixtures.UserID_str},
-	// 	},
-	// }
-}
 
-func (s *HttpTestSuite) TestGetBalance_Success() {
-	s.setupAuthAdmin()
+	var routeParams = map[string]string{"user_id": fixtures.UserID_str}
 
-	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{
-		Available: 100,
-		Reserved:  0,
-	}, nil)
-
-	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
-
-	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
-
-	s.Require().Equal(http.StatusOK, resp.Code)
-	s.Require().Equal(rjsonStr(`{"available":100,"reserved":0}`), resp.Body.String())
-}
-
-func (s *HttpTestSuite) TestGetBalance_NotFound() {
-	s.setupAuthAdmin()
-
-	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
-
-	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
-	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
-
-	s.Require().Equal(http.StatusNotFound, resp.Code)
-}
-
-func (s *HttpTestSuite) TestGetBalance_InvalidUserID() {
-	s.setupAuthAdmin()
-	s.setRouteParams(map[string]string{"user_id": "invalid_user_id"})
-	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
-	s.Require().Equal(http.StatusBadRequest, resp.Code)
+	testCases := []testCase{
+		{
+			name:       "success",
+			expectCode: http.StatusOK,
+			auth:       true,
+			useCaseReturn: returnSuccess(get_balance.Out{
+				Available: 100,
+				Reserved:  0,
+			}),
+			routeParams: routeParams,
+			expectBody:  map[string]any{"available": 100, "reserved": 0},
+		},
+		{
+			name:          "not found",
+			auth:          true,
+			expectCode:    http.StatusNotFound,
+			useCaseReturn: returnError[get_balance.Out](domainAccount.ErrAccountNotFound),
+			expectErr:     domainAccount.ErrAccountNotFound.Error(),
+			routeParams:   routeParams,
+		},
+		{
+			name:          "invalid user id",
+			auth:          true,
+			expectCode:    http.StatusBadRequest,
+			expectErr:     "invalid int64 value: invalid_user_id",
+			useCaseReturn: returnError[get_balance.Out](domain.ErrInvalidUserID),
+			routeParams:   map[string]string{"user_id": "invalid_user_id"},
+		},
+		{
+			name:          "not found",
+			auth:          true,
+			expectCode:    http.StatusNotFound,
+			useCaseReturn: returnError[get_balance.Out](domainAccount.ErrAccountNotFound),
+			expectErr:     domainAccount.ErrAccountNotFound.Error(),
+			routeParams:   map[string]string{"user_id": fixtures.UserID_str},
+		},
+		{
+			name:          "use case internal server error",
+			auth:          true,
+			expectCode:    http.StatusInternalServerError,
+			useCaseReturn: returnError[get_balance.Out](errors.New("internal server error")),
+			expectErr:     "internal server error",
+			routeParams:   routeParams,
+		},
+	}
+	s.runTestCases(func() *mock.Mock {
+		return &s.app.GetBalanceUseCaseMock.Mock
+	}, func() adaptersHttp.Handler {
+		return s.httpAdapter.GetBalance
+	}, testCases)
 }

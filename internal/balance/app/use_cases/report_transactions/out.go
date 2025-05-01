@@ -7,12 +7,12 @@ import (
 )
 
 type Out struct {
-	Transactions []outTransaction `json:"transactions"`
+	Transactions []OutTransaction `json:"transactions"`
 	Cursor       Cursor           `json:"cursor"`
 	HasMore      bool             `json:"has_more"`
 }
 
-type outTransaction interface {
+type OutTransaction interface {
 	isOutTransaction()
 }
 

@@ -2,6 +2,7 @@ package fixtures
 
 import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
@@ -12,6 +13,10 @@ var (
 	AuthUserID_i64 int64                 = 1
 	AuthUserID_str string                = "1"
 	AuthUserID     domainAuth.AuthUserID = 1
+	//
+	AccountID_i64 int64                   = 1
+	AccountID_str string                  = "1"
+	AccountID     domainAccount.AccountID = 1
 	//
 	UserID_i64 int64         = 1
 	UserID_str string        = "1"

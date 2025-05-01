@@ -23,7 +23,7 @@ func New(repo ReportTransactionsRepository) *ReportTransactionsUseCase {
 func (u *ReportTransactionsUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
 	out := Out{
-		Transactions: make([]outTransaction, 0),
+		Transactions: make([]OutTransaction, 0),
 	}
 
 	page, err := u.repo.GetTransactionsByUserID(ctx, in.userID, GetTransactionsQuery{
