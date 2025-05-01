@@ -22,7 +22,7 @@ func (y Year) Value() int {
 }
 
 func NewYear(year int) (Year, error) {
-	if year < 0 {
+	if year <= 0 {
 		return 0, ErrInvalidYear
 	}
 	return Year(year), nil

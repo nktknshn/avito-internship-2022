@@ -41,6 +41,9 @@ var (
 	ProductTitle_str string                     = "Product Title"
 	ProductTitle     domainProduct.ProductTitle = domainProduct.ProductTitle(ProductTitle_str)
 	//
+	ProductTitle_2_str string                     = "Product Title 2"
+	ProductTitle_2     domainProduct.ProductTitle = domainProduct.ProductTitle(ProductTitle_2_str)
+	//
 	DepositSource_str string                                     = "credit_card"
 	DepositSource     domainTransaction.TransactionDepositSource = domainTransaction.TransactionDepositSource(DepositSource_str)
 	//

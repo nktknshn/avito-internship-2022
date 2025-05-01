@@ -4,7 +4,10 @@ import (
 	"net/http"
 
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/stretchr/testify/mock"
@@ -61,6 +64,22 @@ func (s *HttpTestSuite) TestReportTransactions() {
 				"has_more": true,
 			},
 			auth: true,
+		},
+		{
+			name:          "not found",
+			auth:          true,
+			url:           validUrl,
+			routeParams:   validRouteParams,
+			useCaseReturn: returnError[report_transactions.Out](domainAccount.ErrAccountNotFound),
+			expectCode:    http.StatusNotFound,
+			expectErr:     domainAccount.ErrAccountNotFound.Error(),
+		},
+		{
+			name:       "user is not allowed",
+			expectCode: http.StatusForbidden,
+			expectErr:  handlers_auth.ErrUserNotAllowed.Error(),
+			auth:       true,
+			authRole:   domainAuth.AuthUserRoleNobody,
 		},
 	}
 

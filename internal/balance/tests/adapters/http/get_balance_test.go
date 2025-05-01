@@ -5,9 +5,11 @@ import (
 	"net/http"
 
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/stretchr/testify/mock"
 )
@@ -60,6 +62,13 @@ func (s *HttpTestSuite) TestGetBalance() {
 			useCaseReturn: returnError[get_balance.Out](domainAccount.ErrAccountNotFound),
 			expectErr:     domainAccount.ErrAccountNotFound.Error(),
 			routeParams:   map[string]string{"user_id": fixtures.UserID_str},
+		},
+		{
+			name:       "user is not allowed",
+			expectCode: http.StatusForbidden,
+			expectErr:  handlers_auth.ErrUserNotAllowed.Error(),
+			auth:       true,
+			authRole:   domainAuth.AuthUserRoleNobody,
 		},
 		{
 			name:          "use case internal server error",

@@ -1,7 +1,7 @@
 package report_revenue
 
 type Out struct {
-	Records []OutRecord
+	Records []OutRecord `json:"records"`
 }
 
 type OutRecord struct {

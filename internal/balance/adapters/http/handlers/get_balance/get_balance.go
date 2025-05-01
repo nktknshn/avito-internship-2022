@@ -62,6 +62,7 @@ func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handl
 		if err != nil {
 			return nil, err
 		}
+
 		return result, nil
 	})
 }
