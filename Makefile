@@ -7,7 +7,7 @@ test-verbose:
 .PHONY: test-verbose
 
 cover-html:
-	./scripts/coverage.sh
+	./scripts/cover-html.sh
 .PHONY: cover-html
 
 cover:
