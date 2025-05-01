@@ -80,7 +80,7 @@ func (r *TransactionsRepository) setReportTransactionsCursor(
 	queryCursor report_transactions.Cursor,
 	queryArgs map[string]any,
 ) error {
-	if queryCursor == nil {
+	if queryCursor == report_transactions.CursorEmpty {
 		return nil
 	}
 
@@ -178,7 +178,11 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		sorting = query.Sorting
 	}
 
-	r.setReportTransactionsCursor(qb, sorting, sortingDirection, query.Cursor, queryArgs)
+	err := r.setReportTransactionsCursor(qb, sorting, sortingDirection, query.Cursor, queryArgs)
+	if err != nil {
+		return report_transactions.ReportTransactionsPage{}, err
+	}
+
 	r.setReportTransactionsSorting(qb, sorting, sortingDirection)
 
 	transactions := []reportTransactionDTO{}
@@ -201,7 +205,7 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		return report_transactions.ReportTransactionsPage{
 			Transactions: []report_transactions.Transaction{},
 			HasMore:      false,
-			Cursor:       nil,
+			Cursor:       report_transactions.CursorEmpty,
 		}, nil
 	}
 

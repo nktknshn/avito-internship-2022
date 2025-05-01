@@ -13,3 +13,7 @@ cover-html:
 cover:
 	./scripts/cover.sh
 .PHONY: cover
+
+generate-protobuf:
+	./scripts/generate-protobuf.sh balance
+.PHONY: generate-protobuf

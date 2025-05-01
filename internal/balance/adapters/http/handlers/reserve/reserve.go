@@ -44,16 +44,6 @@ type payloadType struct {
 	Amount       int64  `json:"amount"`
 }
 
-func (p payloadType) GetIn() (reserve.In, error) {
-	return reserve.NewInFromValues(
-		p.UserID,
-		p.ProductID,
-		p.ProductTitle,
-		p.OrderID,
-		p.Amount,
-	)
-}
-
 func makeHandlerReserve(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
@@ -62,11 +52,21 @@ func makeHandlerReserve(auth handlers_auth.AuthUseCase, u useCase) http.Handler 
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
-		in, err := pl.GetIn()
+
+		in, err := reserve.NewInFromValues(
+			pl.UserID,
+			pl.ProductID,
+			pl.ProductTitle,
+			pl.OrderID,
+			pl.Amount,
+		)
+
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
+
 		err = u.Handle(r.Context(), in)
+
 		if err != nil {
 			return nil, err
 		}

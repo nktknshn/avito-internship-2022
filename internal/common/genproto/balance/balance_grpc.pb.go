@@ -20,13 +20,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BalanceService_GetBalance_FullMethodName     = "/balance.BalanceService/GetBalance"
-	BalanceService_Deposit_FullMethodName        = "/balance.BalanceService/Deposit"
-	BalanceService_Reserve_FullMethodName        = "/balance.BalanceService/Reserve"
-	BalanceService_ReserveCancel_FullMethodName  = "/balance.BalanceService/ReserveCancel"
-	BalanceService_ReserveConfirm_FullMethodName = "/balance.BalanceService/ReserveConfirm"
-	BalanceService_Transfer_FullMethodName       = "/balance.BalanceService/Transfer"
-	BalanceService_AuthSignIn_FullMethodName     = "/balance.BalanceService/AuthSignIn"
+	BalanceService_GetBalance_FullMethodName         = "/balance.BalanceService/GetBalance"
+	BalanceService_Deposit_FullMethodName            = "/balance.BalanceService/Deposit"
+	BalanceService_Reserve_FullMethodName            = "/balance.BalanceService/Reserve"
+	BalanceService_ReserveCancel_FullMethodName      = "/balance.BalanceService/ReserveCancel"
+	BalanceService_ReserveConfirm_FullMethodName     = "/balance.BalanceService/ReserveConfirm"
+	BalanceService_Transfer_FullMethodName           = "/balance.BalanceService/Transfer"
+	BalanceService_AuthSignIn_FullMethodName         = "/balance.BalanceService/AuthSignIn"
+	BalanceService_ReportTransactions_FullMethodName = "/balance.BalanceService/ReportTransactions"
 )
 
 // BalanceServiceClient is the client API for BalanceService service.
@@ -40,6 +41,7 @@ type BalanceServiceClient interface {
 	ReserveConfirm(ctx context.Context, in *ReserveConfirmRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AuthSignIn(ctx context.Context, in *AuthSignInRequest, opts ...grpc.CallOption) (*AuthSignInResponse, error)
+	ReportTransactions(ctx context.Context, in *ReportTransactionsRequest, opts ...grpc.CallOption) (*ReportTransactionsResponse, error)
 }
 
 type balanceServiceClient struct {
@@ -120,6 +122,16 @@ func (c *balanceServiceClient) AuthSignIn(ctx context.Context, in *AuthSignInReq
 	return out, nil
 }
 
+func (c *balanceServiceClient) ReportTransactions(ctx context.Context, in *ReportTransactionsRequest, opts ...grpc.CallOption) (*ReportTransactionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReportTransactionsResponse)
+	err := c.cc.Invoke(ctx, BalanceService_ReportTransactions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BalanceServiceServer is the server API for BalanceService service.
 // All implementations should embed UnimplementedBalanceServiceServer
 // for forward compatibility.
@@ -131,6 +143,7 @@ type BalanceServiceServer interface {
 	ReserveConfirm(context.Context, *ReserveConfirmRequest) (*emptypb.Empty, error)
 	Transfer(context.Context, *TransferRequest) (*emptypb.Empty, error)
 	AuthSignIn(context.Context, *AuthSignInRequest) (*AuthSignInResponse, error)
+	ReportTransactions(context.Context, *ReportTransactionsRequest) (*ReportTransactionsResponse, error)
 }
 
 // UnimplementedBalanceServiceServer should be embedded to have
@@ -160,6 +173,9 @@ func (UnimplementedBalanceServiceServer) Transfer(context.Context, *TransferRequ
 }
 func (UnimplementedBalanceServiceServer) AuthSignIn(context.Context, *AuthSignInRequest) (*AuthSignInResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthSignIn not implemented")
+}
+func (UnimplementedBalanceServiceServer) ReportTransactions(context.Context, *ReportTransactionsRequest) (*ReportTransactionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReportTransactions not implemented")
 }
 func (UnimplementedBalanceServiceServer) testEmbeddedByValue() {}
 
@@ -307,6 +323,24 @@ func _BalanceService_AuthSignIn_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BalanceService_ReportTransactions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReportTransactionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BalanceServiceServer).ReportTransactions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BalanceService_ReportTransactions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BalanceServiceServer).ReportTransactions(ctx, req.(*ReportTransactionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BalanceService_ServiceDesc is the grpc.ServiceDesc for BalanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -341,6 +375,10 @@ var BalanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthSignIn",
 			Handler:    _BalanceService_AuthSignIn_Handler,
+		},
+		{
+			MethodName: "ReportTransactions",
+			Handler:    _BalanceService_ReportTransactions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

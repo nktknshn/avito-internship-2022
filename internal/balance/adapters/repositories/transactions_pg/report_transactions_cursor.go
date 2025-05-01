@@ -37,16 +37,15 @@ func (c *cursorUnion) IsUpdatedAt() bool {
 	return c.UpdatedAt != nil
 }
 
+var emptyCursor = &cursorUnion{}
+
 // декодируем из base64 и парсим json
 func unmarshalCursor(cursor report_transactions.Cursor) (*cursorUnion, error) {
 	if cursor == report_transactions.CursorEmpty {
 		return &cursorUnion{}, nil
 	}
 
-	cursorStr, ok := cursor.(string)
-	if !ok {
-		return nil, report_transactions.ErrCursorInvalid
-	}
+	cursorStr := string(cursor)
 
 	cursorBytes, err := base64.StdEncoding.DecodeString(cursorStr)
 	if err != nil {
@@ -85,7 +84,7 @@ func marshalCursor(cursor *cursorUnion) (report_transactions.Cursor, error) {
 		if err != nil {
 			return "", err
 		}
-		return base64.StdEncoding.EncodeToString(cursorBytes), nil
+		return report_transactions.Cursor(base64.StdEncoding.EncodeToString(cursorBytes)), nil
 	}
 
 	if cursor.IsUpdatedAt() {
@@ -93,7 +92,7 @@ func marshalCursor(cursor *cursorUnion) (report_transactions.Cursor, error) {
 		if err != nil {
 			return "", err
 		}
-		return base64.StdEncoding.EncodeToString(cursorBytes), nil
+		return report_transactions.Cursor(base64.StdEncoding.EncodeToString(cursorBytes)), nil
 	}
 
 	return "", report_transactions.ErrCursorInvalid

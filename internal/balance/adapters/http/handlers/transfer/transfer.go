@@ -43,10 +43,6 @@ type payloadType struct {
 	Amount int64 `json:"amount"`
 }
 
-func (p payloadType) GetIn() (transfer.In, error) {
-	return transfer.NewInFromValues(p.From, p.To, p.Amount)
-}
-
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
@@ -55,7 +51,11 @@ func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
-		in, err := pl.GetIn()
+		in, err := transfer.NewInFromValues(
+			pl.From,
+			pl.To,
+			pl.Amount,
+		)
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}

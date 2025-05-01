@@ -17,3 +17,4 @@ TODO
 - [ ] panic recovery
 - [x] view tests coverage
 - [x] validate grpc server to use cases mapping on startup
+- [ ] uint64 for domain models

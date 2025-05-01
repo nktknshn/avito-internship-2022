@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"time"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc/auth"
@@ -9,6 +10,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
@@ -137,6 +139,84 @@ func (g GrpcAdapter) Transfer(ctx context.Context, request *balance.TransferRequ
 	}
 
 	return &empty.Empty{}, nil
+}
+
+func (g GrpcAdapter) ReportTransactions(ctx context.Context, request *balance.ReportTransactionsRequest) (*balance.ReportTransactionsResponse, error) {
+
+	in, err := report_transactions.NewInFromValues(
+		request.UserId,
+		request.Cursor,
+		request.Limit,
+		request.Sorting,
+		request.SortingDirection,
+	)
+
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	out, err := g.app.ReportTransactions.Handle(ctx, in)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	transactions := make([]*balance.ReportTransactionsTransaction, len(out.Transactions))
+
+	for i, transaction := range out.Transactions {
+		switch t := transaction.(type) {
+		case *report_transactions.OutTransactionDeposit:
+			transactions[i] = &balance.ReportTransactionsTransaction{
+				Transaction: &balance.ReportTransactionsTransaction_Deposit{
+					Deposit: &balance.ReportTransactionsTransactionDeposit{
+						Id:        t.ID.String(),
+						Amount:    t.Amount,
+						Source:    t.Source,
+						Status:    t.Status,
+						CreatedAt: t.CreatedAt.Format(time.RFC3339),
+						UpdatedAt: t.UpdatedAt.Format(time.RFC3339),
+					},
+				},
+			}
+		case *report_transactions.OutTransactionSpend:
+			transactions[i] = &balance.ReportTransactionsTransaction{
+				Transaction: &balance.ReportTransactionsTransaction_Spend{
+					Spend: &balance.ReportTransactionsTransactionSpend{
+						Id:           t.ID.String(),
+						AccountId:    t.AccountID,
+						OrderId:      t.OrderID,
+						ProductId:    t.ProductID,
+						ProductTitle: t.ProductTitle,
+						Amount:       t.Amount,
+						Status:       t.Status,
+						CreatedAt:    t.CreatedAt.Format(time.RFC3339),
+						UpdatedAt:    t.UpdatedAt.Format(time.RFC3339),
+					},
+				},
+			}
+		case *report_transactions.OutTransactionTransfer:
+			transactions[i] = &balance.ReportTransactionsTransaction{
+				Transaction: &balance.ReportTransactionsTransaction_Transfer{
+					Transfer: &balance.ReportTransactionsTransactionTransfer{
+						Id:        t.ID.String(),
+						From:      t.From,
+						To:        t.To,
+						Amount:    t.Amount,
+						Status:    t.Status,
+						CreatedAt: t.CreatedAt.Format(time.RFC3339),
+						UpdatedAt: t.UpdatedAt.Format(time.RFC3339),
+					},
+				},
+			}
+		default:
+			return nil, status.Error(codes.Internal, "unknown transaction type")
+		}
+	}
+
+	return &balance.ReportTransactionsResponse{
+		Transactions: transactions,
+		Cursor:       string(out.Cursor),
+		HasMore:      out.HasMore,
+	}, nil
 }
 
 func (g GrpcAdapter) AuthSignIn(ctx context.Context, request *balance.AuthSignInRequest) (*balance.AuthSignInResponse, error) {

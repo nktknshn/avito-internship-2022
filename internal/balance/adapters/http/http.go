@@ -5,6 +5,7 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_confirm"
@@ -18,13 +19,14 @@ type Handler interface {
 }
 
 type HttpAdapter struct {
-	GetBalance     Handler
-	Deposit        Handler
-	Reserve        Handler
-	ReserveCancel  Handler
-	ReserveConfirm Handler
-	Transfer       Handler
-	SignIn         Handler
+	GetBalance         Handler
+	Deposit            Handler
+	Reserve            Handler
+	ReserveCancel      Handler
+	ReserveConfirm     Handler
+	Transfer           Handler
+	ReportTransactions Handler
+	SignIn             Handler
 }
 
 func NewHttpAdapter(app *app.Application) *HttpAdapter {
@@ -36,14 +38,16 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 	handlerReserveConfirm := reserve_confirm.New(app.AuthValidateToken, app.ReserveConfirm)
 	handlerTransfer := transfer.New(app.AuthValidateToken, app.Transfer)
 	handlerSignIn := signin.New(app.AuthSignin)
+	handlerReportTransactions := report_transactions.New(app.AuthValidateToken, app.ReportTransactions)
 
 	return &HttpAdapter{
-		GetBalance:     handlerGetBalance,
-		Deposit:        handlerDeposit,
-		Reserve:        handlerReserve,
-		ReserveCancel:  handlerReserveCancel,
-		ReserveConfirm: handlerReserveConfirm,
-		Transfer:       handlerTransfer,
-		SignIn:         handlerSignIn,
+		GetBalance:         handlerGetBalance,
+		Deposit:            handlerDeposit,
+		Reserve:            handlerReserve,
+		ReserveCancel:      handlerReserveCancel,
+		ReserveConfirm:     handlerReserveConfirm,
+		Transfer:           handlerTransfer,
+		SignIn:             handlerSignIn,
+		ReportTransactions: handlerReportTransactions,
 	}
 }

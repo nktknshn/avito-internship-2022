@@ -42,10 +42,6 @@ type payloadType struct {
 	Amount int64  `json:"amount"`
 }
 
-func (p payloadType) GetIn() (deposit.In, error) {
-	return deposit.NewInFromValues(p.UserID, p.Amount, p.Source)
-}
-
 func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
@@ -55,7 +51,11 @@ func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
 
 		pl := payload.Get(r)
-		in, err := pl.GetIn()
+		in, err := deposit.NewInFromValues(
+			pl.UserID,
+			pl.Amount,
+			pl.Source,
+		)
 
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)

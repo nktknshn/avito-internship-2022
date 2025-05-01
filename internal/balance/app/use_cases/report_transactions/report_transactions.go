@@ -3,6 +3,7 @@ package report_transactions
 import (
 	"context"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
@@ -10,7 +11,7 @@ type ReportTransactionsUseCase struct {
 	repo ReportTransactionsRepository
 }
 
-func NewReportTransactionsUseCase(repo ReportTransactionsRepository) *ReportTransactionsUseCase {
+func New(repo ReportTransactionsRepository) *ReportTransactionsUseCase {
 
 	if repo == nil {
 		panic("repo is nil")
@@ -21,37 +22,40 @@ func NewReportTransactionsUseCase(repo ReportTransactionsRepository) *ReportTran
 
 func (u *ReportTransactionsUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
+	out := Out{
+		Transactions: make([]OutTransaction, 0),
+	}
+
 	page, err := u.repo.GetTransactionsByUserID(ctx, in.userID, GetTransactionsQuery{
 		Limit:            in.limit,
 		Cursor:           in.cursor,
 		Sorting:          in.sorting,
 		SortingDirection: in.sortingDirection,
 	})
+
 	if err != nil {
 		return Out{}, err
 	}
 
-	out := Out{
-		Cursor:  page.Cursor,
-		HasMore: page.HasMore,
-	}
+	out.Cursor = page.Cursor
+	out.HasMore = page.HasMore
 
 	for _, transaction := range page.Transactions {
 		switch transaction := transaction.(type) {
-		case domainTransaction.TransactionSpend:
-			out.Transactions = append(out.Transactions, OutTransactionSpend{
-				ID:        transaction.ID.Value(),
-				AccountID: transaction.AccountID.Value(),
-				OrderID:   transaction.OrderID.Value(),
-				ProductID: transaction.ProductID.Value(),
-				// ProductTitle: transaction.ProductTitle.Value(),
-				Amount:    transaction.Amount.Value(),
-				Status:    transaction.Status.Value(),
-				CreatedAt: transaction.CreatedAt,
-				UpdatedAt: transaction.UpdatedAt,
+		case *domainTransaction.TransactionSpend:
+			out.Transactions = append(out.Transactions, &OutTransactionSpend{
+				ID:           transaction.ID.Value(),
+				AccountID:    transaction.AccountID.Value(),
+				OrderID:      transaction.OrderID.Value(),
+				ProductID:    transaction.ProductID.Value(),
+				ProductTitle: transaction.ProductTitle.Value(),
+				Amount:       transaction.Amount.Value(),
+				Status:       transaction.Status.Value(),
+				CreatedAt:    transaction.CreatedAt,
+				UpdatedAt:    transaction.UpdatedAt,
 			})
-		case domainTransaction.TransactionDeposit:
-			out.Transactions = append(out.Transactions, OutTransactionDeposit{
+		case *domainTransaction.TransactionDeposit:
+			out.Transactions = append(out.Transactions, &OutTransactionDeposit{
 				ID:        transaction.ID.Value(),
 				Source:    transaction.DepositSource.Value(),
 				Amount:    transaction.Amount.Value(),
@@ -59,8 +63,8 @@ func (u *ReportTransactionsUseCase) Handle(ctx context.Context, in In) (Out, err
 				CreatedAt: transaction.CreatedAt,
 				UpdatedAt: transaction.UpdatedAt,
 			})
-		case domainTransaction.TransactionTransfer:
-			out.Transactions = append(out.Transactions, OutTransactionTransfer{
+		case *domainTransaction.TransactionTransfer:
+			out.Transactions = append(out.Transactions, &OutTransactionTransfer{
 				ID:        transaction.ID.Value(),
 				From:      transaction.FromAccountID.Value(),
 				To:        transaction.ToAccountID.Value(),
@@ -73,4 +77,8 @@ func (u *ReportTransactionsUseCase) Handle(ctx context.Context, in In) (Out, err
 	}
 
 	return out, nil
+}
+
+func (u *ReportTransactionsUseCase) GetName() string {
+	return use_cases.NameReportTransactions
 }

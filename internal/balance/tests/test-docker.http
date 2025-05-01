@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYwMjg3OTMsImlhdCI6MTc0NjAyNTE5MywiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.tHmXcKoKo3zk43dpq0GtCNk_QTRa16IwHA1N4W-MDaA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYwMzg0MDcsImlhdCI6MTc0NjAzNDgwNywiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.mqlEbRzADfCc7SkqK1oNIuZSSwa3n5Dn-Ja2j4fKtbg
 
 ###
 
@@ -22,6 +22,33 @@ Authorization: Bearer {{token}}
 
 ###
 
+POST http://localhost:5050/api/v1/balance/reserve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "user_id": 1,
+    "product_id": 2,
+    "product_title": "test product",
+    "order_id": 5,
+    "amount": 100
+}
+
+###
+
+POST http://localhost:5050/api/v1/balance/reserve/confirm
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "user_id": 1,
+    "product_id": 1,
+    "order_id": 5,
+    "amount": 100
+}
+
+###
+
 POST http://localhost:5050/api/v1/signin
 Content-Type: application/json
 
@@ -29,3 +56,15 @@ Content-Type: application/json
     "username": "admin",
     "password": "admin1234"
 }
+
+###
+
+# invalid cursor
+GET http://localhost:5050/api/v1/transactions/1?limit=10&cursor=1&sorting=updated_at&sorting_direction=desc
+Authorization: Bearer {{token}}
+
+###
+
+# valid request
+GET http://localhost:5050/api/v1/transactions/1?limit=10&sorting=updated_at&sorting_direction=asc
+Authorization: Bearer {{token}}

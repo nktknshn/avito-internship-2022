@@ -17,7 +17,7 @@ func (l Limit) Value() uint64 {
 	return uint64(l)
 }
 
-func NewLimit(limit int) (Limit, error) {
+func NewLimit(limit uint64) (Limit, error) {
 	if limit <= 0 {
 		return 0, errors.New("limit must be greater than 0")
 	}
@@ -29,12 +29,12 @@ const (
 )
 
 // Реализуется в репозитории
-type Cursor any
+type Cursor string
 
-var CursorEmpty = Cursor(nil)
+var CursorEmpty = Cursor("")
 
-func NewCursor(cursor any) (Cursor, error) {
-	return cursor, nil
+func NewCursor(cursor string) (Cursor, error) {
+	return Cursor(cursor), nil
 }
 
 // domainTransaction.TransactionDeposit

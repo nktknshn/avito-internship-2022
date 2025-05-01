@@ -23,7 +23,6 @@ services:
       - ./config/balance:/config/balance
       - ./.go-pkg:/go/pkg
       - ./.go-cache:/go-cache
-      - /home/user/Workspace/cv/go-ergo-handler:/home/user/Workspace/cv/go-ergo-handler
     working_dir: /balance
     ports:
       - 5050:8080

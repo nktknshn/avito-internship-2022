@@ -10,16 +10,15 @@ type In struct {
 	limit            Limit
 	sorting          Sorting
 	sortingDirection SortingDirection
-	transactionType  TransactionType
+	// transactionType  TransactionType
 }
 
 func NewInFromValues(
 	userID int64,
 	cursor string,
-	limit int,
+	limit uint64,
 	sorting string,
 	sortingDirection string,
-	transactionType string,
 ) (In, error) {
 	_userID, err := domain.NewUserID(userID)
 	if err != nil {
@@ -46,17 +45,11 @@ func NewInFromValues(
 		return In{}, err
 	}
 
-	_transactionType, err := NewTransactionType(transactionType)
-	if err != nil {
-		return In{}, err
-	}
-
 	return In{
 		userID:           _userID,
 		cursor:           _cursor,
 		limit:            _limit,
 		sorting:          _sorting,
 		sortingDirection: _sortingDirection,
-		transactionType:  _transactionType,
 	}, nil
 }

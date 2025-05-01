@@ -12,7 +12,9 @@ type Out struct {
 	HasMore      bool             `json:"has_more"`
 }
 
-type OutTransaction any
+type OutTransaction interface {
+	isOutTransaction()
+}
 
 type OutTransactionSpend struct {
 	ID           uuid.UUID `json:"id"`
@@ -26,6 +28,8 @@ type OutTransactionSpend struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
+func (o *OutTransactionSpend) isOutTransaction() {}
+
 type OutTransactionDeposit struct {
 	ID        uuid.UUID `json:"id"`
 	Source    string    `json:"source"`
@@ -34,6 +38,8 @@ type OutTransactionDeposit struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+func (o *OutTransactionDeposit) isOutTransaction() {}
 
 type OutTransactionTransfer struct {
 	ID        uuid.UUID `json:"id"`
@@ -44,3 +50,5 @@ type OutTransactionTransfer struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+func (o *OutTransactionTransfer) isOutTransaction() {}

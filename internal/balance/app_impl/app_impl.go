@@ -16,6 +16,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
@@ -79,12 +80,13 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 		accountsRepository     = accounts_pg.New(db, trmsqlx.DefaultCtxGetter)
 		transactionsRepository = transactions_pg.New(db, trmsqlx.DefaultCtxGetter)
 
-		getBalance     = get_balance.New(trm, accountsRepository)
-		deposit        = deposit.New(trm, accountsRepository, transactionsRepository)
-		reserve        = reserve.New(trm, accountsRepository, transactionsRepository)
-		reserveCancel  = reserve_cancel.New(trm, accountsRepository, transactionsRepository)
-		reserveConfirm = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
-		transfer       = transfer.New(trm, accountsRepository, transactionsRepository)
+		getBalance         = get_balance.New(trm, accountsRepository)
+		deposit            = deposit.New(trm, accountsRepository, transactionsRepository)
+		reserve            = reserve.New(trm, accountsRepository, transactionsRepository)
+		reserveCancel      = reserve_cancel.New(trm, accountsRepository, transactionsRepository)
+		reserveConfirm     = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
+		transfer           = transfer.New(trm, accountsRepository, transactionsRepository)
+		reportTransactions = report_transactions.New(transactionsRepository)
 	)
 
 	// logs & metrics
@@ -102,12 +104,13 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 			AuthSignup:        decorator.DecorateCommand(authSignup, metricsClient, logger),
 			AuthValidateToken: decorator.DecorateQuery(authValidateToken, metricsClient, logger),
 			// balance
-			GetBalance:     decorator.DecorateQuery(getBalance, metricsClient, logger),
-			Deposit:        decorator.DecorateCommand(deposit, metricsClient, logger),
-			Reserve:        decorator.DecorateCommand(reserve, metricsClient, logger),
-			ReserveCancel:  decorator.DecorateCommand(reserveCancel, metricsClient, logger),
-			ReserveConfirm: decorator.DecorateCommand(reserveConfirm, metricsClient, logger),
-			Transfer:       decorator.DecorateCommand(transfer, metricsClient, logger),
+			GetBalance:         decorator.DecorateQuery(getBalance, metricsClient, logger),
+			Deposit:            decorator.DecorateCommand(deposit, metricsClient, logger),
+			Reserve:            decorator.DecorateCommand(reserve, metricsClient, logger),
+			ReserveCancel:      decorator.DecorateCommand(reserveCancel, metricsClient, logger),
+			ReserveConfirm:     decorator.DecorateCommand(reserveConfirm, metricsClient, logger),
+			Transfer:           decorator.DecorateCommand(transfer, metricsClient, logger),
+			ReportTransactions: decorator.DecorateQuery(reportTransactions, metricsClient, logger),
 		},
 		MetricsHandler: metricsClient.GetHandler(),
 		Logger:         logger,

@@ -16,6 +16,8 @@ func NewMuxRouter(handlers *adaptersHttp.HttpAdapter) *mux.Router {
 	router.Handle("/balance/reserve/confirm", handlers.ReserveConfirm.GetHandler()).Methods("POST")
 	router.Handle("/balance/transfer", handlers.Transfer.GetHandler()).Methods("POST")
 
+	router.Handle("/transactions/{user_id:[0-9]+}", handlers.ReportTransactions.GetHandler()).Methods("GET")
+
 	router.Handle("/signin", handlers.SignIn.GetHandler()).Methods("POST")
 
 	return router

@@ -450,6 +450,524 @@ func (x *TransferRequest) GetAmount() int64 {
 	return 0
 }
 
+type ReportTransactionsRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	UserId           int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Cursor           string                 `protobuf:"bytes,2,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	Limit            uint64                 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Sorting          string                 `protobuf:"bytes,4,opt,name=sorting,proto3" json:"sorting,omitempty"`
+	SortingDirection string                 `protobuf:"bytes,5,opt,name=sorting_direction,json=sortingDirection,proto3" json:"sorting_direction,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsRequest) Reset() {
+	*x = ReportTransactionsRequest{}
+	mi := &file_balance_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsRequest) ProtoMessage() {}
+
+func (x *ReportTransactionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsRequest.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsRequest) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ReportTransactionsRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *ReportTransactionsRequest) GetCursor() string {
+	if x != nil {
+		return x.Cursor
+	}
+	return ""
+}
+
+func (x *ReportTransactionsRequest) GetLimit() uint64 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ReportTransactionsRequest) GetSorting() string {
+	if x != nil {
+		return x.Sorting
+	}
+	return ""
+}
+
+func (x *ReportTransactionsRequest) GetSortingDirection() string {
+	if x != nil {
+		return x.SortingDirection
+	}
+	return ""
+}
+
+type ReportTransactionsResponse struct {
+	state         protoimpl.MessageState           `protogen:"open.v1"`
+	Transactions  []*ReportTransactionsTransaction `protobuf:"bytes,1,rep,name=transactions,proto3" json:"transactions,omitempty"`
+	Cursor        string                           `protobuf:"bytes,2,opt,name=cursor,proto3" json:"cursor,omitempty"`
+	HasMore       bool                             `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsResponse) Reset() {
+	*x = ReportTransactionsResponse{}
+	mi := &file_balance_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsResponse) ProtoMessage() {}
+
+func (x *ReportTransactionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsResponse.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsResponse) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ReportTransactionsResponse) GetTransactions() []*ReportTransactionsTransaction {
+	if x != nil {
+		return x.Transactions
+	}
+	return nil
+}
+
+func (x *ReportTransactionsResponse) GetCursor() string {
+	if x != nil {
+		return x.Cursor
+	}
+	return ""
+}
+
+func (x *ReportTransactionsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type ReportTransactionsTransaction struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Transaction:
+	//
+	//	*ReportTransactionsTransaction_Deposit
+	//	*ReportTransactionsTransaction_Spend
+	//	*ReportTransactionsTransaction_Transfer
+	Transaction   isReportTransactionsTransaction_Transaction `protobuf_oneof:"transaction"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsTransaction) Reset() {
+	*x = ReportTransactionsTransaction{}
+	mi := &file_balance_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsTransaction) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsTransaction) ProtoMessage() {}
+
+func (x *ReportTransactionsTransaction) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsTransaction.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsTransaction) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ReportTransactionsTransaction) GetTransaction() isReportTransactionsTransaction_Transaction {
+	if x != nil {
+		return x.Transaction
+	}
+	return nil
+}
+
+func (x *ReportTransactionsTransaction) GetDeposit() *ReportTransactionsTransactionDeposit {
+	if x != nil {
+		if x, ok := x.Transaction.(*ReportTransactionsTransaction_Deposit); ok {
+			return x.Deposit
+		}
+	}
+	return nil
+}
+
+func (x *ReportTransactionsTransaction) GetSpend() *ReportTransactionsTransactionSpend {
+	if x != nil {
+		if x, ok := x.Transaction.(*ReportTransactionsTransaction_Spend); ok {
+			return x.Spend
+		}
+	}
+	return nil
+}
+
+func (x *ReportTransactionsTransaction) GetTransfer() *ReportTransactionsTransactionTransfer {
+	if x != nil {
+		if x, ok := x.Transaction.(*ReportTransactionsTransaction_Transfer); ok {
+			return x.Transfer
+		}
+	}
+	return nil
+}
+
+type isReportTransactionsTransaction_Transaction interface {
+	isReportTransactionsTransaction_Transaction()
+}
+
+type ReportTransactionsTransaction_Deposit struct {
+	Deposit *ReportTransactionsTransactionDeposit `protobuf:"bytes,1,opt,name=deposit,proto3,oneof"`
+}
+
+type ReportTransactionsTransaction_Spend struct {
+	Spend *ReportTransactionsTransactionSpend `protobuf:"bytes,2,opt,name=spend,proto3,oneof"`
+}
+
+type ReportTransactionsTransaction_Transfer struct {
+	Transfer *ReportTransactionsTransactionTransfer `protobuf:"bytes,3,opt,name=transfer,proto3,oneof"`
+}
+
+func (*ReportTransactionsTransaction_Deposit) isReportTransactionsTransaction_Transaction() {}
+
+func (*ReportTransactionsTransaction_Spend) isReportTransactionsTransaction_Transaction() {}
+
+func (*ReportTransactionsTransaction_Transfer) isReportTransactionsTransaction_Transaction() {}
+
+type ReportTransactionsTransactionDeposit struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Amount        int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Source        string                 `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsTransactionDeposit) Reset() {
+	*x = ReportTransactionsTransactionDeposit{}
+	mi := &file_balance_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsTransactionDeposit) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsTransactionDeposit) ProtoMessage() {}
+
+func (x *ReportTransactionsTransactionDeposit) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsTransactionDeposit.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsTransactionDeposit) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionDeposit) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type ReportTransactionsTransactionSpend struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId     int64                  `protobuf:"varint,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	OrderId       int64                  `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	ProductId     int64                  `protobuf:"varint,4,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ProductTitle  string                 `protobuf:"bytes,5,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
+	Amount        int64                  `protobuf:"varint,6,opt,name=amount,proto3" json:"amount,omitempty"`
+	Status        string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsTransactionSpend) Reset() {
+	*x = ReportTransactionsTransactionSpend{}
+	mi := &file_balance_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsTransactionSpend) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsTransactionSpend) ProtoMessage() {}
+
+func (x *ReportTransactionsTransactionSpend) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsTransactionSpend.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsTransactionSpend) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ReportTransactionsTransactionSpend) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionSpend) GetAccountId() int64 {
+	if x != nil {
+		return x.AccountId
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionSpend) GetOrderId() int64 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionSpend) GetProductId() int64 {
+	if x != nil {
+		return x.ProductId
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionSpend) GetProductTitle() string {
+	if x != nil {
+		return x.ProductTitle
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionSpend) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionSpend) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionSpend) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionSpend) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type ReportTransactionsTransactionTransfer struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	From          int64                  `protobuf:"varint,2,opt,name=from,proto3" json:"from,omitempty"`
+	To            int64                  `protobuf:"varint,3,opt,name=to,proto3" json:"to,omitempty"`
+	Amount        int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReportTransactionsTransactionTransfer) Reset() {
+	*x = ReportTransactionsTransactionTransfer{}
+	mi := &file_balance_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportTransactionsTransactionTransfer) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportTransactionsTransactionTransfer) ProtoMessage() {}
+
+func (x *ReportTransactionsTransactionTransfer) ProtoReflect() protoreflect.Message {
+	mi := &file_balance_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportTransactionsTransactionTransfer.ProtoReflect.Descriptor instead.
+func (*ReportTransactionsTransactionTransfer) Descriptor() ([]byte, []int) {
+	return file_balance_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetFrom() int64 {
+	if x != nil {
+		return x.From
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetTo() int64 {
+	if x != nil {
+		return x.To
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *ReportTransactionsTransactionTransfer) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
 type AuthSignInRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
@@ -460,7 +978,7 @@ type AuthSignInRequest struct {
 
 func (x *AuthSignInRequest) Reset() {
 	*x = AuthSignInRequest{}
-	mi := &file_balance_proto_msgTypes[7]
+	mi := &file_balance_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -472,7 +990,7 @@ func (x *AuthSignInRequest) String() string {
 func (*AuthSignInRequest) ProtoMessage() {}
 
 func (x *AuthSignInRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_balance_proto_msgTypes[7]
+	mi := &file_balance_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -485,7 +1003,7 @@ func (x *AuthSignInRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthSignInRequest.ProtoReflect.Descriptor instead.
 func (*AuthSignInRequest) Descriptor() ([]byte, []int) {
-	return file_balance_proto_rawDescGZIP(), []int{7}
+	return file_balance_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *AuthSignInRequest) GetUsername() string {
@@ -511,7 +1029,7 @@ type AuthSignInResponse struct {
 
 func (x *AuthSignInResponse) Reset() {
 	*x = AuthSignInResponse{}
-	mi := &file_balance_proto_msgTypes[8]
+	mi := &file_balance_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -523,7 +1041,7 @@ func (x *AuthSignInResponse) String() string {
 func (*AuthSignInResponse) ProtoMessage() {}
 
 func (x *AuthSignInResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_balance_proto_msgTypes[8]
+	mi := &file_balance_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -536,7 +1054,7 @@ func (x *AuthSignInResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AuthSignInResponse.ProtoReflect.Descriptor instead.
 func (*AuthSignInResponse) Descriptor() ([]byte, []int) {
-	return file_balance_proto_rawDescGZIP(), []int{8}
+	return file_balance_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *AuthSignInResponse) GetToken() string {
@@ -582,12 +1100,60 @@ const file_balance_proto_rawDesc = "" +
 	"\x0fTransferRequest\x12\x12\n" +
 	"\x04from\x18\x01 \x01(\x03R\x04from\x12\x0e\n" +
 	"\x02to\x18\x02 \x01(\x03R\x02to\x12\x16\n" +
-	"\x06amount\x18\x03 \x01(\x03R\x06amount\"K\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\"\xa9\x01\n" +
+	"\x19ReportTransactionsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x16\n" +
+	"\x06cursor\x18\x02 \x01(\tR\x06cursor\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x04R\x05limit\x12\x18\n" +
+	"\asorting\x18\x04 \x01(\tR\asorting\x12+\n" +
+	"\x11sorting_direction\x18\x05 \x01(\tR\x10sortingDirection\"\x9b\x01\n" +
+	"\x1aReportTransactionsResponse\x12J\n" +
+	"\ftransactions\x18\x01 \x03(\v2&.balance.ReportTransactionsTransactionR\ftransactions\x12\x16\n" +
+	"\x06cursor\x18\x02 \x01(\tR\x06cursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\x8c\x02\n" +
+	"\x1dReportTransactionsTransaction\x12I\n" +
+	"\adeposit\x18\x01 \x01(\v2-.balance.ReportTransactionsTransactionDepositH\x00R\adeposit\x12C\n" +
+	"\x05spend\x18\x02 \x01(\v2+.balance.ReportTransactionsTransactionSpendH\x00R\x05spend\x12L\n" +
+	"\btransfer\x18\x03 \x01(\v2..balance.ReportTransactionsTransactionTransferH\x00R\btransferB\r\n" +
+	"\vtransaction\"\xbc\x01\n" +
+	"$ReportTransactionsTransactionDeposit\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x16\n" +
+	"\x06source\x18\x03 \x01(\tR\x06source\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"\xa0\x02\n" +
+	"\"ReportTransactionsTransactionSpend\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x02 \x01(\x03R\taccountId\x12\x19\n" +
+	"\border_id\x18\x03 \x01(\x03R\aorderId\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x04 \x01(\x03R\tproductId\x12#\n" +
+	"\rproduct_title\x18\x05 \x01(\tR\fproductTitle\x12\x16\n" +
+	"\x06amount\x18\x06 \x01(\x03R\x06amount\x12\x16\n" +
+	"\x06status\x18\a \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\b \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\t \x01(\tR\tupdatedAt\"\xc9\x01\n" +
+	"%ReportTransactionsTransactionTransfer\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04from\x18\x02 \x01(\x03R\x04from\x12\x0e\n" +
+	"\x02to\x18\x03 \x01(\x03R\x02to\x12\x16\n" +
+	"\x06amount\x18\x04 \x01(\x03R\x06amount\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\a \x01(\tR\tupdatedAt\"K\n" +
 	"\x11AuthSignInRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"*\n" +
 	"\x12AuthSignInResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2\xf4\x03\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2\xd5\x04\n" +
 	"\x0eBalanceService\x12G\n" +
 	"\n" +
 	"GetBalance\x12\x1a.balance.GetBalanceRequest\x1a\x1b.balance.GetBalanceResponse\"\x00\x12<\n" +
@@ -597,7 +1163,8 @@ const file_balance_proto_rawDesc = "" +
 	"\x0eReserveConfirm\x12\x1e.balance.ReserveConfirmRequest\x1a\x16.google.protobuf.Empty\"\x00\x12>\n" +
 	"\bTransfer\x12\x18.balance.TransferRequest\x1a\x16.google.protobuf.Empty\"\x00\x12G\n" +
 	"\n" +
-	"AuthSignIn\x12\x1a.balance.AuthSignInRequest\x1a\x1b.balance.AuthSignInResponse\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
+	"AuthSignIn\x12\x1a.balance.AuthSignInRequest\x1a\x1b.balance.AuthSignInResponse\"\x00\x12_\n" +
+	"\x12ReportTransactions\x12\".balance.ReportTransactionsRequest\x1a#.balance.ReportTransactionsResponse\"\x00B<Z:github.com/nktknshn/avito-internship-2022/internal/balanceb\x06proto3"
 
 var (
 	file_balance_proto_rawDescOnce sync.Once
@@ -611,39 +1178,51 @@ func file_balance_proto_rawDescGZIP() []byte {
 	return file_balance_proto_rawDescData
 }
 
-var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_balance_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_balance_proto_goTypes = []any{
-	(*GetBalanceRequest)(nil),     // 0: balance.GetBalanceRequest
-	(*GetBalanceResponse)(nil),    // 1: balance.GetBalanceResponse
-	(*DepositRequest)(nil),        // 2: balance.DepositRequest
-	(*ReserveRequest)(nil),        // 3: balance.ReserveRequest
-	(*ReserveCancelRequest)(nil),  // 4: balance.ReserveCancelRequest
-	(*ReserveConfirmRequest)(nil), // 5: balance.ReserveConfirmRequest
-	(*TransferRequest)(nil),       // 6: balance.TransferRequest
-	(*AuthSignInRequest)(nil),     // 7: balance.AuthSignInRequest
-	(*AuthSignInResponse)(nil),    // 8: balance.AuthSignInResponse
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(*GetBalanceRequest)(nil),                     // 0: balance.GetBalanceRequest
+	(*GetBalanceResponse)(nil),                    // 1: balance.GetBalanceResponse
+	(*DepositRequest)(nil),                        // 2: balance.DepositRequest
+	(*ReserveRequest)(nil),                        // 3: balance.ReserveRequest
+	(*ReserveCancelRequest)(nil),                  // 4: balance.ReserveCancelRequest
+	(*ReserveConfirmRequest)(nil),                 // 5: balance.ReserveConfirmRequest
+	(*TransferRequest)(nil),                       // 6: balance.TransferRequest
+	(*ReportTransactionsRequest)(nil),             // 7: balance.ReportTransactionsRequest
+	(*ReportTransactionsResponse)(nil),            // 8: balance.ReportTransactionsResponse
+	(*ReportTransactionsTransaction)(nil),         // 9: balance.ReportTransactionsTransaction
+	(*ReportTransactionsTransactionDeposit)(nil),  // 10: balance.ReportTransactionsTransactionDeposit
+	(*ReportTransactionsTransactionSpend)(nil),    // 11: balance.ReportTransactionsTransactionSpend
+	(*ReportTransactionsTransactionTransfer)(nil), // 12: balance.ReportTransactionsTransactionTransfer
+	(*AuthSignInRequest)(nil),                     // 13: balance.AuthSignInRequest
+	(*AuthSignInResponse)(nil),                    // 14: balance.AuthSignInResponse
+	(*emptypb.Empty)(nil),                         // 15: google.protobuf.Empty
 }
 var file_balance_proto_depIdxs = []int32{
-	0, // 0: balance.BalanceService.GetBalance:input_type -> balance.GetBalanceRequest
-	2, // 1: balance.BalanceService.Deposit:input_type -> balance.DepositRequest
-	3, // 2: balance.BalanceService.Reserve:input_type -> balance.ReserveRequest
-	4, // 3: balance.BalanceService.ReserveCancel:input_type -> balance.ReserveCancelRequest
-	5, // 4: balance.BalanceService.ReserveConfirm:input_type -> balance.ReserveConfirmRequest
-	6, // 5: balance.BalanceService.Transfer:input_type -> balance.TransferRequest
-	7, // 6: balance.BalanceService.AuthSignIn:input_type -> balance.AuthSignInRequest
-	1, // 7: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
-	9, // 8: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
-	9, // 9: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
-	9, // 10: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
-	9, // 11: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
-	9, // 12: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
-	8, // 13: balance.BalanceService.AuthSignIn:output_type -> balance.AuthSignInResponse
-	7, // [7:14] is the sub-list for method output_type
-	0, // [0:7] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	9,  // 0: balance.ReportTransactionsResponse.transactions:type_name -> balance.ReportTransactionsTransaction
+	10, // 1: balance.ReportTransactionsTransaction.deposit:type_name -> balance.ReportTransactionsTransactionDeposit
+	11, // 2: balance.ReportTransactionsTransaction.spend:type_name -> balance.ReportTransactionsTransactionSpend
+	12, // 3: balance.ReportTransactionsTransaction.transfer:type_name -> balance.ReportTransactionsTransactionTransfer
+	0,  // 4: balance.BalanceService.GetBalance:input_type -> balance.GetBalanceRequest
+	2,  // 5: balance.BalanceService.Deposit:input_type -> balance.DepositRequest
+	3,  // 6: balance.BalanceService.Reserve:input_type -> balance.ReserveRequest
+	4,  // 7: balance.BalanceService.ReserveCancel:input_type -> balance.ReserveCancelRequest
+	5,  // 8: balance.BalanceService.ReserveConfirm:input_type -> balance.ReserveConfirmRequest
+	6,  // 9: balance.BalanceService.Transfer:input_type -> balance.TransferRequest
+	13, // 10: balance.BalanceService.AuthSignIn:input_type -> balance.AuthSignInRequest
+	7,  // 11: balance.BalanceService.ReportTransactions:input_type -> balance.ReportTransactionsRequest
+	1,  // 12: balance.BalanceService.GetBalance:output_type -> balance.GetBalanceResponse
+	15, // 13: balance.BalanceService.Deposit:output_type -> google.protobuf.Empty
+	15, // 14: balance.BalanceService.Reserve:output_type -> google.protobuf.Empty
+	15, // 15: balance.BalanceService.ReserveCancel:output_type -> google.protobuf.Empty
+	15, // 16: balance.BalanceService.ReserveConfirm:output_type -> google.protobuf.Empty
+	15, // 17: balance.BalanceService.Transfer:output_type -> google.protobuf.Empty
+	14, // 18: balance.BalanceService.AuthSignIn:output_type -> balance.AuthSignInResponse
+	8,  // 19: balance.BalanceService.ReportTransactions:output_type -> balance.ReportTransactionsResponse
+	12, // [12:20] is the sub-list for method output_type
+	4,  // [4:12] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_balance_proto_init() }
@@ -651,13 +1230,18 @@ func file_balance_proto_init() {
 	if File_balance_proto != nil {
 		return
 	}
+	file_balance_proto_msgTypes[9].OneofWrappers = []any{
+		(*ReportTransactionsTransaction_Deposit)(nil),
+		(*ReportTransactionsTransaction_Spend)(nil),
+		(*ReportTransactionsTransaction_Transfer)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_balance_proto_rawDesc), len(file_balance_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
