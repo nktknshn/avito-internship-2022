@@ -3,6 +3,7 @@ package use_cases_test
 import (
 	"context"
 	"sync"
+	"sync/atomic"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -88,15 +89,19 @@ func (s *SuiteTest) TestReserve_DoubleReserve() {
 		fixtures.AmountPositive100_i64,
 	))
 
+	workers := 20
+
 	wg := sync.WaitGroup{}
 	lock := make(chan struct{})
-	for range 20 {
+	errorCount := atomic.Int32{}
+	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			<-lock
 			err := s.reserve.Handle(context.Background(), in)
 			if err != nil {
+				errorCount.Add(1)
 				s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyExists)
 			}
 		}()
@@ -104,6 +109,8 @@ func (s *SuiteTest) TestReserve_DoubleReserve() {
 
 	close(lock)
 	wg.Wait()
+
+	s.Require().Equal(int32(workers-1), errorCount.Load())
 
 	acc, err := s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID)
 	s.Require().NoError(err)

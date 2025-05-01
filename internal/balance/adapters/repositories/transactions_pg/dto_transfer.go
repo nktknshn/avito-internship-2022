@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
@@ -30,7 +31,7 @@ func toTransactionTransferDTO(transaction *domainTransaction.TransactionTransfer
 }
 
 func fromTransactionTransferDTO(dto *transactionTransferDTO) (*domainTransaction.TransactionTransfer, error) {
-	return domainTransaction.NewTransactionTransferFromValues(
+	t, err := domainTransaction.NewTransactionTransferFromValues(
 		dto.ID,
 		dto.FromAccountID,
 		dto.ToAccountID,
@@ -39,4 +40,8 @@ func fromTransactionTransferDTO(dto *transactionTransferDTO) (*domainTransaction
 		dto.CreatedAt,
 		dto.UpdatedAt,
 	)
+	if err != nil {
+		return nil, domainError.Strip(err)
+	}
+	return t, nil
 }

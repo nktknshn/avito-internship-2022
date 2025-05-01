@@ -32,8 +32,8 @@ services:
     environment:
       GOCACHE: /go-cache
       GOPATH: /go/pkg
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres
 
   postgres:
     # profiles: [donotstart]

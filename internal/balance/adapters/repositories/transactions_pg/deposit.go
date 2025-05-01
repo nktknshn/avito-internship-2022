@@ -34,5 +34,9 @@ func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, tra
 		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.GetContext")
 	}
 
-	return fromTransactionDepositDTO(&newDTO)
+	t, err := fromTransactionDepositDTO(&newDTO)
+	if err != nil {
+		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.fromTransactionDepositDTO")
+	}
+	return t, nil
 }

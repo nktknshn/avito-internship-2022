@@ -20,3 +20,11 @@ func IsDomainError(err error) bool {
 	var de DomainError
 	return errors.As(err, &de)
 }
+
+// Strip возвращает доменную ошибку в виде обычной ошибки с тем же сообщением
+func Strip(err error) error {
+	if !IsDomainError(err) {
+		return err
+	}
+	return errors.New(err.Error())
+}

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
@@ -32,7 +33,7 @@ func toTransactionDepositDTO(transaction *domainTransaction.TransactionDeposit) 
 }
 
 func fromTransactionDepositDTO(dto *transactionDepositDTO) (*domainTransaction.TransactionDeposit, error) {
-	return domainTransaction.NewTransactionDepositFromValues(
+	t, err := domainTransaction.NewTransactionDepositFromValues(
 		dto.ID,
 		dto.AccountID,
 		dto.UserID,
@@ -42,4 +43,9 @@ func fromTransactionDepositDTO(dto *transactionDepositDTO) (*domainTransaction.T
 		dto.CreatedAt,
 		dto.UpdatedAt,
 	)
+	if err != nil {
+		// не возвращаем доменную ошибку, так как это внутренняя ошибка адаптера
+		return nil, domainError.Strip(err)
+	}
+	return t, nil
 }

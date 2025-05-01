@@ -2,7 +2,7 @@ TODO
 
 - [ ] метрики
 - [ ] логи
-- [ ] графана, прометей
+- [.] графана, прометей
 - [ ] swagger
 - [ ] opentracing
 - [ ] transactional outbox
@@ -17,4 +17,5 @@ TODO
 - [ ] panic recovery
 - [x] view tests coverage
 - [x] validate grpc server to use cases mapping on startup
-- [ ] uint64 for domain models
+- [x] uint64 for domain models
+- [ ] bench

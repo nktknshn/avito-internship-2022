@@ -7,6 +7,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	"github.com/nktknshn/avito-internship-2022/internal/common/select_query_builder"
+	"github.com/pkg/errors"
 )
 
 var cteQuery = `combined_transactions AS (
@@ -73,7 +74,28 @@ var cteQuery = `combined_transactions AS (
 
 var sqlQuery = `SELECT * FROM combined_transactions t`
 
-func (r *TransactionsRepository) setReportTransactionsCursor(
+func reportTransactionsValidateCursorSorting(
+	cursor *cursorUnion,
+	sorting report_transactions.Sorting,
+) error {
+	// валидируем комбинацию сортировки и курсора
+
+	if cursor.IsZero() || sorting.IsZero() {
+		return nil
+	}
+
+	if cursor.IsAmount() && !sorting.IsAmount() {
+		return errors.New("cursor is amount, sorting is not amount")
+	}
+
+	if cursor.IsUpdatedAt() && !sorting.IsUpdatedAt() {
+		return errors.New("cursor is updated_at, sorting is not updated_at")
+	}
+
+	return nil
+}
+
+func reportTransactionsSetCursor(
 	qb *select_query_builder.SelectQueryBuilder,
 	sorting report_transactions.Sorting,
 	sortingDirection report_transactions.SortingDirection,
@@ -87,16 +109,13 @@ func (r *TransactionsRepository) setReportTransactionsCursor(
 	cursor, err := unmarshalCursor(queryCursor)
 
 	if err != nil {
-		return err
+		return errors.Wrap(report_transactions.ErrCursorInvalid, err.Error())
 	}
 
-	// валидируем комбинацию сортировки и курсора
-	if !cursor.IsZero() && !sorting.IsZero() {
-		if cursor.IsAmount() && !sorting.IsAmount() {
-			return report_transactions.ErrSortingCursorInvalid
-		} else if cursor.IsUpdatedAt() && !sorting.IsUpdatedAt() {
-			return report_transactions.ErrSortingCursorInvalid
-		}
+	err = reportTransactionsValidateCursorSorting(cursor, sorting)
+
+	if err != nil {
+		return errors.Wrap(report_transactions.ErrSortingCursorInvalid, err.Error())
 	}
 
 	if cursor.IsAmount() {
@@ -122,7 +141,7 @@ func (r *TransactionsRepository) setReportTransactionsCursor(
 	return nil
 }
 
-func (r *TransactionsRepository) setReportTransactionsSorting(qb *select_query_builder.SelectQueryBuilder, sorting report_transactions.Sorting, sortingDirection report_transactions.SortingDirection) {
+func reportTransactionsSetSorting(qb *select_query_builder.SelectQueryBuilder, sorting report_transactions.Sorting, sortingDirection report_transactions.SortingDirection) {
 
 	if sortingDirection.IsAsc() {
 		qb.Order = "t.updated_at ASC, t.id ASC"
@@ -149,6 +168,11 @@ func (r *TransactionsRepository) setReportTransactionsSorting(qb *select_query_b
 	}
 }
 
+var (
+	defaultSorting          = report_transactions.SortingUpdatedAt
+	defaultSortingDirection = report_transactions.SortingDirectionDesc
+)
+
 func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, userID domain.UserID, query report_transactions.GetTransactionsQuery) (report_transactions.ReportTransactionsPage, error) {
 
 	qb := select_query_builder.New()
@@ -167,8 +191,8 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		queryArgs["limit"] = queryLimit + 1
 	}
 
-	sorting := report_transactions.SortingUpdatedAt
-	sortingDirection := report_transactions.SortingDirectionDesc
+	sorting := defaultSorting
+	sortingDirection := defaultSortingDirection
 
 	if !query.SortingDirection.IsZero() {
 		sortingDirection = query.SortingDirection
@@ -178,12 +202,13 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 		sorting = query.Sorting
 	}
 
-	err := r.setReportTransactionsCursor(qb, sorting, sortingDirection, query.Cursor, queryArgs)
+	err := reportTransactionsSetCursor(qb, sorting, sortingDirection, query.Cursor, queryArgs)
+
 	if err != nil {
 		return report_transactions.ReportTransactionsPage{}, err
 	}
 
-	r.setReportTransactionsSorting(qb, sorting, sortingDirection)
+	reportTransactionsSetSorting(qb, sorting, sortingDirection)
 
 	transactions := []reportTransactionDTO{}
 
@@ -192,13 +217,13 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 	sql, args, err := tr.BindNamed(qb.Build(), queryArgs)
 
 	if err != nil {
-		return report_transactions.ReportTransactionsPage{}, err
+		return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.BindNamed")
 	}
 
 	err = tr.SelectContext(ctx, &transactions, sql, args...)
 
 	if err != nil {
-		return report_transactions.ReportTransactionsPage{}, err
+		return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.SelectContext")
 	}
 
 	if len(transactions) == 0 {
@@ -224,7 +249,7 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 	for i, transaction := range transactions {
 		model, err := fromReportTransactionDTO(&transaction)
 		if err != nil {
-			return report_transactions.ReportTransactionsPage{}, err
+			return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.fromReportTransactionDTO")
 		}
 		result.Transactions[i] = model
 
@@ -241,7 +266,7 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 				},
 			})
 			if err != nil {
-				return report_transactions.ReportTransactionsPage{}, err
+				return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.marshalCursor")
 			}
 			result.Cursor = nextCursor
 		}

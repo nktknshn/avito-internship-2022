@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 type reportTransactionDTO struct {
@@ -40,7 +41,7 @@ func fromReportTransactionDTO(dto *reportTransactionDTO) (report_transactions.Tr
 			UpdatedAt:     dto.UpdatedAt,
 		})
 		if err != nil {
-			return nil, err
+			return nil, domainError.Strip(err)
 		}
 		return report_transactions.Transaction(transactionDeposit), nil
 	case "spend":
@@ -57,7 +58,7 @@ func fromReportTransactionDTO(dto *reportTransactionDTO) (report_transactions.Tr
 			UpdatedAt:    dto.UpdatedAt,
 		})
 		if err != nil {
-			return nil, err
+			return nil, domainError.Strip(err)
 		}
 		return report_transactions.Transaction(transactionSpend), nil
 	case "transfer":
@@ -71,7 +72,7 @@ func fromReportTransactionDTO(dto *reportTransactionDTO) (report_transactions.Tr
 			UpdatedAt:     dto.UpdatedAt,
 		})
 		if err != nil {
-			return nil, err
+			return nil, domainError.Strip(err)
 		}
 		return report_transactions.Transaction(transactionTransfer), nil
 	}

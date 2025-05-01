@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -49,14 +50,14 @@ func unmarshalCursor(cursor report_transactions.Cursor) (*cursorUnion, error) {
 
 	cursorBytes, err := base64.StdEncoding.DecodeString(cursorStr)
 	if err != nil {
-		return nil, report_transactions.ErrCursorInvalid
+		return nil, err
 	}
 
 	if bytes.Contains(cursorBytes, []byte("amount")) {
 		var cursorAmount cursorAmount
 		err = json.Unmarshal(cursorBytes, &cursorAmount)
 		if err != nil {
-			return nil, report_transactions.ErrCursorInvalid
+			return nil, err
 		}
 		return &cursorUnion{Amount: &cursorAmount}, nil
 	}
@@ -65,12 +66,12 @@ func unmarshalCursor(cursor report_transactions.Cursor) (*cursorUnion, error) {
 		var cursorUpdatedAt cursorUpdatedAt
 		err = json.Unmarshal(cursorBytes, &cursorUpdatedAt)
 		if err != nil {
-			return nil, report_transactions.ErrCursorInvalid
+			return nil, err
 		}
 		return &cursorUnion{UpdatedAt: &cursorUpdatedAt}, nil
 	}
 
-	return nil, report_transactions.ErrCursorInvalid
+	return nil, errors.New("invalid cursor")
 }
 
 // преобразуем в json и кодируем в base64
