@@ -1,6 +1,7 @@
 package http_test
 
 import (
+	"errors"
 	"net/http"
 
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
@@ -52,6 +53,18 @@ func (s *HttpTestSuite) TestAuthSignin() {
 			},
 			expectCode: http.StatusBadRequest,
 			expectErr:  domainAuth.ErrInvalidAuthUserPasswordTooShort.Error(),
+		},
+		// internal error
+		{
+			name:          "internal error",
+			useCaseReturn: returnError2[auth_signin.Out](errors.New("do not expose")),
+			expectCode:    http.StatusInternalServerError,
+			expectErr:     "internal server error",
+			auth:          true,
+			payload: map[string]any{
+				"username": "test",
+				"password": "test12345",
+			},
 		},
 	}
 

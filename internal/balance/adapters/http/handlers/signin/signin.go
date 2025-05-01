@@ -63,7 +63,7 @@ func makeHandlerSignIn(u usecase) http.Handler {
 			return nil, ergo.NewError(http.StatusUnauthorized, err)
 		}
 		if err != nil {
-			return nil, ergo.NewError(http.StatusInternalServerError, err)
+			return nil, err
 		}
 		return out, nil
 	})

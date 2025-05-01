@@ -38,7 +38,7 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 
 		md, ok := metadata.FromIncomingContext(ctx)
 		if !ok {
-			return nil, status.Error(codes.Unauthenticated, "missing auth token")
+			return nil, status.Error(codes.Unauthenticated, "missing metadata")
 		}
 
 		accessibleRoles, ok := i.methodToRoles[info.FullMethod]
@@ -58,17 +58,19 @@ func (i *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		}
 
 		in, err := auth_validate_token.NewInFromValues(token[0])
+
 		if err != nil {
 			return nil, status.Error(codes.Unauthenticated, "invalid auth token")
 		}
 
 		out, err := i.authUsecase.Handle(ctx, in)
+
 		if err != nil {
 			return nil, status.Error(codes.Unauthenticated, "invalid auth token")
 		}
 
 		if !slices.Contains(accessibleRoles, out.Role) {
-			return nil, status.Error(codes.PermissionDenied, "missing permission")
+			return nil, status.Error(codes.PermissionDenied, "user has no permission")
 		}
 
 		return handler(ctx, req)
