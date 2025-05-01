@@ -1,6 +1,7 @@
 package amount_test
 
 import (
+	"math"
 	"testing"
 
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
@@ -34,8 +35,17 @@ func TestAmount_Add(t *testing.T) {
 	amount1 := must.Must(domainAmount.New(10))
 	amount2 := must.Must(domainAmount.NewPositive(20))
 
-	amount := amount1.Add(amount2)
+	amount, err := amount1.Add(amount2)
+	require.NoError(t, err)
 	require.Equal(t, amount.Value(), int64(30))
+}
+
+func TestAmount_Add_Overflow(t *testing.T) {
+	amount1 := must.Must(domainAmount.New(math.MaxInt64 - 1))
+	amount2 := must.Must(domainAmount.NewPositive(2))
+
+	_, err := amount1.Add(amount2)
+	require.ErrorIs(t, err, domainAmount.ErrIntegerOverflow)
 }
 
 // TestAmount_Sub

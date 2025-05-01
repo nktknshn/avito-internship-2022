@@ -57,7 +57,11 @@ func (ac AccountBalance) GetReserved() amount.Amount {
 }
 
 func (ac AccountBalance) Deposit(a amount.AmountPositive) (AccountBalance, error) {
-	return NewAccountBalance(ac.available.Add(a), ac.reserved)
+	available, err := ac.available.Add(a)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+	return NewAccountBalance(available, ac.reserved)
 }
 
 func (ac AccountBalance) Reserve(a amount.AmountPositive) (AccountBalance, error) {
@@ -70,7 +74,12 @@ func (ac AccountBalance) Reserve(a amount.AmountPositive) (AccountBalance, error
 		return AccountBalance{}, err
 	}
 
-	return NewAccountBalance(newAvailable, ac.reserved.Add(a))
+	reserved, err := ac.reserved.Add(a)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+
+	return NewAccountBalance(newAvailable, reserved)
 }
 
 func (ac AccountBalance) ReserveCancel(a amount.AmountPositive) (AccountBalance, error) {
@@ -83,7 +92,12 @@ func (ac AccountBalance) ReserveCancel(a amount.AmountPositive) (AccountBalance,
 		return AccountBalance{}, err
 	}
 
-	return NewAccountBalance(ac.available.Add(a), newReserved)
+	newAvailable, err := ac.available.Add(a)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+
+	return NewAccountBalance(newAvailable, newReserved)
 }
 
 func (ac AccountBalance) ReserveConfirm(a amount.AmountPositive) (AccountBalance, error) {

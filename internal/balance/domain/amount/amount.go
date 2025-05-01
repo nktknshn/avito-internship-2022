@@ -1,6 +1,10 @@
 package amount
 
-import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+import (
+	"math"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+)
 
 // Неотрициательное кол-во копеек
 type Amount struct {
@@ -15,6 +19,7 @@ var (
 	ErrInvalidAmount         = domainError.New("invalid amount")
 	ErrInvalidPositiveAmount = domainError.New("invalid positive amount")
 	ErrInsufficientAmount    = domainError.New("insufficient amount")
+	ErrIntegerOverflow       = domainError.New("integer overflow")
 )
 
 func New(amount int64) (Amount, error) {
@@ -37,8 +42,13 @@ func (a Amount) LessThanPositive(b AmountPositive) bool {
 	return a.Value() < b.Value()
 }
 
-func (a Amount) Add(b AmountPositive) Amount {
-	return Amount{amount: a.Value() + b.Value()}
+func (a Amount) Add(b AmountPositive) (Amount, error) {
+
+	if a.Value() > math.MaxInt64-b.Value() {
+		return Amount{}, ErrIntegerOverflow
+	}
+
+	return Amount{amount: a.Value() + b.Value()}, nil
 }
 
 func (a Amount) Sub(b AmountPositive) (Amount, error) {
