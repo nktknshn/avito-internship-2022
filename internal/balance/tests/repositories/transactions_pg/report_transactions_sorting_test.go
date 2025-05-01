@@ -26,11 +26,11 @@ func (s *Suite) reportTransactionGetAll(q report_transactions.GetTransactionsQue
 }
 
 func (s *Suite) TestReportTransactions_Error_InvalidCursor() {
-	report, err := s.transactionsRepo.GetTransactionsByUserID(s.Context(), fixtures.UserID, report_transactions.GetTransactionsQuery{
+	_, err := s.transactionsRepo.GetTransactionsByUserID(s.Context(), fixtures.UserID, report_transactions.GetTransactionsQuery{
 		Cursor: "1",
 	})
-	s.Require().Error(err)
-	s.Require().Nil(report)
+	s.Require().ErrorIs(err, report_transactions.ErrCursorInvalid)
+
 }
 
 func (s *Suite) TestReportTransactions_Sorting_Amount() {

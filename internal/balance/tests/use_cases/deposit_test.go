@@ -5,12 +5,17 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 func (s *SuiteTest) TestDeposit_CreatesAccountIfNotExists() {
 
-	in := must.Must(deposit.NewInFromValues(1, 100, ""))
+	in := must.Must(deposit.NewInFromValues(
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.DepositSource_str,
+	))
 
 	err := s.deposit.Handle(context.Background(), in)
 
@@ -35,7 +40,11 @@ func (s *SuiteTest) TestDeposit_DepositsExistingAccount() {
 
 	s.ExecSqlExpectRowsLen("select * from accounts", 1)
 
-	in := must.Must(deposit.NewInFromValues(1, 100, ""))
+	in := must.Must(deposit.NewInFromValues(
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.DepositSource_str,
+	))
 
 	err = s.deposit.Handle(context.Background(), in)
 	s.Require().NoError(err)
@@ -45,7 +54,7 @@ func (s *SuiteTest) TestDeposit_DepositsExistingAccount() {
 
 	s.Require().Equal(1, len(rows.Rows))
 	s.Require().Equal(acc.ID.Value(), rows.Rows[0]["id"])
-	s.Require().Equal(int64(100), rows.Rows[0]["balance_available"])
+	s.Require().Equal(fixtures.Amount100_i64, rows.Rows[0]["balance_available"])
 
 	rows, err = s.ExecSql("select * from transactions_deposit")
 	s.Require().NoError(err)

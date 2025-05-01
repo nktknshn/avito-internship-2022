@@ -13,6 +13,7 @@ import (
 var (
 	ErrInvalidTransactionID     = domainError.New("invalid account transaction id")
 	ErrInvalidTransactionStatus = domainError.New("invalid account transaction status")
+	ErrInvalidDepositSource     = domainError.New("invalid deposit source")
 )
 
 type TransactionDepositSource string
@@ -22,6 +23,9 @@ func (s TransactionDepositSource) Value() string {
 }
 
 func NewDepositSource(s string) (TransactionDepositSource, error) {
+	if s == "" {
+		return "", ErrInvalidDepositSource
+	}
 	return TransactionDepositSource(s), nil
 }
 

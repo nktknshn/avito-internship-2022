@@ -2,7 +2,10 @@ package get_balance
 
 import (
 	"context"
+	"errors"
 	"net/http"
+
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
@@ -47,6 +50,15 @@ func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handl
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
-		return u.Handle(r.Context(), in)
+		result, err := u.Handle(r.Context(), in)
+
+		if errors.Is(err, domainAccount.ErrAccountNotFound) {
+			return nil, ergo.NewError(http.StatusNotFound, err)
+		}
+
+		if err != nil {
+			return nil, err
+		}
+		return result, nil
 	})
 }
