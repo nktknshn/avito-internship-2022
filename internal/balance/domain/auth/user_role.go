@@ -8,6 +8,10 @@ func (r AuthUserRole) Value() string {
 	return string(r)
 }
 
+func (r AuthUserRole) IsEmpty() bool {
+	return r == ""
+}
+
 var (
 	ErrInvalidAuthUserRole = domainError.New("invalid auth user role")
 )
@@ -16,11 +20,12 @@ const (
 	AuthUserRoleAdmin   AuthUserRole = "admin"
 	AuthUserRoleAccount AuthUserRole = "account"
 	AuthUserRoleReport  AuthUserRole = "report"
+	AuthUserRoleNobody  AuthUserRole = "nobody"
 )
 
 func (a AuthUserRole) Validate() error {
 	switch a {
-	case AuthUserRoleAdmin, AuthUserRoleAccount, AuthUserRoleReport:
+	case AuthUserRoleAdmin, AuthUserRoleAccount, AuthUserRoleReport, AuthUserRoleNobody:
 		return nil
 	}
 
@@ -35,6 +40,8 @@ func NewAuthUserRole(s string) (AuthUserRole, error) {
 		return AuthUserRoleReport, nil
 	case AuthUserRoleAccount.Value():
 		return AuthUserRoleAccount, nil
+	case AuthUserRoleNobody.Value():
+		return AuthUserRoleNobody, nil
 	}
 
 	return "", ErrInvalidAuthUserRole

@@ -3,30 +3,28 @@ package http_test
 import (
 	"net/http"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) setupAuthOK() {
-	s.app.SetupAuth(fixtures.AuthToken, auth_validate_token.Out{
-		UserID: fixtures.AuthUserID,
-		Role:   domainAuth.AuthUserRoleAdmin,
-	}, nil)
-}
-
-func (s *HttpTestSuite) setupAuthRole(role domainAuth.AuthUserRole) {
-	s.app.SetupAuth(fixtures.AuthToken, auth_validate_token.Out{
-		UserID: fixtures.AuthUserID,
-		Role:   role,
-	}, nil)
+func (s *HttpTestSuite) TestGetBalance() {
+	// testCases := []testCaseQuery{
+	// 	{
+	// 		name:        "success",
+	// 		query:       map[string]string{"user_id": fixtures.UserID_str},
+	// 		expectCode:  http.StatusOK,
+	// 		expectErr:   "",
+	// 		auth:        true,
+	// 		authRole:    domainAuth.AuthUserRoleAdmin,
+	// 		routeParams: map[string]string{"user_id": fixtures.UserID_str},
+	// 	},
+	// }
 }
 
 func (s *HttpTestSuite) TestGetBalance_Success() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{
 		Available: 100,
@@ -38,11 +36,11 @@ func (s *HttpTestSuite) TestGetBalance_Success() {
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
 
 	s.Require().Equal(http.StatusOK, resp.Code)
-	s.Require().Equal(rjson(`{"available":100,"reserved":0}`), resp.Body.String())
+	s.Require().Equal(rjsonStr(`{"available":100,"reserved":0}`), resp.Body.String())
 }
 
 func (s *HttpTestSuite) TestGetBalance_NotFound() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
 
@@ -53,7 +51,7 @@ func (s *HttpTestSuite) TestGetBalance_NotFound() {
 }
 
 func (s *HttpTestSuite) TestGetBalance_InvalidUserID() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 	s.setRouteParams(map[string]string{"user_id": "invalid_user_id"})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
 	s.Require().Equal(http.StatusBadRequest, resp.Code)

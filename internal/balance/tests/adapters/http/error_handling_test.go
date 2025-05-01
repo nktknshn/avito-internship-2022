@@ -11,7 +11,7 @@ import (
 )
 
 func (s *HttpTestSuite) Test_DomainError() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
 
@@ -19,11 +19,11 @@ func (s *HttpTestSuite) Test_DomainError() {
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
 
 	// s.Require().Equal(http.StatusNotFound, resp.Code)
-	s.Require().Equal(ejson(domainAccount.ErrAccountNotFound.Error()), resp.Body.String())
+	s.Require().Equal(ejsonStr(domainAccount.ErrAccountNotFound.Error()), resp.Body.String())
 }
 
 func (s *HttpTestSuite) Test_InternalError() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("internal server error that should not be exposed to the client"))
 
@@ -31,11 +31,11 @@ func (s *HttpTestSuite) Test_InternalError() {
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
 
 	s.Require().Equal(http.StatusInternalServerError, resp.Code)
-	s.Require().Equal(ejson("internal server error"), resp.Body.String())
+	s.Require().Equal(ejsonStr("internal server error"), resp.Body.String())
 }
 
 func (s *HttpTestSuite) Test_ParserError() {
-	s.setupAuthOK()
+	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("parser error"))
 
@@ -43,5 +43,5 @@ func (s *HttpTestSuite) Test_ParserError() {
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
 
 	s.Require().Equal(http.StatusBadRequest, resp.Code)
-	s.Require().Equal(ejson("invalid int64 value: invalid_user_id"), resp.Body.String())
+	s.Require().Equal(ejsonStr("invalid int64 value: invalid_user_id"), resp.Body.String())
 }
