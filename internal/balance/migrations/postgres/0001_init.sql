@@ -16,8 +16,8 @@ CREATE TABLE transactions_deposit (
     deposit_source VARCHAR NOT NULL,
     status VARCHAR(255) NOT NULL,
     amount BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE INDEX idx_transactions_deposit_account_id ON transactions_deposit USING HASH (account_id);
@@ -32,8 +32,8 @@ CREATE TABLE transactions_spend (
     product_title TEXT NOT NULL,
     status VARCHAR(255) NOT NULL,
     amount BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE INDEX idx_transactions_spend_account_id ON transactions_spend USING HASH (account_id);
@@ -47,8 +47,8 @@ CREATE TABLE transactions_transfer (
     to_account_id BIGINT REFERENCES accounts(id),
     amount BIGINT NOT NULL,
     status VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL
 );
 
 CREATE INDEX idx_transactions_transfer_from_account_id ON transactions_transfer USING HASH (from_account_id);

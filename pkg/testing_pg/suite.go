@@ -97,10 +97,6 @@ func (suite *TestSuitePg) SetupSuite() {
 func (suite *TestSuitePg) SetupPostgres() {
 	suite.T().Log("Setting up postgres")
 
-	if suite.MigrationsDir == "" {
-		suite.T().Fatal("migrations directory is not set")
-	}
-
 	ctx := suite.Context()
 
 	db := NewDockerDatabase(defaultDockerDatabaseConfig)

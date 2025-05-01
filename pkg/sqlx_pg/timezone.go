@@ -28,3 +28,7 @@ func GetTimezone(ctx context.Context, conn *sqlx.DB) (string, error) {
 	}
 	return timezone, nil
 }
+
+func IsUTC(tz string) bool {
+	return tz == "Etc/UTC" || tz == "UTC"
+}

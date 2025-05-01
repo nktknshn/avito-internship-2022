@@ -55,8 +55,8 @@ func Connect(ctx context.Context, cfg PostgresCfg) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	if tz != "UTC" {
-		return nil, errors.New("postgres timezone is not UTC")
+	if !IsUTC(tz) {
+		return nil, errors.New("postgres timezone is not UTC: " + tz)
 	}
 
 	retryCount := 1

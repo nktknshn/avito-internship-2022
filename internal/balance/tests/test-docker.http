@@ -60,11 +60,11 @@ Content-Type: application/json
 ###
 
 # invalid cursor
-GET http://localhost:5050/api/v1/transactions/1?limit=10&cursor=1&sorting=updated_at&sorting_direction=desc
+GET http://localhost:5050/api/v1/report/transactions/1?limit=10&cursor=1&sorting=updated_at&sorting_direction=desc
 Authorization: Bearer {{token}}
 
 ###
 
 # valid request
-GET http://localhost:5050/api/v1/transactions/1?limit=10&sorting=updated_at&sorting_direction=asc
+GET http://localhost:5050/api/v1/report/transactions/1?limit=10&sorting=updated_at&sorting_direction=asc
 Authorization: Bearer {{token}}

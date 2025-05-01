@@ -35,8 +35,17 @@ func randomProduct() *struct {
 func randomDate(year int, month int) time.Time {
 	t := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.Local)
 	return t.Add(
-		time.Duration(rand.Intn(31)*24*60) * time.Minute,
+		time.Duration(rand.Intn(31*24*60)) * time.Minute,
 	)
+}
+
+func randomStatus() domainTransaction.TransactionSpendStatus {
+	statuses := []domainTransaction.TransactionSpendStatus{
+		domainTransaction.TransactionSpendStatusConfirmed,
+		domainTransaction.TransactionSpendStatusReserved,
+		domainTransaction.TransactionSpendStatusCanceled,
+	}
+	return statuses[rand.Intn(len(statuses))]
 }
 
 func calculateRevenue(trs []*transactionWrapper, year int, month int) []report_revenue.ReportRevenueRecord {
@@ -80,13 +89,18 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 				randomDate(2024, month+1),
 			)
 			t.setProduct(randomProduct())
-			t.setStatus(domainTransaction.TransactionSpendStatusConfirmed)
+			t.setStatus(randomStatus())
 			trs = append(trs, t)
 		}
 	}
 
 	_, err := s.saveTransactions(trs)
 	s.Require().NoError(err)
+
+	// rows, err := s.ExecSql(`select * from transactions_spend`)
+	// s.Require().NoError(err)
+
+	// fmt.Println(rows.TabbedString())
 
 	for month := range 12 {
 		report, err := s.transactionsRepo.GetReportRevenueByMonth(context.Background(), report_revenue.ReportRevenueQuery{
@@ -101,5 +115,9 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 		s.Require().Greater(len(records), 0)
 
 		s.Require().ElementsMatch(records, report.Records)
+
+		// for _, record := range records {
+		// 	s.Logf("record: %s = %d", record.ProductTitle, record.TotalRevenue)
+		// }
 	}
 }

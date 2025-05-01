@@ -134,10 +134,6 @@ func (dt *DockerDatabase) RunPostgresDocker(ctx context.Context) error {
 
 func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*sqlx.DB, error) {
 
-	if _, err := os.Stat(migrationsDir); err != nil {
-		return nil, errors.New("migrations directory does not exist or not accessible")
-	}
-
 	cfg := &config{
 		Addr:                  "localhost:" + dt.runningDocker.GetPort("5432/tcp"),
 		User:                  "postgres",
@@ -148,6 +144,7 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 		MaxOpenConnections:    100,
 		ConnectionMaxLifetime: time.Hour,
 		UpMigrations:          true,
+		ReturnUTC:             true,
 	}
 
 	var conn *sqlx.DB
@@ -168,8 +165,10 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 	}
 
 	if cfg.UpMigrations && migrationsDir != "" {
+		if _, err := os.Stat(migrationsDir); err != nil {
+			return nil, errors.New("migrations directory does not exist or not accessible")
+		}
 		err = sqlx_pg.Migrate(ctx, conn.DB, migrationsDir)
-
 		if err != nil {
 			return nil, err
 		}
