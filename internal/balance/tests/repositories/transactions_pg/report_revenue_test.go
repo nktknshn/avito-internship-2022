@@ -32,7 +32,7 @@ func randomProduct() *struct {
 	return &products[rand.Intn(len(products))]
 }
 
-func randomDate(year int, month int) time.Time {
+func rDateLocal(year int, month int) time.Time {
 	t := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.Local)
 	return t.Add(
 		time.Duration(rand.Intn(31*24*60)) * time.Minute,
@@ -61,8 +61,8 @@ func calculateRevenue(trs []*transactionWrapper, year int, month int) []report_r
 	}
 
 	for _, tr := range trs {
-		if tr.isSpend() && tr.getUpdatedAt().Year() == year &&
-			tr.getUpdatedAt().Month() == time.Month(month) &&
+		if tr.isSpend() && tr.getUpdatedAt().UTC().Year() == year &&
+			tr.getUpdatedAt().UTC().Month() == time.Month(month) &&
 			tr.trSpend.Status == domainTransaction.TransactionSpendStatusConfirmed {
 
 			record := getOrCreateRecord(tr.trSpend.ProductTitle.Value())
@@ -86,12 +86,18 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 		for _ = range 50 {
 			t := tSpend(acc,
 				rInt64(100, 1000),
-				randomDate(2024, month+1),
+				rDateLocal(2024, month+1),
 			)
 			t.setProduct(randomProduct())
 			t.setStatus(randomStatus())
 			trs = append(trs, t)
 		}
+
+		// добавим транзакцию на границе месяца
+		trs = append(trs, tSpend(acc,
+			rInt64(100, 1000),
+			time.Date(2024, time.Month(month+1), 1, 0, 0, 0, 0, time.Local),
+		))
 	}
 
 	_, err := s.saveTransactions(trs)
@@ -99,7 +105,6 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 
 	// rows, err := s.ExecSql(`select * from transactions_spend`)
 	// s.Require().NoError(err)
-
 	// fmt.Println(rows.TabbedString())
 
 	for month := range 12 {
