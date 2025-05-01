@@ -1,13 +1,10 @@
 package fixtures
 
 import (
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
-	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 var (
@@ -42,7 +39,5 @@ var (
 	DepositSource_str string                                     = "credit_card"
 	DepositSource     domainTransaction.TransactionDepositSource = domainTransaction.TransactionDepositSource(DepositSource_str)
 	//
-	// Use cases
-	InValidateToken = must.Must(auth_validate_token.NewInFromValues(AuthToken))
-	InGetBalance    = must.Must(get_balance.NewInFromValues(UserID_i64))
+
 )
