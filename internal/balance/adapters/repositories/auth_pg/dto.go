@@ -1,6 +1,9 @@
 package auth_pg
 
-import domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
+import (
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+)
 
 type authUserDTO struct {
 	ID           int64  `db:"id"`
@@ -10,7 +13,11 @@ type authUserDTO struct {
 }
 
 func fromAuthUserDTO(a *authUserDTO) (*domainAuth.AuthUser, error) {
-	return domainAuth.NewAuthUserFromValues(a.ID, a.Username, a.PasswordHash, a.Role)
+	authUser, err := domainAuth.NewAuthUserFromValues(a.ID, a.Username, a.PasswordHash, a.Role)
+	if err != nil {
+		return nil, domainError.Strip(err)
+	}
+	return authUser, nil
 }
 
 func toAuthUserDTO(a *domainAuth.AuthUser) (*authUserDTO, error) {

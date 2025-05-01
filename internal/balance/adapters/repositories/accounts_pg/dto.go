@@ -2,6 +2,7 @@ package accounts_pg
 
 import (
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 type accountDTO struct {
@@ -12,12 +13,16 @@ type accountDTO struct {
 }
 
 func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
-	return domainAccount.NewAccountFromValues(
+	acc, err := domainAccount.NewAccountFromValues(
 		a.Id,
 		a.UserId,
 		a.BalanceAvailable,
 		a.BalanceReserved,
 	)
+	if err != nil {
+		return nil, domainError.Strip(err)
+	}
+	return acc, nil
 }
 
 func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
