@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
 var products = []struct {
@@ -38,6 +39,35 @@ func randomDate(year int, month int) time.Time {
 	)
 }
 
+func calculateRevenue(trs []*transactionWrapper, year int, month int) []report_revenue.ReportRevenueRecord {
+	recordsMap := map[string]*report_revenue.ReportRevenueRecord{}
+	records := []report_revenue.ReportRevenueRecord{}
+	var getOrCreateRecord = func(productTitle string) *report_revenue.ReportRevenueRecord {
+		if _, ok := recordsMap[productTitle]; !ok {
+			recordsMap[productTitle] = &report_revenue.ReportRevenueRecord{
+				ProductTitle: productTitle,
+			}
+		}
+		return recordsMap[productTitle]
+	}
+
+	for _, tr := range trs {
+		if tr.isSpend() && tr.getUpdatedAt().Year() == year &&
+			tr.getUpdatedAt().Month() == time.Month(month) &&
+			tr.trSpend.Status == domainTransaction.TransactionSpendStatusConfirmed {
+
+			record := getOrCreateRecord(tr.trSpend.ProductTitle.Value())
+			record.TotalRevenue += tr.trSpend.Amount.Value()
+		}
+	}
+
+	for _, record := range recordsMap {
+		records = append(records, *record)
+	}
+
+	return records
+}
+
 func (s *Suite) TestGetReportRevenueByMonth() {
 	acc := s.getAccount1()
 
@@ -50,6 +80,7 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 				randomDate(2024, month+1),
 			)
 			t.setProduct(randomProduct())
+			t.setStatus(domainTransaction.TransactionSpendStatusConfirmed)
 			trs = append(trs, t)
 		}
 	}
@@ -57,10 +88,18 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 	_, err := s.saveTransactions(trs)
 	s.Require().NoError(err)
 
-	report, err := s.transactionsRepo.GetReportRevenueByMonth(context.Background(), report_revenue.ReportRevenueQuery{
-		Year:  2024,
-		Month: 10,
-	})
-	s.Require().NoError(err)
-	s.Require().Greater(len(report.Records), 0)
+	for month := range 12 {
+		report, err := s.transactionsRepo.GetReportRevenueByMonth(context.Background(), report_revenue.ReportRevenueQuery{
+			Year:  2024,
+			Month: report_revenue.Month(month + 1),
+		})
+		s.Require().NoError(err)
+
+		records := calculateRevenue(trs, 2024, month+1)
+
+		s.Require().Equal(len(records), len(report.Records))
+		s.Require().Greater(len(records), 0)
+
+		s.Require().ElementsMatch(records, report.Records)
+	}
 }

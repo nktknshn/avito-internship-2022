@@ -32,6 +32,13 @@ func (tw *transactionWrapper) setProduct(p *struct {
 	return tw
 }
 
+func (tw *transactionWrapper) setStatus(status domainTransaction.TransactionSpendStatus) *transactionWrapper {
+	if tw.isSpend() {
+		tw.trSpend.Status = status
+	}
+	return tw
+}
+
 func (tw *transactionWrapper) isSpend() bool {
 	return tw.trSpend != nil
 }
