@@ -22,13 +22,13 @@ func (s *HttpTestSuite) TestReportTransactions() {
 	var validUrl = "?limit=10&sorting=updated_at&sorting_direction=desc"
 
 	var transactionSpend = report_transactions.OutTransactionSpend{
-		ID:           fixtures.UUID_1,
-		AccountID:    fixtures.AccountID_i64,
-		OrderID:      fixtures.OrderID_i64,
-		ProductID:    fixtures.ProductID_i64,
-		ProductTitle: fixtures.ProductTitle_str,
-		Amount:       fixtures.Amount100_i64,
-		Status:       domainTransaction.TransactionSpendStatusConfirmed.Value(),
+		ID:           domainTransaction.TransactionSpendID(fixtures.UUID_1),
+		AccountID:    fixtures.AccountID,
+		OrderID:      fixtures.OrderID,
+		ProductID:    fixtures.ProductID,
+		ProductTitle: fixtures.ProductTitle,
+		Amount:       fixtures.AmountPositive100,
+		Status:       domainTransaction.TransactionSpendStatusConfirmed,
 		CreatedAt:    fixtures.Time_1,
 		UpdatedAt:    fixtures.Time_1,
 	}

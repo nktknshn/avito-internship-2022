@@ -44,32 +44,32 @@ func (u *ReportTransactionsUseCase) Handle(ctx context.Context, in In) (Out, err
 		switch transaction := transaction.(type) {
 		case *domainTransaction.TransactionSpend:
 			out.Transactions = append(out.Transactions, &OutTransactionSpend{
-				ID:           transaction.ID.Value(),
-				AccountID:    transaction.AccountID.Value(),
-				OrderID:      transaction.OrderID.Value(),
-				ProductID:    transaction.ProductID.Value(),
-				ProductTitle: transaction.ProductTitle.Value(),
-				Amount:       transaction.Amount.Value(),
-				Status:       transaction.Status.Value(),
+				ID:           transaction.ID,
+				AccountID:    transaction.AccountID,
+				OrderID:      transaction.OrderID,
+				ProductID:    transaction.ProductID,
+				ProductTitle: transaction.ProductTitle,
+				Amount:       transaction.Amount,
+				Status:       transaction.Status,
 				CreatedAt:    transaction.CreatedAt,
 				UpdatedAt:    transaction.UpdatedAt,
 			})
 		case *domainTransaction.TransactionDeposit:
 			out.Transactions = append(out.Transactions, &OutTransactionDeposit{
-				ID:        transaction.ID.Value(),
-				Source:    transaction.DepositSource.Value(),
-				Amount:    transaction.Amount.Value(),
-				Status:    transaction.Status.Value(),
+				ID:        transaction.ID,
+				Source:    transaction.DepositSource,
+				Amount:    transaction.Amount,
+				Status:    transaction.Status,
 				CreatedAt: transaction.CreatedAt,
 				UpdatedAt: transaction.UpdatedAt,
 			})
 		case *domainTransaction.TransactionTransfer:
 			out.Transactions = append(out.Transactions, &OutTransactionTransfer{
-				ID:        transaction.ID.Value(),
-				From:      transaction.FromAccountID.Value(),
-				To:        transaction.ToAccountID.Value(),
-				Amount:    transaction.Amount.Value(),
-				Status:    transaction.Status.Value(),
+				ID:        transaction.ID,
+				From:      transaction.FromAccountID,
+				To:        transaction.ToAccountID,
+				Amount:    transaction.Amount,
+				Status:    transaction.Status,
 				CreatedAt: transaction.CreatedAt,
 				UpdatedAt: transaction.UpdatedAt,
 			})

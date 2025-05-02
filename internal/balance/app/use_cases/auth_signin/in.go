@@ -7,10 +7,6 @@ type In struct {
 	password domainAuth.AuthUserPassword
 }
 
-type Out struct {
-	Token domainAuth.AuthUserToken `json:"token"`
-}
-
 func NewInFromValues(username string, password string) (In, error) {
 	_username, err := domainAuth.NewAuthUserUsername(username)
 	if err != nil {

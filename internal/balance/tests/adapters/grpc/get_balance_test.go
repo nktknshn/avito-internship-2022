@@ -19,8 +19,8 @@ func (s *GrpcTestSuite) TestGetBalance_Success() {
 	depositIn := must.Must(get_balance.NewInFromValues(fixtures.UserID_i64))
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, depositIn).Return(get_balance.Out{
-		Available: 100,
-		Reserved:  0,
+		Available: fixtures.Amount100,
+		Reserved:  fixtures.Amount0,
 	}, nil)
 
 	out, err := s.client.GetBalance(

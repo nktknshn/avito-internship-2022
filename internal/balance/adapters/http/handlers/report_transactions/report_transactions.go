@@ -22,6 +22,20 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Report transactions
+// @Description  Report transactions
+// @Tags         report_transactions
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        user_id   path      int  true  "User ID"
+// @Param        limit     query     int  false  "Limit"
+// @Param        cursor    query     string  false  "Cursor"
+// @Param        sorting   query     string  false  "Sorting"
+// @Param        sorting_direction query     string  false  "Sorting Direction"
+// @Success      200  {object}  handlers_builder.Result[responseBody]
+// @Failure      400  {object}  handlers_builder.Error
+// @Router       /api/v1/report/transactions/{user_id} [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportTransactionsHandler {
 	if auth == nil {
 		panic("auth is nil")
@@ -71,6 +85,6 @@ func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) ht
 			return nil, err
 		}
 
-		return res, nil
+		return outToResult(res), nil
 	})
 }

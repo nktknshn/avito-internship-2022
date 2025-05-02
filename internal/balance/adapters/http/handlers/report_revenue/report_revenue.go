@@ -20,6 +20,17 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Report revenue
+// @Description  Report revenue
+// @Tags         report_revenue
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        year   query      int  true  "Year"
+// @Param        month  query      int  true  "Month"
+// @Success      200  {object}  handlers_builder.Result[resultType]
+// @Failure      400  {object}  handlers_builder.Error
+// @Router       /api/v1/report/revenue [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueHandler {
 	if auth == nil {
 		panic("auth is nil")
@@ -34,6 +45,32 @@ func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueHandler 
 
 func (h *reportRevenueHandler) GetHandler() http.Handler {
 	return makeReportRevenueHandler(h.auth, h.useCase)
+}
+
+type responseRecord struct {
+	ProductID    int64  `json:"product_id"`
+	ProductTitle string `json:"product_title"`
+	TotalRevenue int64  `json:"total_revenue"`
+}
+
+type responseBody struct {
+	Records []responseRecord `json:"records"`
+}
+
+func outToResult(out report_revenue.Out) responseBody {
+	result := responseBody{
+		Records: make([]responseRecord, len(out.Records)),
+	}
+
+	for i, record := range out.Records {
+		result.Records[i] = responseRecord{
+			ProductID:    record.ProductID.Value(),
+			ProductTitle: record.ProductTitle.Value(),
+			TotalRevenue: record.TotalRevenue,
+		}
+	}
+
+	return result
 }
 
 func makeReportRevenueHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
@@ -53,6 +90,11 @@ func makeReportRevenueHandler(auth handlers_auth.AuthUseCase, u useCase) http.Ha
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
 
-		return u.Handle(r.Context(), in)
+		out, err := u.Handle(r.Context(), in)
+		if err != nil {
+			return nil, err
+		}
+
+		return outToResult(out), nil
 	})
 }

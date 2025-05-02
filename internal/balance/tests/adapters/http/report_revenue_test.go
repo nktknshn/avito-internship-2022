@@ -24,11 +24,13 @@ func (s *HttpTestSuite) TestReportRevenue() {
 			useCaseReturn: returnSuccess2(report_revenue.Out{
 				Records: []report_revenue.OutRecord{
 					{
-						ProductTitle: fixtures.ProductTitle_str,
+						ProductID:    fixtures.ProductID,
+						ProductTitle: fixtures.ProductTitle,
 						TotalRevenue: fixtures.Amount100_i64,
 					},
 					{
-						ProductTitle: fixtures.ProductTitle_2_str,
+						ProductID:    fixtures.ProductID_2,
+						ProductTitle: fixtures.ProductTitle_2,
 						TotalRevenue: fixtures.Amount100_i64,
 					},
 				},
@@ -36,10 +38,12 @@ func (s *HttpTestSuite) TestReportRevenue() {
 			expectBody: map[string]any{
 				"records": []any{
 					map[string]any{
+						"product_id":    fixtures.ProductID_i64,
 						"product_title": fixtures.ProductTitle_str,
 						"total_revenue": fixtures.Amount100_i64,
 					},
 					map[string]any{
+						"product_id":    fixtures.ProductID_2_i64,
 						"product_title": fixtures.ProductTitle_2_str,
 						"total_revenue": fixtures.Amount100_i64,
 					},

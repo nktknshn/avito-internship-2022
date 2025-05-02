@@ -41,8 +41,8 @@ func (s *HttpTestSuite) TestGetBalance() {
 			expectCode: http.StatusOK,
 			auth:       true,
 			useCaseReturn: returnSuccess2(get_balance.Out{
-				Available: 100,
-				Reserved:  0,
+				Available: fixtures.Amount100,
+				Reserved:  fixtures.Amount0,
 			}),
 			routeParams: routeParams,
 			expectBody:  map[string]any{"available": 100, "reserved": 0},

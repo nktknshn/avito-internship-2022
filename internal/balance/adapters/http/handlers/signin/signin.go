@@ -34,22 +34,26 @@ func (h *HandlerSignIn) GetHandler() http.Handler {
 	return makeHandlerSignIn(h.authSignin)
 }
 
-type payloadType struct {
+type payloadBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-func (p payloadType) GetIn() (auth_signin.In, error) {
+func (p payloadBody) GetIn() (auth_signin.In, error) {
 	return auth_signin.NewInFromValues(
 		p.Username,
 		p.Password,
 	)
 }
 
+type responseBody struct {
+	Token string `json:"token"`
+}
+
 func makeHandlerSignIn(u usecase) http.Handler {
 	var (
 		b       = handlers_builder.NewPublic()
-		payload = ergo.PayloadAttach[payloadType](b)
+		payload = ergo.PayloadAttach[payloadBody](b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
@@ -65,7 +69,7 @@ func makeHandlerSignIn(u usecase) http.Handler {
 		if err != nil {
 			return nil, err
 		}
-		return out, nil
+		return responseBody{Token: out.Token.String()}, nil
 	})
 }
 

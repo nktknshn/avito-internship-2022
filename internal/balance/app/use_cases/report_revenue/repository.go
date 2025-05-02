@@ -4,6 +4,7 @@ import (
 	"context"
 
 	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
+	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 )
 
 var (
@@ -51,6 +52,7 @@ type ReportRevenueResponse struct {
 }
 
 type ReportRevenueRecord struct {
-	ProductTitle string
+	ProductID    domainProduct.ProductID
+	ProductTitle domainProduct.ProductTitle
 	TotalRevenue int64
 }

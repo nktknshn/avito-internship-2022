@@ -31,6 +31,10 @@ const (
 // Реализуется в репозитории
 type Cursor string
 
+func (c Cursor) Value() string {
+	return string(c)
+}
+
 var CursorEmpty = Cursor("")
 
 func NewCursor(cursor string) (Cursor, error) {

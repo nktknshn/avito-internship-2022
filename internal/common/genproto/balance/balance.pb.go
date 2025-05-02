@@ -1066,8 +1066,9 @@ func (x *ReportRevenueResponse) GetRecords() []*ReportRevenueRecord {
 
 type ReportRevenueRecord struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ProductTitle  string                 `protobuf:"bytes,1,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
-	TotalRevenue  int64                  `protobuf:"varint,2,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`
+	ProductId     int64                  `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ProductTitle  string                 `protobuf:"bytes,2,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
+	TotalRevenue  int64                  `protobuf:"varint,3,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1100,6 +1101,13 @@ func (x *ReportRevenueRecord) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ReportRevenueRecord.ProtoReflect.Descriptor instead.
 func (*ReportRevenueRecord) Descriptor() ([]byte, []int) {
 	return file_balance_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *ReportRevenueRecord) GetProductId() int64 {
+	if x != nil {
+		return x.ProductId
+	}
+	return 0
 }
 
 func (x *ReportRevenueRecord) GetProductTitle() string {
@@ -1301,10 +1309,12 @@ const file_balance_proto_rawDesc = "" +
 	"\x04year\x18\x01 \x01(\x05R\x04year\x12\x14\n" +
 	"\x05month\x18\x02 \x01(\x05R\x05month\"O\n" +
 	"\x15ReportRevenueResponse\x126\n" +
-	"\arecords\x18\x01 \x03(\v2\x1c.balance.ReportRevenueRecordR\arecords\"_\n" +
-	"\x13ReportRevenueRecord\x12#\n" +
-	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12#\n" +
-	"\rtotal_revenue\x18\x02 \x01(\x03R\ftotalRevenue\"K\n" +
+	"\arecords\x18\x01 \x03(\v2\x1c.balance.ReportRevenueRecordR\arecords\"~\n" +
+	"\x13ReportRevenueRecord\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x01 \x01(\x03R\tproductId\x12#\n" +
+	"\rproduct_title\x18\x02 \x01(\tR\fproductTitle\x12#\n" +
+	"\rtotal_revenue\x18\x03 \x01(\x03R\ftotalRevenue\"K\n" +
 	"\x11AuthSignInRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"*\n" +

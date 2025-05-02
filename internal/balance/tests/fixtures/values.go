@@ -57,9 +57,12 @@ var (
 	OrderID_str string         = "1"
 	OrderID     domain.OrderID = 1
 	//
-	ProductID_i64 int64                   = 1
-	ProductID_str string                  = "1"
-	ProductID     domainProduct.ProductID = 1
+	ProductID_i64   int64                   = 1
+	ProductID_str   string                  = "1"
+	ProductID       domainProduct.ProductID = 1
+	ProductID_2_i64 int64                   = 2
+	ProductID_2_str string                  = "2"
+	ProductID_2     domainProduct.ProductID = 2
 	//
 	ProductTitle_str string                     = "Product Title"
 	ProductTitle     domainProduct.ProductTitle = domainProduct.ProductTitle(ProductTitle_str)

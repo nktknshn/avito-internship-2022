@@ -126,8 +126,9 @@ message ReportRevenueResponse {
 }
 
 message ReportRevenueRecord {
-    string product_title = 1;
-    int64 total_revenue = 2;
+    int64 product_id = 1;
+    string product_title = 2;
+    int64 total_revenue = 3;
 }
 
 message AuthSignInRequest {

@@ -3,13 +3,17 @@ package report_transactions
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
+	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
 type Out struct {
-	Transactions []OutTransaction `json:"transactions"`
-	Cursor       Cursor           `json:"cursor"`
-	HasMore      bool             `json:"has_more"`
+	Transactions []OutTransaction
+	Cursor       Cursor
+	HasMore      bool
 }
 
 type OutTransaction interface {
@@ -17,38 +21,38 @@ type OutTransaction interface {
 }
 
 type OutTransactionSpend struct {
-	ID           uuid.UUID `json:"id"`
-	AccountID    int64     `json:"account_id"`
-	OrderID      int64     `json:"order_id"`
-	ProductID    int64     `json:"product_id"`
-	ProductTitle string    `json:"product_title"`
-	Amount       int64     `json:"amount"`
-	Status       string    `json:"status"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID           domainTransaction.TransactionSpendID
+	AccountID    domainAccount.AccountID
+	OrderID      domain.OrderID
+	ProductID    domainProduct.ProductID
+	ProductTitle domainProduct.ProductTitle
+	Amount       domainAmount.AmountPositive
+	Status       domainTransaction.TransactionSpendStatus
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (o *OutTransactionSpend) isOutTransaction() {}
 
 type OutTransactionDeposit struct {
-	ID        uuid.UUID `json:"id"`
-	Source    string    `json:"source"`
-	Amount    int64     `json:"amount"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        domainTransaction.TransactionDepositID
+	Source    domainTransaction.TransactionDepositSource
+	Amount    domainAmount.AmountPositive
+	Status    domainTransaction.TransactionDepositStatus
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (o *OutTransactionDeposit) isOutTransaction() {}
 
 type OutTransactionTransfer struct {
-	ID        uuid.UUID `json:"id"`
-	From      int64     `json:"from"`
-	To        int64     `json:"to"`
-	Amount    int64     `json:"amount"`
-	Status    string    `json:"status"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        domainTransaction.TransactionTransferID
+	From      domainAccount.AccountID
+	To        domainAccount.AccountID
+	Amount    domainAmount.AmountPositive
+	Status    domainTransaction.TransactionTransferStatus
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (o *OutTransactionTransfer) isOutTransaction() {}

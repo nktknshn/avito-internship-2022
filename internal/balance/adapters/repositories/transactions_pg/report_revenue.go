@@ -34,12 +34,13 @@ func (r *TransactionsRepository) GetReportRevenueByMonth(ctx context.Context, re
 	sqlQuery := `
 	SELECT
 		product_title,
+		product_id,
 		SUM(amount) as total_revenue
 	FROM transactions_spend
 	WHERE 
 		created_at >= :t0 AND created_at < :t1
 		AND status = :status
-	GROUP BY product_title
+	GROUP BY product_title, product_id
 	`
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)

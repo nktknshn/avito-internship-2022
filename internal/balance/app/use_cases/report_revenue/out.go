@@ -1,10 +1,13 @@
 package report_revenue
 
+import domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
+
 type Out struct {
-	Records []OutRecord `json:"records"`
+	Records []OutRecord
 }
 
 type OutRecord struct {
-	ProductTitle string `json:"product_title"`
-	TotalRevenue int64  `json:"total_revenue"`
+	ProductID    domainProduct.ProductID
+	ProductTitle domainProduct.ProductTitle
+	TotalRevenue int64
 }

@@ -58,7 +58,7 @@ func (g GrpcAdapter) GetBalance(ctx context.Context, request *balance.GetBalance
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &balance.GetBalanceResponse{Available: out.Available, Reserved: out.Reserved}, nil
+	return &balance.GetBalanceResponse{Available: out.Available.Value(), Reserved: out.Reserved.Value()}, nil
 }
 
 func (g GrpcAdapter) Deposit(ctx context.Context, request *balance.DepositRequest) (*empty.Empty, error) {
@@ -169,10 +169,10 @@ func (g GrpcAdapter) ReportTransactions(ctx context.Context, request *balance.Re
 			transactions[i] = &balance.ReportTransactionsTransaction{
 				Transaction: &balance.ReportTransactionsTransaction_Deposit{
 					Deposit: &balance.ReportTransactionsTransactionDeposit{
-						Id:        t.ID.String(),
-						Amount:    t.Amount,
-						Source:    t.Source,
-						Status:    t.Status,
+						Id:        t.ID.Value().String(),
+						Amount:    t.Amount.Value(),
+						Source:    t.Source.Value(),
+						Status:    t.Status.Value(),
 						CreatedAt: t.CreatedAt.Format(time.RFC3339),
 						UpdatedAt: t.UpdatedAt.Format(time.RFC3339),
 					},
@@ -182,13 +182,13 @@ func (g GrpcAdapter) ReportTransactions(ctx context.Context, request *balance.Re
 			transactions[i] = &balance.ReportTransactionsTransaction{
 				Transaction: &balance.ReportTransactionsTransaction_Spend{
 					Spend: &balance.ReportTransactionsTransactionSpend{
-						Id:           t.ID.String(),
-						AccountId:    t.AccountID,
-						OrderId:      t.OrderID,
-						ProductId:    t.ProductID,
-						ProductTitle: t.ProductTitle,
-						Amount:       t.Amount,
-						Status:       t.Status,
+						Id:           t.ID.Value().String(),
+						AccountId:    t.AccountID.Value(),
+						OrderId:      t.OrderID.Value(),
+						ProductId:    t.ProductID.Value(),
+						ProductTitle: t.ProductTitle.Value(),
+						Amount:       t.Amount.Value(),
+						Status:       t.Status.Value(),
 						CreatedAt:    t.CreatedAt.Format(time.RFC3339),
 						UpdatedAt:    t.UpdatedAt.Format(time.RFC3339),
 					},
@@ -198,11 +198,11 @@ func (g GrpcAdapter) ReportTransactions(ctx context.Context, request *balance.Re
 			transactions[i] = &balance.ReportTransactionsTransaction{
 				Transaction: &balance.ReportTransactionsTransaction_Transfer{
 					Transfer: &balance.ReportTransactionsTransactionTransfer{
-						Id:        t.ID.String(),
-						From:      t.From,
-						To:        t.To,
-						Amount:    t.Amount,
-						Status:    t.Status,
+						Id:        t.ID.Value().String(),
+						From:      t.From.Value(),
+						To:        t.To.Value(),
+						Amount:    t.Amount.Value(),
+						Status:    t.Status.Value(),
 						CreatedAt: t.CreatedAt.Format(time.RFC3339),
 						UpdatedAt: t.UpdatedAt.Format(time.RFC3339),
 					},
@@ -236,7 +236,8 @@ func (g GrpcAdapter) ReportRevenue(ctx context.Context, request *balance.ReportR
 
 	for i, record := range out.Records {
 		records[i] = &balance.ReportRevenueRecord{
-			ProductTitle: record.ProductTitle,
+			ProductId:    record.ProductID.Value(),
+			ProductTitle: record.ProductTitle.Value(),
 			TotalRevenue: record.TotalRevenue,
 		}
 	}

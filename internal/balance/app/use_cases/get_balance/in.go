@@ -15,8 +15,3 @@ func NewInFromValues(userID int64) (In, error) {
 	}
 	return In{userID: _userID}, nil
 }
-
-type Out struct {
-	Available int64 `json:"available"`
-	Reserved  int64 `json:"reserved"`
-}

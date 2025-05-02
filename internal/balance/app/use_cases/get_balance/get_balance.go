@@ -42,8 +42,8 @@ func (u *GetBalanceUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	}
 
 	return Out{
-		Available: acc.Balance.GetAvailable().Value(),
-		Reserved:  acc.Balance.GetReserved().Value(),
+		Available: acc.Balance.GetAvailable(),
+		Reserved:  acc.Balance.GetReserved(),
 	}, nil
 }
 

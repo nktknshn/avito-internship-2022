@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
+	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
@@ -51,10 +52,11 @@ func randomStatus() domainTransaction.TransactionSpendStatus {
 func calculateRevenue(trs []*transactionWrapper, year int, month int) []report_revenue.ReportRevenueRecord {
 	recordsMap := map[string]*report_revenue.ReportRevenueRecord{}
 	records := []report_revenue.ReportRevenueRecord{}
-	var getOrCreateRecord = func(productTitle string) *report_revenue.ReportRevenueRecord {
+	var getOrCreateRecord = func(productTitle string, productID int64) *report_revenue.ReportRevenueRecord {
 		if _, ok := recordsMap[productTitle]; !ok {
 			recordsMap[productTitle] = &report_revenue.ReportRevenueRecord{
-				ProductTitle: productTitle,
+				ProductTitle: domainProduct.ProductTitle(productTitle),
+				ProductID:    domainProduct.ProductID(productID),
 			}
 		}
 		return recordsMap[productTitle]
@@ -65,7 +67,7 @@ func calculateRevenue(trs []*transactionWrapper, year int, month int) []report_r
 			tr.getUpdatedAt().UTC().Month() == time.Month(month) &&
 			tr.trSpend.Status == domainTransaction.TransactionSpendStatusConfirmed {
 
-			record := getOrCreateRecord(tr.trSpend.ProductTitle.Value())
+			record := getOrCreateRecord(tr.trSpend.ProductTitle.Value(), tr.trSpend.ProductID.Value())
 			record.TotalRevenue += tr.trSpend.Amount.Value()
 		}
 	}
