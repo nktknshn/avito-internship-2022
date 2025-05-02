@@ -1,6 +1,7 @@
 package errors_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -11,8 +12,8 @@ import (
 
 func TestDomainError(t *testing.T) {
 	causeError := errors.New("cause error")
-
 	de := domainError.New("test domain error")
+
 	deWithCause := de.WithCause(causeError)
 
 	require.Equal(t, "test domain error", deWithCause.Error())
@@ -20,6 +21,7 @@ func TestDomainError(t *testing.T) {
 
 	require.ErrorIs(t, deWithCause, de)
 	require.ErrorIs(t, deWithCause, causeError)
+
 	require.True(t, domainError.IsDomainError(deWithCause))
 	require.True(t, errors.Is(errors.Cause(deWithCause), causeError))
 }
@@ -31,4 +33,17 @@ func TestDomainError_Strip(t *testing.T) {
 	require.False(t, domainError.IsDomainError(stripped))
 
 	require.Equal(t, de.Error(), stripped.Error())
+}
+
+func TestDomainError_Wrap(t *testing.T) {
+	causeError := errors.New("cause error")
+	de := domainError.New("test domain error").
+		WithCause(causeError)
+
+	newError := fmt.Errorf("test wrap error: %w", de)
+	require.Equal(t, "test wrap error: test domain error", newError.Error())
+
+	require.ErrorIs(t, newError, de)
+	require.ErrorIs(t, newError, causeError)
+	require.ErrorIs(t, errors.Cause(newError), causeError)
 }

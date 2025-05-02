@@ -34,6 +34,8 @@ func (e DomainError) Error() string {
 	return e.message
 }
 
+// Скрывает cause из Error(). Причина остается доступна через errors.Cause(err).
+// Обе ошибки матчатся через errors.Is
 func (e DomainError) WithCause(cause error) error {
 	return domainErrorWithCause{
 		domainError: e,
