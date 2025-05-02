@@ -10,7 +10,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
-	"github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
 )
 
 var (
@@ -24,13 +23,13 @@ func main() {
 
 	ctx := context.Background()
 
-	cfg, err := config_cleanenv.LoadConfigType[config.Config](flagConfigPath)
+	cfg, err := config.LoadConfig(flagConfigPath)
 
 	if err != nil {
 		panic(err)
 	}
 
-	app, err := app_impl.NewApplication(ctx, &cfg)
+	app, err := app_impl.NewApplication(ctx, cfg)
 
 	if err != nil {
 		panic(err)

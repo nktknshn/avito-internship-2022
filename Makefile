@@ -25,3 +25,7 @@ cover-balance-use-cases:
 generate-protobuf:
 	./scripts/generate-protobuf.sh balance
 .PHONY: generate-protobuf
+
+generate-swagger:
+	./scripts/swagger.sh
+.PHONY: generate-swagger

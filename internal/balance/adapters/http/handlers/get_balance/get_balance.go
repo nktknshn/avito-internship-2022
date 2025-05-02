@@ -24,6 +24,16 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Get balance
+// @Description  Get balance
+// @Tags         balance
+// @Accept       json
+// @Produce      json
+// @Param        user_id   path      int  true  "User ID"
+// @Success      200  {object}  handlers_builder.Result[get_balance.Out]
+// @Failure      400  {object}  handlers_builder.Error
+// @Failure      404  {object}  handlers_builder.Error
+// @Router       /api/v1/balance/{user_id} [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *getBalanceHandler {
 	if auth == nil {
 		panic("auth is nil")

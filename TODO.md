@@ -1,22 +1,24 @@
 TODO
 
+- [ ] swagger
+- [ ] transactional outbox
+- [ ] kafka
+- [ ] ctx timeouts
+- [ ] bench
+- [ ] panic recovery
+- [ ] error wrapping
 - [ ] метрики
 - [ ] логи
 - [.] графана, прометей
-- [ ] swagger
 - [ ] opentracing
-- [ ] transactional outbox
-- [x] FOR UPDATE
-- [ ] more test coverage
 - [ ] graceful shutdown
+- [ ] certs
+- [x] FOR UPDATE
+- [x] more test coverage
 - [x] migrations
 - [-] auth token blacklist
-- [ ] ctx timeouts
-- [ ] certs
-- [ ] csrf
-- [ ] panic recovery
+- [-] csrf
 - [x] view tests coverage
 - [x] validate grpc server to use cases mapping on startup
-- [x] uint64 for domain models
-- [ ] bench
-- [ ] error cause
+- [-] uint64 for domain models
+- [x] error cause

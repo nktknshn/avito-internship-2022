@@ -1,0 +1,102 @@
+basePath: /api/v1
+definitions:
+  github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_get_balance_Out
+  : properties:
+      result:
+        $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_get_balance.Out'
+    type: object
+  github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty:
+    properties:
+      result:
+        type: object
+    type: object
+  github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_deposit.In:
+    type: object
+  github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_get_balance.Out:
+    properties:
+      available:
+        type: integer
+      reserved:
+        type: integer
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: nikita@kanash.in
+    name: API Support
+    url: https://github.com/nktknshn
+  description: Balance Microservice API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Balance Microservice API
+  version: "1.0"
+paths:
+  /api/v1/balance/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get balance
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_get_balance_Out'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
+      summary: Get balance
+      tags:
+      - balance
+  /api/v1/balance/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Deposit money to account
+      parameters:
+      - description: Payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_app_use_cases_deposit.In'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
+      summary: Deposit money
+      tags:
+      - deposit
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

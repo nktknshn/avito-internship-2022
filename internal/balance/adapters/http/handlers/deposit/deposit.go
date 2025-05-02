@@ -22,6 +22,15 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Deposit money
+// @Description  Deposit money to account
+// @Tags         deposit
+// @Accept       json
+// @Produce      json
+// @Param        payload   body      deposit.In  true  "Payload"
+// @Success      200  {object}  handlers_builder.ResultEmpty
+// @Failure      400  {object}  handlers_builder.Error
+// @Router       /api/v1/balance/deposit [post]
 func New(auth handlers_auth.AuthUseCase, depositUseCase useCase) *depositHandler {
 	if auth == nil {
 		panic("auth is nil")
