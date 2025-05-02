@@ -20,9 +20,11 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	var errorWithHttpStatus ergo.ErrorWithHttpStatus
 
 	if errors.As(err, &internalServerError) {
+		// InternalServerError подразумевает, что ошибка не будет показана клиенту
 		status = http.StatusInternalServerError
 		errorBody = makeErrorBody(errors.New("internal server error"))
 	} else if errors.As(err, &errorWithHttpStatus) {
+		// если ошибка обернута в хендлере с http статусом, то используем этот статус
 		status = errorWithHttpStatus.HttpStatusCode
 		errorBody = makeErrorBody(errorWithHttpStatus.Err)
 	} else if domainError.IsDomainError(err) {
@@ -41,6 +43,7 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
+
 	bs, err := json.Marshal(errorBody)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
