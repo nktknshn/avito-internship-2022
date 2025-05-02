@@ -1,12 +1,18 @@
 package use_cases_test
 
 import (
+	"testing"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
 	"github.com/stretchr/testify/suite"
 )
+
+func TestAuthSuiteTest(t *testing.T) {
+	suite.Run(t, new(AuthSuiteTest))
+}
 
 type AuthSuiteTest struct {
 	suite.Suite

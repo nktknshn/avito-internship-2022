@@ -88,10 +88,7 @@ func (m *AuthRepositoryMock) GetUserByUsername(ctx context.Context, username dom
 
 func (m *AuthRepositoryMock) CreateUser(ctx context.Context, username domainAuth.AuthUserUsername, passwordHash domainAuth.AuthUserPasswordHash, role domainAuth.AuthUserRole) error {
 	args := m.Called(ctx, username, passwordHash, role)
-	if args.Get(0) == nil {
-		return args.Error(0)
-	}
-	return nil
+	return args.Error(0)
 }
 
 var _ domainAuth.AuthRepository = &AuthRepositoryMock{}
