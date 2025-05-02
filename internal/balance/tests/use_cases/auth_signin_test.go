@@ -2,7 +2,8 @@ package use_cases_test
 
 import (
 	"context"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
@@ -50,14 +51,17 @@ func (s *AuthSuiteTest) TestAuthSignin_InvalidPassword() {
 }
 
 func (s *AuthSuiteTest) TestAuthSignin_HasherError() {
+	hasherError := errors.New("hasher error")
 	s.mockedAuthRepo.On("GetUserByUsername", mock.Anything, mock.Anything).Return(&fixtures.AuthUser, nil)
 
-	s.mockedHasher.On("Verify", mock.Anything, mock.Anything).Return(false, errors.New("hasher error"))
+	s.mockedHasher.On("Verify", mock.Anything, mock.Anything).Return(false, hasherError)
 
 	out, err := s.mockedSignin.Handle(context.Background(), inAuthSignin)
 	s.Require().Error(err)
 	s.Require().Empty(out)
 	s.Require().ErrorIs(err, domainAuth.ErrInvalidAuthUserPassword)
+
+	s.Require().Equal(errors.Cause(err).Error(), hasherError.Error())
 }
 
 func (s *AuthSuiteTest) TestAuthSignin_TokenGenError() {

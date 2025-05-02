@@ -4,8 +4,25 @@ import (
 	"errors"
 )
 
+type domainErrorWithCause struct {
+	domainError DomainError
+	cause       error
+	error       error
+}
+
+func (e domainErrorWithCause) Error() string {
+	return e.domainError.Error()
+}
+
+func (e domainErrorWithCause) Unwrap() error {
+	return e.error
+}
+
+func (e domainErrorWithCause) Cause() error {
+	return e.cause
+}
+
 type DomainError struct {
-	cause   error
 	message string
 }
 
@@ -17,13 +34,12 @@ func (e DomainError) Error() string {
 	return e.message
 }
 
-func (e DomainError) WithCause(cause error) DomainError {
-	e.cause = cause
-	return e
-}
-
-func (e DomainError) Cause() error {
-	return e.cause
+func (e DomainError) WithCause(cause error) error {
+	return domainErrorWithCause{
+		domainError: e,
+		cause:       cause,
+		error:       errors.Join(e, cause),
+	}
 }
 
 func IsDomainError(err error) bool {

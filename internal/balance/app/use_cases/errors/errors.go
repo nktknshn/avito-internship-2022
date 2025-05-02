@@ -2,8 +2,25 @@ package errors
 
 import "errors"
 
+type useCaseErrorWithCause struct {
+	useCaseError UseCaseError
+	cause        error
+	error        error
+}
+
+func (e useCaseErrorWithCause) Error() string {
+	return e.useCaseError.Error()
+}
+
+func (e useCaseErrorWithCause) Unwrap() error {
+	return e.error
+}
+
+func (e useCaseErrorWithCause) Cause() error {
+	return e.cause
+}
+
 type UseCaseError struct {
-	cause   error
 	message string
 }
 
@@ -11,13 +28,12 @@ func New(message string) UseCaseError {
 	return UseCaseError{message: message}
 }
 
-func (e UseCaseError) WithCause(cause error) UseCaseError {
-	e.cause = cause
-	return e
-}
-
-func (e UseCaseError) Cause() error {
-	return e.cause
+func (e UseCaseError) WithCause(cause error) error {
+	return useCaseErrorWithCause{
+		useCaseError: e,
+		cause:        cause,
+		error:        errors.Join(e, cause),
+	}
 }
 
 func (e UseCaseError) Error() string {
