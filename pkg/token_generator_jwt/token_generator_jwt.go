@@ -24,6 +24,14 @@ type TokenClaims[T any] struct {
 }
 
 func NewTokenGeneratorJWT[T any](signKey []byte, tokenTTL time.Duration) *TokenGeneratorJWT[T] {
+	if signKey == nil {
+		panic("signKey is nil")
+	}
+
+	if tokenTTL <= 0 {
+		panic("tokenTTL is not positive")
+	}
+
 	return &TokenGeneratorJWT[T]{
 		signKey:  signKey,
 		tokenTTL: tokenTTL,
