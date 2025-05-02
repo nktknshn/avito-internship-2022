@@ -56,6 +56,11 @@ type TokenValidatorJWT[T any] struct {
 }
 
 func NewTokenValidatorJWT[T any](signKey []byte) *TokenValidatorJWT[T] {
+
+	if signKey == nil {
+		panic("signKey is nil")
+	}
+
 	return &TokenValidatorJWT[T]{
 		signKey: signKey,
 	}
