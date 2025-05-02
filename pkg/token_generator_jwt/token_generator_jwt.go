@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
 )
 
@@ -19,7 +19,7 @@ type TokenGeneratorJWT[T any] struct {
 }
 
 type TokenClaims[T any] struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	claimsType[T]
 }
 
@@ -32,9 +32,9 @@ func NewTokenGeneratorJWT[T any](signKey []byte, tokenTTL time.Duration) *TokenG
 
 func (t *TokenGeneratorJWT[T]) GenerateToken(ctx context.Context, claims T) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, TokenClaims[T]{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(t.tokenTTL).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(t.tokenTTL)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 		claimsType: claimsType[T]{
 			Data: claims,
@@ -59,20 +59,25 @@ func (t *TokenValidatorJWT[T]) ValidateToken(ctx context.Context, token string) 
 		return t.signKey, nil
 	})
 
-	var validationError *jwt.ValidationError
-	if errors.As(err, &validationError) {
-		if validationError.Errors&jwt.ValidationErrorExpired != 0 {
-			return nil, token_generator.ErrTokenExpired
-		}
+	if errors.Is(err, jwt.ErrTokenMalformed) {
+		return nil, token_generator.ErrInvalidToken
+	}
+
+	if errors.Is(err, jwt.ErrSignatureInvalid) {
+		return nil, token_generator.ErrInvalidToken
+	}
+
+	if errors.Is(err, jwt.ErrTokenExpired) {
+		return nil, token_generator.ErrTokenExpired
 	}
 
 	if err != nil {
 		return nil, token_generator.ErrInvalidToken
 	}
 
-	if claims, ok := parsedToken.Claims.(*TokenClaims[T]); ok && parsedToken.Valid {
-		return &claims.Data, nil
+	if parsedToken.Valid {
+		return &parsedToken.Claims.(*TokenClaims[T]).Data, nil
 	}
 
-	return nil, token_generator.ErrInvalidClaims
+	return nil, token_generator.ErrInvalidToken
 }

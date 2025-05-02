@@ -58,7 +58,7 @@ func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainA
 	err := tr.GetContext(ctx, &userDTO, tr.Rebind(sq), username)
 
 	if errors.Is(err, sql.ErrNoRows) {
-		return nil, domainAuth.ErrUserNotFound
+		return nil, domainAuth.ErrAuthUserNotFound
 	}
 
 	if err != nil {

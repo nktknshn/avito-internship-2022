@@ -53,7 +53,7 @@ func New(
 }
 
 // Проверить пользователя по имени и паролю
-// Сгенерировать токен
+// Сгенерировать и вернуть токен
 func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	user, err := u.authRepo.GetUserByUsername(ctx, in.username)
 	if err != nil {
@@ -71,8 +71,8 @@ func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	}
 
 	token, err := u.tokenGen.GenerateToken(ctx, domainAuth.AuthUserTokenClaims{
-		AuthUserID:   user.ID,
-		AuthUserRole: user.Role,
+		AuthUserID:   user.ID.Value(),
+		AuthUserRole: user.Role.Value(),
 	})
 
 	if err != nil {

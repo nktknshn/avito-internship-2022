@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrUserNotFound      = domainError.New("user not found")
+	ErrAuthUserNotFound  = domainError.New("user not found")
 	ErrDuplicateUsername = domainError.New("duplicate username")
 )
 

@@ -11,6 +11,6 @@ func (t AuthUserToken) String() string {
 }
 
 type AuthUserTokenClaims struct {
-	AuthUserID   AuthUserID
-	AuthUserRole AuthUserRole
+	AuthUserID   int64
+	AuthUserRole string
 }

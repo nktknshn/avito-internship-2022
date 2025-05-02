@@ -6,9 +6,8 @@ import (
 )
 
 var (
-	ErrInvalidToken  = errors.New("invalid token")
-	ErrTokenExpired  = errors.New("token expired")
-	ErrInvalidClaims = errors.New("invalid claims")
+	ErrInvalidToken = errors.New("invalid token")
+	ErrTokenExpired = errors.New("token expired")
 )
 
 type TokenGenerator[T any] interface {

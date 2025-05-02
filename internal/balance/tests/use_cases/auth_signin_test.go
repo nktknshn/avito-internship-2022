@@ -32,6 +32,13 @@ func (s *AuthSuiteTest) TestAuthSignin_Success() {
 	s.Require().NotEmpty(out.Token)
 }
 
+func (s *AuthSuiteTest) TestAuthSignin_NotFound() {
+	out, err := s.signin.Handle(context.Background(), inAuthSignin)
+	s.Require().Error(err)
+	s.Require().Empty(out)
+	s.Require().ErrorIs(err, domainAuth.ErrAuthUserNotFound)
+}
+
 func (s *AuthSuiteTest) TestAuthSignin_InvalidPassword() {
 	s.createAuthUser()
 	out, err := s.signin.Handle(context.Background(), inAuthSigninInvalidPassword)

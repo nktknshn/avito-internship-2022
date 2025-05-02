@@ -47,7 +47,7 @@ func (s *TestSuiteAuthPg) TestGetUserByUsername_NotFound() {
 	user, err := s.repo.GetUserByUsername(context.Background(), "test")
 	s.Error(err)
 	s.Nil(user)
-	s.Require().True(errors.Is(err, domainAuth.ErrUserNotFound))
+	s.Require().True(errors.Is(err, domainAuth.ErrAuthUserNotFound))
 }
 
 func (s *TestSuiteAuthPg) TestCreateAccount_Success() {
