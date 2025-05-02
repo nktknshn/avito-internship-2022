@@ -58,14 +58,13 @@ func (u *AuthValidateTokenUseCase) Handle(ctx context.Context, in In) (Out, erro
 	}
 
 	authUserID, err := domainAuth.NewAuthUserID(claims.AuthUserID)
-
 	if err != nil {
-		return Out{}, ErrInvalidClaims
+		return Out{}, ErrInvalidClaims.WithCause(err)
 	}
 
 	authUserRole, err := domainAuth.NewAuthUserRole(claims.AuthUserRole)
 	if err != nil {
-		return Out{}, ErrInvalidClaims
+		return Out{}, ErrInvalidClaims.WithCause(err)
 	}
 
 	return Out{

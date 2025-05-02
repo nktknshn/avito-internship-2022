@@ -56,6 +56,7 @@ func New(
 // Сгенерировать и вернуть токен
 func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	user, err := u.authRepo.GetUserByUsername(ctx, in.username)
+
 	if err != nil {
 		return Out{}, err
 	}
@@ -63,7 +64,7 @@ func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	ok, err := u.hasher.Verify(in.password.String(), user.PasswordHash.Value())
 
 	if err != nil {
-		return Out{}, domainAuth.ErrInvalidAuthUserPassword
+		return Out{}, domainAuth.ErrInvalidAuthUserPassword.WithCause(err)
 	}
 
 	if !ok {

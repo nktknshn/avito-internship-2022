@@ -5,6 +5,7 @@ import (
 )
 
 type DomainError struct {
+	cause   error
 	message string
 }
 
@@ -14,6 +15,15 @@ func New(message string) DomainError {
 
 func (e DomainError) Error() string {
 	return e.message
+}
+
+func (e DomainError) WithCause(cause error) DomainError {
+	e.cause = cause
+	return e
+}
+
+func (e DomainError) Cause() error {
+	return e.cause
 }
 
 func IsDomainError(err error) bool {
