@@ -12,69 +12,131 @@ import (
 )
 
 const (
-	saltLength = 16        // длина соли в байтах
-	timeCost   = 1         // количество итераций
-	memoryCost = 64 * 1024 // объем памяти в килобайтах (примерно 64 MB)
-	threads    = 4         // число потоков
-	keyLength  = 32        // длина генерируемого хеша в байтах
+	defaultSaltLength = 16        // длина соли в байтах
+	defaultTimeCost   = 1         // количество итераций
+	defaultMemoryCost = 64 * 1024 // объем памяти в килобайтах (примерно 64 MB)
+	defaultThreads    = 4         // число потоков
+	defaultKeyLength  = 32        // длина генерируемого хеша в байтах
 	// Формат строки хеша: содержит версию, параметры, соль и сам хеш.
 	hashFormat        = "$argon2id$v=%d$m=%d,t=%d,p=%d$%s"
 	saltHashSeparator = "$"
 )
 
-type hashedPassword struct {
+type hashParams struct {
 	version     uint32
 	memory      uint32
 	timeCost    uint32
 	parallelism uint8
 	salt        []byte
-	hash        []byte
+	keyLength   uint32
+	saltLength  uint32
 }
 
-func (hp hashedPassword) String() string {
+type hashedPassword struct {
+	hashParams
+	hash []byte
+}
+
+func (hp hashedPassword) FormatString() string {
 	b64salt := base64.RawStdEncoding.EncodeToString(hp.salt)
 	b64hash := base64.RawStdEncoding.EncodeToString(hp.hash)
 	return fmt.Sprintf(hashFormat, hp.version, hp.memory, hp.timeCost, hp.parallelism, b64salt+saltHashSeparator+b64hash)
 }
 
-func (hp hashedPassword) StringBase64() string {
-	return base64.StdEncoding.EncodeToString([]byte(hp.String()))
+func (hp hashedPassword) String() string {
+	return fmt.Sprintf("version: %d, memory: %d, timeCost: %d, parallelism: %d, saltLength: %d, keyLength: %d, salt: %s, hash: %s", hp.version, hp.memory, hp.timeCost, hp.parallelism, hp.saltLength, hp.keyLength, hp.salt, hp.hash)
 }
 
-// hashPassword хеширует пароль с использованием Argon2id и возвращает строку,
+func (hp hashedPassword) FormatStringBase64() string {
+	return base64.StdEncoding.EncodeToString([]byte(hp.FormatString()))
+}
+
+// hashPasswordDefault хеширует пароль с использованием Argon2id и возвращает строку,
 // содержащую все необходимые параметры для проверки, соль и хеш.
-func hashPassword(password string, salt []byte) (*hashedPassword, error) {
+func hashPasswordDefault(password string, salt []byte) (*hashedPassword, error) {
 	var err error
+
 	if salt == nil {
-		salt, err = generateRandomBytes(saltLength)
+		salt, err = generateRandomBytes(defaultSaltLength)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	// Вычисление хеша с помощью Argon2id
-	hash := argon2.IDKey([]byte(password), salt, timeCost, memoryCost, threads, keyLength)
+	hash := argon2.IDKey(
+		[]byte(password),
+		salt,
+		defaultTimeCost,
+		defaultMemoryCost,
+		defaultThreads,
+		defaultKeyLength,
+	)
 
 	// Формирование итоговой строки с параметрами, солью и хешем
 	return &hashedPassword{
-		version:     argon2.Version,
-		memory:      memoryCost,
-		timeCost:    timeCost,
-		parallelism: threads,
-		salt:        salt,
-		hash:        hash,
+		hashParams: hashParams{
+			version:     argon2.Version,
+			memory:      defaultMemoryCost,
+			timeCost:    defaultTimeCost,
+			parallelism: defaultThreads,
+			keyLength:   defaultKeyLength,
+			saltLength:  defaultSaltLength,
+			salt:        salt,
+		},
+		hash: hash,
+	}, nil
+}
+
+func hashPassword(password string, params hashParams) (*hashedPassword, error) {
+	hash := argon2.IDKey(
+		[]byte(password),
+		params.salt,
+		params.timeCost,
+		params.memory,
+		params.parallelism,
+		params.keyLength,
+	)
+	return &hashedPassword{
+		hashParams: hashParams{
+			version:     argon2.Version,
+			memory:      params.memory,
+			timeCost:    params.timeCost,
+			parallelism: params.parallelism,
+			salt:        params.salt,
+			keyLength:   params.keyLength,
+			saltLength:  params.saltLength,
+		},
+		hash: hash,
 	}, nil
 }
 
 // hashPasswordToBase64 хеширует пароль и возвращает его в виде строки, готовой для сохранения в базе данных.
 func hashPasswordToBase64(password string) (string, error) {
-	hash, err := hashPassword(password, nil)
+	hash, err := hashPasswordDefault(password, nil)
 	if err != nil {
 		return "", err
 	}
-	b64hash := hash.StringBase64()
-	// Не требуется дополнительное кодирование — хеш уже содержит salt и закодирован в нужном формате.
-	return b64hash, nil
+	return hash.FormatStringBase64(), nil
+}
+
+func verifyPasswordHashed(password string, hash *hashedPassword) (bool, error) {
+	computedHash, err := hashPassword(password, hash.hashParams)
+	if err != nil {
+		return false, err
+	}
+
+	return subtle.ConstantTimeCompare(computedHash.hash, hash.hash) == 1, nil
+}
+
+func verifyPasswordFormatString(password string, formatString string) (bool, error) {
+	hp, err := parseArgon2FormatString(formatString)
+
+	if err != nil {
+		return false, err
+	}
+
+	return verifyPasswordHashed(password, hp)
 }
 
 // verifyPassword проверяет, соответствует ли указанный пароль сохраненному хешу.
@@ -86,29 +148,16 @@ func verifyPasswordBase64(password string, hash string) (bool, error) {
 		return false, err
 	}
 
-	// Извлекаем из него соль (и игнорируем сам хеш, так как нам он понадобится для сравнения)
-	hp, err := parseArgon2String(string(argon2StringBytes))
-	if err != nil {
-		return false, err
-	}
-
-	computedHash, err := hashPassword(password, hp.salt)
-	if err != nil {
-		return false, err
-	}
-
-	// Использование константного сравнения для предотвращения утечки времени
-	if subtle.ConstantTimeCompare(computedHash.hash, hp.hash) == 1 {
-		return true, nil
-	}
-	return false, nil
+	return verifyPasswordFormatString(password, string(argon2StringBytes))
 }
 
-// parseArgon2String разбирает строку, содержащую параметры, соль и хеш, и возвращает их.
-func parseArgon2String(encoded string) (*hashedPassword, error) {
+// parseArgon2FormatString разбирает строку, содержащую параметры, соль и хеш, и возвращает их.
+func parseArgon2FormatString(formatString string) (*hashedPassword, error) {
 	var saltAndHash string
 	var hp hashedPassword
-	_, err := fmt.Sscanf(encoded, hashFormat, &hp.version, &hp.memory, &hp.timeCost, &hp.parallelism, &saltAndHash)
+
+	_, err := fmt.Sscanf(formatString, hashFormat, &hp.version, &hp.memory, &hp.timeCost, &hp.parallelism, &saltAndHash)
+
 	if err != nil {
 		return nil, err
 	}
@@ -134,6 +183,8 @@ func parseArgon2String(encoded string) (*hashedPassword, error) {
 
 	hp.salt = salt
 	hp.hash = hash
+	hp.keyLength = uint32(len(hash))
+	hp.saltLength = uint32(len(salt))
 
 	return &hp, nil
 }
