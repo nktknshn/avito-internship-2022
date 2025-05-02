@@ -19,3 +19,4 @@ TODO
 - [x] validate grpc server to use cases mapping on startup
 - [x] uint64 for domain models
 - [ ] bench
+- [ ] error cause

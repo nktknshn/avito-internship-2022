@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Примеры команды для ручного тестирования
+
 TOKEN=$(grpcurl -plaintext -d '{"username":"admin","password":"admin1234"}' 127.0.0.1:8083 balance.BalanceService.AuthSignIn | jq -r '.token')
 
 # reflection
