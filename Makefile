@@ -18,6 +18,10 @@ cover:
 	./scripts/cover.sh
 .PHONY: cover
 
+cover-balance-use-cases:
+	./scripts/cover.sh github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/...
+.PHONY: cover-balance-use-cases
+
 generate-protobuf:
 	./scripts/generate-protobuf.sh balance
 .PHONY: generate-protobuf

@@ -12,7 +12,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
-func (s *SuiteTest) TestReserve_Success() {
+func (s *UseCasesSuiteIntegrationTest) TestReserve_Success() {
 	acc := s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
@@ -44,7 +44,7 @@ func (s *SuiteTest) TestReserve_Success() {
 
 }
 
-func (s *SuiteTest) TestReserve_AccountNotFound() {
+func (s *UseCasesSuiteIntegrationTest) TestReserve_AccountNotFound() {
 
 	in := must.Must(reserve.NewInFromValues(
 		fixtures.UserID_i64,
@@ -59,7 +59,7 @@ func (s *SuiteTest) TestReserve_AccountNotFound() {
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
-func (s *SuiteTest) TestReserve_InsufficientBalance() {
+func (s *UseCasesSuiteIntegrationTest) TestReserve_InsufficientBalance() {
 	acc := s.newAccount()
 	acc, err := s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
@@ -76,7 +76,7 @@ func (s *SuiteTest) TestReserve_InsufficientBalance() {
 	s.Require().ErrorIs(err, domainAccount.ErrInsufficientAvailableBalance)
 }
 
-func (s *SuiteTest) TestReserve_DoubleReserve() {
+func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 	acc := s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})

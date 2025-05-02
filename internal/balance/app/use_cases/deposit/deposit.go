@@ -49,8 +49,8 @@ func (u *DepositUseCase) GetName() string {
 	return use_cases.NameDeposit
 }
 
-// getAccountCreating returns an account for the user.
-// If the account does not exist, it creates a new one.
+// getAccountCreating возвращает счет для пользователя.
+// Если счет не существует, то создает новый.
 func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.UserID) (*domainAccount.Account, error) {
 
 	acc, err := u.accountRepo.GetByUserID(ctx, userID)
@@ -72,7 +72,7 @@ func (u *DepositUseCase) getAccountCreating(ctx context.Context, userID domain.U
 	}
 
 	if err != nil {
-		return nil, errors.Wrap(err, "DepositUseCase.getAccountCreating")
+		return nil, errors.Wrap(err, "DepositUseCase.getAccountCreating.accountRepo.GetByUserID")
 	}
 
 	return acc, nil

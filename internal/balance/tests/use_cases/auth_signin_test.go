@@ -3,52 +3,14 @@ package use_cases_test
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
+	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 )
-
-var (
-	inAuthSignin = must.Must(auth_signin.NewInFromValues(
-		fixtures.UsernameAdmin_str,
-		fixtures.PasswordAdmin_str,
-	))
-	inAuthSigninInvalidPassword = must.Must(auth_signin.NewInFromValues(
-		fixtures.UsernameAdmin_str,
-		fixtures.PasswordAdmin_str+"invalid",
-	))
-)
-
-func (s *AuthSuiteTest) TearDownTest() {
-	helpers.CleanTables(&s.TestSuitePg)
-}
-
-func (s *AuthSuiteTest) TestAuthSignin_Success() {
-	s.createAuthUser()
-	out, err := s.signin.Handle(context.Background(), inAuthSignin)
-	s.Require().NoError(err)
-	s.Require().NotEmpty(out.Token)
-}
-
-func (s *AuthSuiteTest) TestAuthSignin_NotFound() {
-	out, err := s.signin.Handle(context.Background(), inAuthSignin)
-	s.Require().Error(err)
-	s.Require().Empty(out)
-	s.Require().ErrorIs(err, domainAuth.ErrAuthUserNotFound)
-}
-
-func (s *AuthSuiteTest) TestAuthSignin_InvalidPassword() {
-	s.createAuthUser()
-	out, err := s.signin.Handle(context.Background(), inAuthSigninInvalidPassword)
-	s.Require().Error(err)
-	s.Require().Empty(out)
-	s.Require().ErrorIs(err, domainAuth.ErrInvalidAuthUserPassword)
-}
 
 func (s *AuthSuiteTest) TestAuthSignin_HasherError() {
 	hasherError := errors.New("hasher error")
@@ -56,7 +18,7 @@ func (s *AuthSuiteTest) TestAuthSignin_HasherError() {
 
 	s.mockedHasher.On("Verify", mock.Anything, mock.Anything).Return(false, hasherError)
 
-	out, err := s.mockedSignin.Handle(context.Background(), inAuthSignin)
+	out, err := s.mockedSignin.Handle(context.Background(), fixtures.InAuthSignin)
 	s.Require().Error(err)
 	s.Require().Empty(out)
 	s.Require().ErrorIs(err, domainAuth.ErrInvalidAuthUserPassword)
@@ -71,9 +33,74 @@ func (s *AuthSuiteTest) TestAuthSignin_TokenGenError() {
 
 	s.mockedTokenGen.On("GenerateToken", mock.Anything, mock.Anything).Return("", errors.New("token gen error"))
 
-	out, err := s.mockedSignin.Handle(context.Background(), inAuthSignin)
+	out, err := s.mockedSignin.Handle(context.Background(), fixtures.InAuthSignin)
 	s.Require().Error(err)
 	s.Require().Empty(out)
 	s.Require().ErrorContains(err, "token gen error")
 
+}
+
+func (s *AuthSuiteTest) TestAuthSignup_HasherError() {
+	s.mockedHasher.On("Hash", mock.Anything).Return("", errors.New("hasher error"))
+
+	err := s.mockedSignup.Handle(context.Background(), fixtures.InAuthSignup)
+	s.Require().Error(err)
+	s.Require().ErrorContains(err, "hasher error")
+}
+
+func (s *AuthSuiteTest) TestAuthSignup_RepositoryError() {
+	s.mockedHasher.On("Hash", mock.Anything).Return(fixtures.PasswordHashAdmin_str, nil)
+	s.mockedAuthRepo.On("CreateUser", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(errors.New("repository error"))
+
+	err := s.mockedSignup.Handle(context.Background(), fixtures.InAuthSignup)
+	s.Require().Error(err)
+	s.Require().ErrorContains(err, "repository error")
+}
+
+func (s *AuthSuiteTest) TestAuthValidateToken_Success() {
+	in := must.Must(auth_validate_token.NewInFromValues("123"))
+
+	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(&domainAuth.AuthUserTokenClaims{
+		AuthUserID:   1,
+		AuthUserRole: fixtures.AuthUserRole_str,
+	}, nil)
+
+	out, err := s.mockedValidate.Handle(context.Background(), in)
+
+	s.Require().NoError(err)
+	s.Require().Equal(domainAuth.AuthUserID(1), out.UserID)
+	s.Require().Equal(domainAuth.AuthUserRole(fixtures.AuthUserRole_str), out.Role)
+}
+
+func (s *AuthSuiteTest) TestAuthValidateToken_InvalidClaims() {
+	in := must.Must(auth_validate_token.NewInFromValues("123"))
+
+	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(&domainAuth.AuthUserTokenClaims{}, nil)
+
+	out, err := s.mockedValidate.Handle(context.Background(), in)
+
+	s.Require().Empty(out)
+	s.Require().ErrorIs(err, auth_validate_token.ErrInvalidClaims)
+}
+
+func (s *AuthSuiteTest) TestAuthValidateToken_TokenExpired() {
+	in := must.Must(auth_validate_token.NewInFromValues("123"))
+
+	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(nil, token_generator.ErrTokenExpired)
+
+	out, err := s.mockedValidate.Handle(context.Background(), in)
+
+	s.Require().ErrorIs(err, auth_validate_token.ErrTokenExpired)
+	s.Require().Empty(out)
+}
+
+func (s *AuthSuiteTest) TestAuthValidateToken_TokenValidatorError() {
+	in := must.Must(auth_validate_token.NewInFromValues("123"))
+
+	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(nil, errors.New("token validator error"))
+
+	out, err := s.mockedValidate.Handle(context.Background(), in)
+
+	s.Require().ErrorContains(err, "token validator error")
+	s.Require().Empty(out)
 }
