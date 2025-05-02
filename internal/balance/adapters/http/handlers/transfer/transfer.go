@@ -39,7 +39,7 @@ func (h *TransferHandler) GetHandler() http.Handler {
 	return makeTransferHandler(h.auth, h.useCase)
 }
 
-type payloadBody struct {
+type requestBody struct {
 	From   int64 `json:"from"`
 	To     int64 `json:"to"`
 	Amount int64 `json:"amount"`
@@ -48,7 +48,7 @@ type payloadBody struct {
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
-		payload = ergo.PayloadAttach[payloadBody](b)
+		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {

@@ -7,3 +7,12 @@ type Result[T any] struct {
 type ResultEmpty struct {
 	Result struct{} `json:"result"`
 }
+
+func makeResultBody(result any) any {
+
+	if result == nil {
+		return ResultEmpty{}
+	}
+
+	return Result[any]{Result: result}
+}

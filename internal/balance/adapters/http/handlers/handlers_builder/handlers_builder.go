@@ -9,7 +9,8 @@ import (
 
 func NewPublic() *ergo.Builder {
 	return ergo.New().
-		WithHandlerErrorFunc(handlerErrorFunc)
+		WithHandlerErrorFunc(handlerErrorFunc).
+		WithHandlerResultFunc(handlerResultFunc)
 }
 
 func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole) (*ergo.Builder, *handlers_auth.AttachedAuthParser) {
@@ -20,7 +21,8 @@ func NewWithAuth(auth handlers_auth.AuthUseCase, roles []domainAuth.AuthUserRole
 
 	var (
 		b = ergo.New().
-			WithHandlerErrorFunc(handlerErrorFunc)
+			WithHandlerErrorFunc(handlerErrorFunc).
+			WithHandlerResultFunc(handlerResultFunc)
 		validator  = handlers_auth.NewUseCaseToValidateToken(auth)
 		authParser = handlers_auth.AuthParser.Attach(validator, b)
 	)

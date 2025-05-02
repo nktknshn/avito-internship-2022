@@ -2,6 +2,8 @@ package handlers_builder
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"net/http"
 
 	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
@@ -10,6 +12,45 @@ import (
 )
 
 func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+
+	var errorBody any
+	var status int
+
+	var internalServerError ergo.InternalServerError
+	var errorWithHttpStatus ergo.ErrorWithHttpStatus
+
+	if errors.As(err, &internalServerError) {
+		status = http.StatusInternalServerError
+		errorBody = makeErrorBody(errors.New("internal server error"))
+	} else if errors.As(err, &errorWithHttpStatus) {
+		status = errorWithHttpStatus.HttpStatusCode
+		errorBody = makeErrorBody(errorWithHttpStatus.Err)
+	} else if domainError.IsDomainError(err) {
+		// если ошибка домена, то используем http статус 400
+		errorBody = makeErrorBody(err)
+		status = http.StatusBadRequest
+	} else if useCaseError.IsUseCaseError(err) {
+		// если ошибка юзкейса, то используем http статус 400
+		errorBody = makeErrorBody(err)
+		status = http.StatusBadRequest
+	} else {
+		// прочие ошибки
+		errorBody = makeErrorBody(errors.New("internal server error"))
+		status = http.StatusInternalServerError
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	bs, err := json.Marshal(errorBody)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(bs)
+}
+
+// обработчик на дефолтном поведении бибилиотеки ergo
+func handlerErrorFuncErgo(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
 	if ergo.IsWrappedError(err) {
 		// если ошибка обернута в хендлере с http статусом, то используем ее
 		ergo.DefaultHandlerErrorFunc(ctx, w, r, err)

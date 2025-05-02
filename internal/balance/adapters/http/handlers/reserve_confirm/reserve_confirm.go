@@ -38,7 +38,7 @@ func (h *HandlerReserveConfirm) GetHandler() http.Handler {
 	return makeHandlerReserveConfirm(h.auth, h.reserveConfirm)
 }
 
-type payloadBody struct {
+type requestBody struct {
 	UserID    int64 `json:"user_id"`
 	OrderID   int64 `json:"order_id"`
 	ProductID int64 `json:"product_id"`
@@ -48,7 +48,7 @@ type payloadBody struct {
 func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
-		payload = ergo.PayloadAttach[payloadBody](b)
+		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {

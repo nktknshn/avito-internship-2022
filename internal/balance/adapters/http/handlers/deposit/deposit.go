@@ -27,7 +27,7 @@ type useCase interface {
 // @Tags         deposit
 // @Accept       json
 // @Produce      json
-// @Param        payload   body      payloadBody  true  "Payload"
+// @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error
 // @Router       /api/v1/balance/deposit [post]
@@ -47,7 +47,7 @@ func (h *depositHandler) GetHandler() http.Handler {
 	return makeDepositHandler(h.auth, h.depositUseCase)
 }
 
-type payloadBody struct {
+type requestBody struct {
 	UserID int64  `json:"user_id"`
 	Source string `json:"source"`
 	Amount int64  `json:"amount"`
@@ -56,7 +56,7 @@ type payloadBody struct {
 func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
-		payload = ergo.PayloadAttach[payloadBody](b)
+		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
