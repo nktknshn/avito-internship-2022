@@ -18,6 +18,13 @@ var (
 	AuthUserRole_str       string                  = "admin"
 	AuthUserRole           domainAuth.AuthUserRole = domainAuth.AuthUserRoleAdmin
 	//
+	UsernameAdmin_str     string                      = "admin"
+	UsernameAdmin         domainAuth.AuthUserUsername = domainAuth.AuthUserUsername(UsernameAdmin_str)
+	PasswordAdmin_str     string                      = "password123"
+	PasswordAdmin         domainAuth.AuthUserPassword = domainAuth.AuthUserPassword(PasswordAdmin_str)
+	PasswordHashAdmin_str string                      = "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTEscD00JFRHNVZkMFJVTkhWUFFqazJNR3B3YWckWHRUSG5xVVFlUmpjWFRWZ0NUSGZQeEFPbm9BYThaREpkOFIxdkhUTDVEcw=="
+	PasswordHashAdmin     domainAuth.AuthUserPassword = domainAuth.AuthUserPassword(PasswordHashAdmin_str)
+	//
 	AccountID_i64         int64                   = 1
 	AccountID_str         string                  = "1"
 	AccountID             domainAccount.AccountID = 1
@@ -55,6 +62,4 @@ var (
 	//
 	DepositSource_str string                                     = "credit_card"
 	DepositSource     domainTransaction.TransactionDepositSource = domainTransaction.TransactionDepositSource(DepositSource_str)
-	//
-
 )

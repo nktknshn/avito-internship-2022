@@ -17,7 +17,7 @@ type AuthRepository struct {
 	db     *sqlx.DB
 }
 
-func NewAuthRepository(db *sqlx.DB, getter *trmsqlx.CtxGetter) *AuthRepository {
+func New(db *sqlx.DB, getter *trmsqlx.CtxGetter) *AuthRepository {
 
 	if db == nil {
 		panic("db is nil")

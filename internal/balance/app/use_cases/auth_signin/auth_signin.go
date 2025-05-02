@@ -21,7 +21,12 @@ type authRepo interface {
 	GetUserByUsername(ctx context.Context, username domainAuth.AuthUserUsername) (*domainAuth.AuthUser, error)
 }
 
-func New(trm trm.Manager, hasher password_hasher.HashVerifier, tokenGen token_generator.TokenGenerator[domainAuth.AuthUserTokenClaims], authRepo authRepo) *AuthSigninUseCase {
+func New(
+	trm trm.Manager,
+	hasher password_hasher.HashVerifier,
+	tokenGen token_generator.TokenGenerator[domainAuth.AuthUserTokenClaims],
+	authRepo authRepo,
+) *AuthSigninUseCase {
 
 	if trm == nil {
 		panic("trm is nil")

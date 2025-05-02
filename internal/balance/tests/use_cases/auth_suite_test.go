@@ -1,0 +1,53 @@
+package use_cases_test
+
+import (
+	"context"
+	"testing"
+	"time"
+
+	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
+	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
+	"github.com/nktknshn/avito-internship-2022/pkg/password_hasher_argon"
+	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
+	"github.com/nktknshn/avito-internship-2022/pkg/token_generator_jwt"
+	"github.com/stretchr/testify/suite"
+)
+
+func TestAuthUseCases(t *testing.T) {
+	s := new(AuthSuiteTest)
+	s.SetPostgresMigrationsDir("../../migrations/postgres")
+	suite.Run(t, s)
+}
+
+type AuthSuiteTest struct {
+	testing_pg.TestSuitePg
+	authRepo *auth_pg.AuthRepository
+	hasher   *password_hasher_argon.Hasher
+	tokenGen token_generator.TokenGenerator[auth.AuthUserTokenClaims]
+	signin   *auth_signin.AuthSigninUseCase
+}
+
+func (s *AuthSuiteTest) SetupTest() {
+	trm := helpers.GetTrm(&s.TestSuitePg)
+	s.authRepo = auth_pg.New(s.Conn, trmsqlx.DefaultCtxGetter)
+	s.hasher = password_hasher_argon.New()
+	s.tokenGen = token_generator_jwt.NewTokenGeneratorJWT[auth.AuthUserTokenClaims]([]byte("secret"), time.Hour*24)
+	s.signin = auth_signin.New(trm, s.hasher, s.tokenGen, s.authRepo)
+}
+
+func (s *AuthSuiteTest) createAuthUser() {
+	user, err := auth.NewAuthUserFromValues(
+		0,
+		fixtures.UsernameAdmin_str,
+		fixtures.PasswordHashAdmin_str,
+		fixtures.AuthUserRole_str,
+	)
+	s.Require().NoError(err)
+	err = s.authRepo.CreateUser(context.Background(), user.Username, user.PasswordHash, user.Role)
+	s.Require().NoError(err)
+}

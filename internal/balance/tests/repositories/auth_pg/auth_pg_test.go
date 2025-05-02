@@ -25,7 +25,7 @@ type TestSuiteAuthPg struct {
 }
 
 func (suite *TestSuiteAuthPg) SetupTest() {
-	suite.repo = auth_pg.NewAuthRepository(suite.Conn, trmsqlx.DefaultCtxGetter)
+	suite.repo = auth_pg.New(suite.Conn, trmsqlx.DefaultCtxGetter)
 }
 
 func (suite *TestSuiteAuthPg) TearDownTest() {

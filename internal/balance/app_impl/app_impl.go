@@ -59,7 +59,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 
 	// auth
 	var (
-		passwordHasher = password_hasher_argon.NewHasher()
+		passwordHasher = password_hasher_argon.New()
 		tokenGenerator = token_generator_jwt.NewTokenGeneratorJWT[domainAuth.AuthUserTokenClaims](
 			[]byte(cfg.GetJWT().GetSecret()),
 			cfg.GetJWT().GetTTL(),
@@ -69,7 +69,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 			[]byte(cfg.GetJWT().GetSecret()),
 		)
 
-		authRepository = auth_pg.NewAuthRepository(db, trmsqlx.DefaultCtxGetter)
+		authRepository = auth_pg.New(db, trmsqlx.DefaultCtxGetter)
 
 		authSignup        = auth_signup.New(trm, passwordHasher, authRepository)
 		authSignin        = auth_signin.New(trm, passwordHasher, tokenGenerator, authRepository)

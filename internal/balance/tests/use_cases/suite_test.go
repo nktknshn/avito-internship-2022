@@ -7,6 +7,7 @@ import (
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -34,6 +35,7 @@ type SuiteTest struct {
 	deposit        *deposit.DepositUseCase
 	reserveCancel  *reserve_cancel.ReserveCancelUseCase
 	reserveConfirm *reserve_confirm.ReserveConfirmUseCase
+	authSignin     *auth_signin.AuthSigninUseCase
 }
 
 func (s *SuiteTest) SetupTest() {
