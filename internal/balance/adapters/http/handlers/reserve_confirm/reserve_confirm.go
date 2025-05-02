@@ -22,6 +22,20 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Reserve confirm
+// @Description  Confirm money reservation
+// @Tags         reserve_confirm
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        payload   body      requestBody  true  "Payload"
+// @Success      200  {object}  handlers_builder.ResultEmpty
+// @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      404  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
+// @Router       /api/v1/balance/reserve/confirm [post]
 func New(auth handlers_auth.AuthUseCase, reserveConfirm useCase) *HandlerReserveConfirm {
 	if auth == nil {
 		panic("auth is nil")
@@ -59,9 +73,11 @@ func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.H
 			pl.ProductID,
 			pl.Amount,
 		)
+
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
+
 		err = u.Handle(r.Context(), in)
 
 		if errors.Is(err, domainAccount.ErrAccountNotFound) {

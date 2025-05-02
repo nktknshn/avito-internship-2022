@@ -10,7 +10,7 @@ import (
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
-type transferUseCase struct {
+type TransferUseCase struct {
 	trm             trm.Manager
 	accountRepo     domainAccount.AccountRepository
 	transactionRepo domainTransaction.TransactionRepository
@@ -20,7 +20,7 @@ func New(
 	trm trm.Manager,
 	accountRepo domainAccount.AccountRepository,
 	transactionsRepo domainTransaction.TransactionRepository,
-) *transferUseCase {
+) *TransferUseCase {
 
 	if trm == nil {
 		panic("trm is nil")
@@ -33,33 +33,32 @@ func New(
 		panic("transactionsRepo is nil")
 	}
 
-	return &transferUseCase{
+	return &TransferUseCase{
 		trm,
 		accountRepo,
 		transactionsRepo,
 	}
 }
 
-func (u *transferUseCase) Handle(ctx context.Context, in In) error {
+func (u *TransferUseCase) Handle(ctx context.Context, in In) error {
 
 	err := u.trm.Do(ctx, func(ctx context.Context) error {
 
-		if in.From == in.To {
+		if in.FromUserID == in.ToUserID {
 			return domainAccount.ErrSameAccount
 		}
 
-		fromAcc, err := u.accountRepo.GetByAccountID(ctx, in.From)
+		fromAcc, err := u.accountRepo.GetByUserID(ctx, in.FromUserID)
 		if err != nil {
 			return err
 		}
 
-		toAcc, err := u.accountRepo.GetByAccountID(ctx, in.To)
+		toAcc, err := u.accountRepo.GetByUserID(ctx, in.ToUserID)
 		if err != nil {
 			return err
 		}
 
 		err = fromAcc.Transfer(toAcc, in.Amount)
-
 		if err != nil {
 			return err
 		}
@@ -96,6 +95,6 @@ func (u *transferUseCase) Handle(ctx context.Context, in In) error {
 	return err
 }
 
-func (u *transferUseCase) GetName() string {
+func (u *TransferUseCase) GetName() string {
 	return use_cases.NameTransfer
 }

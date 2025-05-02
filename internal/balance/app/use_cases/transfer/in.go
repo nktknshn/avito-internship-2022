@@ -1,22 +1,22 @@
 package transfer
 
 import (
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	domainUser "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 )
 
 type In struct {
-	From   domainAccount.AccountID
-	To     domainAccount.AccountID
-	Amount domainAmount.AmountPositive
+	FromUserID domainUser.UserID
+	ToUserID   domainUser.UserID
+	Amount     domainAmount.AmountPositive
 }
 
-func NewInFromValues(from int64, to int64, amount int64) (In, error) {
-	_from, err := domainAccount.NewAccountID(from)
+func NewInFromValues(fromUserID int64, toUserID int64, amount int64) (In, error) {
+	_from, err := domainUser.NewUserID(fromUserID)
 	if err != nil {
 		return In{}, err
 	}
-	_to, err := domainAccount.NewAccountID(to)
+	_to, err := domainUser.NewUserID(toUserID)
 	if err != nil {
 		return In{}, err
 	}
@@ -25,5 +25,5 @@ func NewInFromValues(from int64, to int64, amount int64) (In, error) {
 		return In{}, err
 	}
 
-	return In{From: _from, To: _to, Amount: _amount}, nil
+	return In{FromUserID: _from, ToUserID: _to, Amount: _amount}, nil
 }

@@ -22,6 +22,19 @@ type useCase interface {
 	GetName() string
 }
 
+// @Summary      Transfer
+// @Description  Transfer money between accounts
+// @Tags         transfer
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        payload   body      requestBody  true  "Payload"
+// @Success      200  {object}  handlers_builder.ResultEmpty
+// @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
+// @Router       /api/v1/balance/transfer [post]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *TransferHandler {
 
 	if auth == nil {
@@ -40,9 +53,9 @@ func (h *TransferHandler) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	From   int64 `json:"from"`
-	To     int64 `json:"to"`
-	Amount int64 `json:"amount"`
+	FromUserID int64 `json:"from_user_id"`
+	ToUserID   int64 `json:"to_user_id"`
+	Amount     int64 `json:"amount"`
 }
 
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
@@ -55,8 +68,8 @@ func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler
 		pl := payload.Get(r)
 
 		in, err := transfer.NewInFromValues(
-			pl.From,
-			pl.To,
+			pl.FromUserID,
+			pl.ToUserID,
 			pl.Amount,
 		)
 

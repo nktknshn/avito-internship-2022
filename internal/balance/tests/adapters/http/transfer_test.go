@@ -6,7 +6,7 @@ import (
 
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
@@ -16,9 +16,9 @@ import (
 func (s *HttpTestSuite) TestTransfer() {
 
 	var validPayload = map[string]any{
-		"from":   fixtures.AccountID_i64,
-		"to":     fixtures.AccountID_2_i64,
-		"amount": fixtures.Amount100_i64,
+		"from_user_id": fixtures.UserID_i64,
+		"to_user_id":   fixtures.UserID_2_i64,
+		"amount":       fixtures.AmountPositive100_i64,
 	}
 
 	testCases := []testCase{
@@ -31,21 +31,21 @@ func (s *HttpTestSuite) TestTransfer() {
 		{
 			name:       "invalid from",
 			auth:       true,
-			payload:    map[string]any{"from": -1},
+			payload:    map[string]any{"from_user_id": -1, "to_user_id": fixtures.UserID_2_i64, "amount": fixtures.AmountPositive100_i64},
 			expectCode: http.StatusBadRequest,
-			expectErr:  domainAccount.ErrInvalidAccountID.Error(),
+			expectErr:  domain.ErrInvalidUserID.Error(),
 		},
 		{
 			name:       "invalid to",
 			auth:       true,
-			payload:    map[string]any{"to": -1},
+			payload:    map[string]any{"from_user_id": fixtures.UserID_i64, "to_user_id": -1, "amount": fixtures.AmountPositive100_i64},
 			expectCode: http.StatusBadRequest,
-			expectErr:  domainAccount.ErrInvalidAccountID.Error(),
+			expectErr:  domain.ErrInvalidUserID.Error(),
 		},
 		{
 			name:       "invalid amount",
 			auth:       true,
-			payload:    map[string]any{"amount": -1},
+			payload:    map[string]any{"from_user_id": fixtures.UserID_i64, "to_user_id": fixtures.UserID_2_i64, "amount": -1},
 			expectCode: http.StatusBadRequest,
 			expectErr:  domainAmount.ErrInvalidPositiveAmount.Error(),
 		},

@@ -21,6 +21,17 @@ type usecase interface {
 	GetName() string
 }
 
+// @Summary      Sign in
+// @Description  Sign in
+// @Tags         signin
+// @Accept       json
+// @Produce      json
+// @Param        payload   body      requestBody  true  "Payload"
+// @Success      200  {object}  handlers_builder.Result[responseBody]
+// @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
+// @Router       /api/v1/signin [post]
 func New(authSignin usecase) *HandlerSignIn {
 
 	if authSignin == nil {
@@ -59,16 +70,21 @@ func makeHandlerSignIn(u usecase) http.Handler {
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
 		in, err := pl.GetIn()
+
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
+
 		out, err := u.Handle(r.Context(), in)
+
 		if errors.Is(err, domainAuth.ErrInvalidAuthUserPassword) {
 			return nil, ergo.NewError(http.StatusUnauthorized, err)
 		}
+
 		if err != nil {
 			return nil, err
 		}
+
 		return responseBody{Token: out.Token.String()}, nil
 	})
 }

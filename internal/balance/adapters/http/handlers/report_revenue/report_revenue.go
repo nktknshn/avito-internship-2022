@@ -28,8 +28,11 @@ type useCase interface {
 // @Security     BearerAuth
 // @Param        year   query      int  true  "Year"
 // @Param        month  query      int  true  "Month"
-// @Success      200  {object}  handlers_builder.Result[resultType]
+// @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/report/revenue [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueHandler {
 	if auth == nil {

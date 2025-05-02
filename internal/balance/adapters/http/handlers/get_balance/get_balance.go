@@ -29,10 +29,14 @@ type useCase interface {
 // @Tags         balance
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        user_id   path      int  true  "User ID"
-// @Success      200  {object}  handlers_builder.Result[resultType]
+// @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
 // @Failure      404  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/balance/{user_id} [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *getBalanceHandler {
 	if auth == nil {
@@ -50,7 +54,7 @@ func (h *getBalanceHandler) GetHandler() http.Handler {
 	return makeGetBalanceHandler(h.auth, h.useCase)
 }
 
-type resultType struct {
+type responseBody struct {
 	Available int64 `json:"available"`
 	Reserved  int64 `json:"reserved"`
 }
@@ -78,7 +82,7 @@ func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handl
 			return nil, err
 		}
 
-		return resultType{
+		return responseBody{
 			Available: result.Available.Value(),
 			Reserved:  result.Reserved.Value(),
 		}, nil

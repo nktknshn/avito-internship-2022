@@ -27,9 +27,13 @@ type useCase interface {
 // @Tags         deposit
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/balance/deposit [post]
 func New(auth handlers_auth.AuthUseCase, depositUseCase useCase) *depositHandler {
 	if auth == nil {

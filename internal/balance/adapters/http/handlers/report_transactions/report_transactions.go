@@ -35,6 +35,9 @@ type useCase interface {
 // @Param        sorting_direction query     string  false  "Sorting Direction"
 // @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
+// @Failure      401  {object}  handlers_builder.Error
+// @Failure      403  {object}  handlers_builder.Error
+// @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/report/transactions/{user_id} [get]
 func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportTransactionsHandler {
 	if auth == nil {
