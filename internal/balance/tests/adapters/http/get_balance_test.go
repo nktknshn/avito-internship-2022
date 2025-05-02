@@ -14,23 +14,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func returnNilError() []any {
-	return []any{nil}
-}
-
-func returnError(err error) []any {
-	return []any{err}
-}
-
-func returnSuccess2[T any](out T) []any {
-	return []any{out, nil}
-}
-
-func returnError2[T any](err error) []any {
-	var zero T
-	return []any{zero, err}
-}
-
 func (s *HttpTestSuite) TestGetBalance() {
 
 	var routeParams = map[string]string{"user_id": fixtures.UserID_str}

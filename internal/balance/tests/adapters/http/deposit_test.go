@@ -79,24 +79,20 @@ func (s *HttpTestSuite) TestDeposit() {
 			authRole:   domainAuth.AuthUserRoleNobody,
 		},
 		{
-			name:       "use case error",
-			payload:    validPayload,
-			expectCode: http.StatusInternalServerError,
-			expectErr:  "internal server error",
-			auth:       true,
-			useCaseReturn: []any{
-				errors.New(`error`),
-			},
+			name:          "use case error",
+			payload:       validPayload,
+			expectCode:    http.StatusInternalServerError,
+			expectErr:     "internal server error",
+			auth:          true,
+			useCaseReturn: returnError(errors.New(`error`)),
 		},
 		{
-			name:       "use domain error",
-			payload:    validPayload,
-			expectCode: http.StatusNotFound,
-			expectErr:  domainAccount.ErrAccountNotFound.Error(),
-			auth:       true,
-			useCaseReturn: []any{
-				domainAccount.ErrAccountNotFound,
-			},
+			name:          "use domain error",
+			payload:       validPayload,
+			expectCode:    http.StatusNotFound,
+			expectErr:     domainAccount.ErrAccountNotFound.Error(),
+			auth:          true,
+			useCaseReturn: returnError(domainAccount.ErrAccountNotFound),
 		},
 	}
 

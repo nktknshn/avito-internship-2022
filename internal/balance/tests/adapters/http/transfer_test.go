@@ -60,7 +60,7 @@ func (s *HttpTestSuite) TestTransfer() {
 			name:          "use case internal server error",
 			auth:          true,
 			payload:       validPayload,
-			useCaseReturn: []any{errors.New("internal server error")},
+			useCaseReturn: returnError(errors.New("internal server error")),
 			expectCode:    http.StatusInternalServerError,
 			expectErr:     "internal server error",
 		},

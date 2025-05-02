@@ -29,3 +29,20 @@ func ejson(res string) string {
 	}
 	return string(json)
 }
+
+func returnNilError() []any {
+	return []any{nil}
+}
+
+func returnError(err error) []any {
+	return []any{err}
+}
+
+func returnSuccess2[T any](out T) []any {
+	return []any{out, nil}
+}
+
+func returnError2[T any](err error) []any {
+	var zero T
+	return []any{zero, err}
+}
