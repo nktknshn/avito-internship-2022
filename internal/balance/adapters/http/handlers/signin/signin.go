@@ -46,8 +46,8 @@ func (h *HandlerSignIn) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" example:"admin"`
+	Password string `json:"password" example:"admin1234"`
 }
 
 func (p requestBody) GetIn() (auth_signin.In, error) {

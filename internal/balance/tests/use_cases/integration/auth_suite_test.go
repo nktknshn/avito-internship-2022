@@ -39,7 +39,6 @@ type AuthSuiteIntegrationTest struct {
 	signup   *auth_signup.AuthSignupUseCase
 	signin   *auth_signin.AuthSigninUseCase
 	validate *auth_validate_token.AuthValidateTokenUseCase
-	// mocked dependencies
 }
 
 var (
@@ -58,7 +57,6 @@ func (s *AuthSuiteIntegrationTest) SetupTest() {
 	s.signin = auth_signin.New(s.trm, s.hasher, s.tokenGen, s.authRepo)
 	s.validate = auth_validate_token.New(s.trm, s.tokenVal, s.authRepo)
 	s.signup = auth_signup.New(s.trm, s.hasher, s.authRepo)
-
 }
 
 func (s *AuthSuiteIntegrationTest) createAuthUser() {

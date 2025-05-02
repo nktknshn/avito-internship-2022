@@ -1,4 +1,4 @@
-basePath: /api/v1
+basePath: /
 definitions:
   github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error:
     properties:
@@ -33,10 +33,13 @@ definitions:
   internal_balance_adapters_http_handlers_deposit.requestBody:
     properties:
       amount:
+        example: 100
         type: integer
       source:
+        example: credit card
         type: string
       user_id:
+        example: 1
         type: integer
     type: object
   internal_balance_adapters_http_handlers_get_balance.responseBody:
@@ -56,10 +59,13 @@ definitions:
   internal_balance_adapters_http_handlers_report_revenue.responseRecord:
     properties:
       product_id:
+        example: 1
         type: integer
       product_title:
+        example: delivery
         type: string
       total_revenue:
+        example: 100
         type: integer
     type: object
   internal_balance_adapters_http_handlers_report_transactions.responseBody:
@@ -75,43 +81,58 @@ definitions:
   internal_balance_adapters_http_handlers_reserve.requestBody:
     properties:
       amount:
+        example: 100
         type: integer
       order_id:
+        example: 1
         type: integer
       product_id:
+        example: 1
         type: integer
       product_title:
+        example: delivery
         type: string
       user_id:
+        example: 1
         type: integer
     type: object
   internal_balance_adapters_http_handlers_reserve_cancel.requestBody:
     properties:
       amount:
+        example: 100
         type: integer
       order_id:
+        example: 1
         type: integer
       product_id:
+        example: 1
         type: integer
       user_id:
+        example: 1
         type: integer
     type: object
   internal_balance_adapters_http_handlers_reserve_confirm.requestBody:
     properties:
       amount:
+        example: 100
         type: integer
       order_id:
+        example: 1
         type: integer
       product_id:
+        example: 1
         type: integer
       user_id:
+        example: 1
         type: integer
     type: object
   internal_balance_adapters_http_handlers_signin.requestBody:
     properties:
       password:
+        example: admin1234
         type: string
       username:
+        example: admin
         type: string
     type: object
   internal_balance_adapters_http_handlers_signin.responseBody:
@@ -122,16 +143,19 @@ definitions:
   internal_balance_adapters_http_handlers_transfer.requestBody:
     properties:
       amount:
+        example: 100
         type: integer
-      from:
+      from_user_id:
+        example: 1
         type: integer
-      to:
+      to_user_id:
+        example: 2
         type: integer
     type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: localhost:8080
+host: localhost:5050
 info:
   contact:
     email: nikita@kanash.in
@@ -184,7 +208,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Get balance
       tags:
       - balance
@@ -224,7 +248,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Deposit money
       tags:
       - deposit
@@ -264,7 +288,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Reserve
       tags:
       - reserve
@@ -304,7 +328,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Reserve cancel
       tags:
       - reserve_cancel
@@ -348,7 +372,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Reserve confirm
       tags:
       - reserve_confirm
@@ -356,7 +380,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Transfer money
+      description: Transfer money between accounts
       parameters:
       - description: Payload
         in: body
@@ -388,7 +412,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Transfer
       tags:
       - transfer
@@ -432,7 +456,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Report revenue
       tags:
       - report_revenue
@@ -456,10 +480,16 @@ paths:
         name: cursor
         type: string
       - description: Sorting
+        enum:
+        - updated_at
+        - amount
         in: query
         name: sorting
         type: string
       - description: Sorting Direction
+        enum:
+        - asc
+        - desc
         in: query
         name: sorting_direction
         type: string
@@ -487,7 +517,7 @@ paths:
           schema:
             $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Report transactions
       tags:
       - report_transactions
@@ -526,6 +556,9 @@ paths:
       tags:
       - signin
 securityDefinitions:
-  BasicAuth:
-    type: basic
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

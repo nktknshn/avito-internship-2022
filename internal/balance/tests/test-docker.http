@@ -53,8 +53,8 @@ POST http://localhost:5050/api/v1/signin
 Content-Type: application/json
 
 {
-    "username": "admin",
-    "password": "admin1234"
+    "password": "admin1234",
+    "username": "admin"
 }
 
 ###
@@ -68,3 +68,12 @@ Authorization: Bearer {{token}}
 # valid request
 GET http://localhost:5050/api/v1/report/transactions/1?limit=10&sorting=updated_at&sorting_direction=asc
 Authorization: Bearer {{token}}
+
+
+###
+
+OPTIONS http://localhost:5050/api/v1/balance/deposit
+
+###
+
+

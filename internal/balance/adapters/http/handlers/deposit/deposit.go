@@ -27,7 +27,7 @@ type useCase interface {
 // @Tags         deposit
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
+// @Security     Bearer
 // @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error
@@ -52,9 +52,9 @@ func (h *depositHandler) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	UserID int64  `json:"user_id"`
-	Source string `json:"source"`
-	Amount int64  `json:"amount"`
+	UserID int64  `json:"user_id" example:"1"`
+	Source string `json:"source" example:"credit card"`
+	Amount int64  `json:"amount" example:"100"`
 }
 
 func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {

@@ -28,7 +28,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Deposit money to account",
@@ -91,7 +91,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Reserve money",
@@ -154,7 +154,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Cancel money reservation",
@@ -217,7 +217,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Confirm money reservation",
@@ -286,10 +286,10 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
-                "description": "Transfer money",
+                "description": "Transfer money between accounts",
                 "consumes": [
                     "application/json"
                 ],
@@ -349,7 +349,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Get balance",
@@ -416,7 +416,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Report revenue",
@@ -484,7 +484,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "Bearer": []
                     }
                 ],
                 "description": "Report transactions",
@@ -519,12 +519,20 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "enum": [
+                            "updated_at",
+                            "amount"
+                        ],
                         "type": "string",
                         "description": "Sorting",
                         "name": "sorting",
                         "in": "query"
                     },
                     {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
                         "type": "string",
                         "description": "Sorting Direction",
                         "name": "sorting_direction",
@@ -671,13 +679,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "source": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "credit card"
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -707,13 +718,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "product_title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "delivery"
                 },
                 "total_revenue": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 }
             }
         },
@@ -736,19 +750,24 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "product_title": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "delivery"
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -756,16 +775,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -773,16 +796,20 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "order_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "product_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -790,10 +817,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin1234"
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "admin"
                 }
             }
         },
@@ -809,20 +838,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
-                "from": {
-                    "type": "integer"
+                "from_user_id": {
+                    "type": "integer",
+                    "example": 1
                 },
-                "to": {
-                    "type": "integer"
+                "to_user_id": {
+                    "type": "integer",
+                    "example": 2
                 }
             }
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     },
     "externalDocs": {
@@ -834,8 +869,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	Host:             "localhost:5050",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Balance Microservice API",
 	Description:      "Balance Microservice API",

@@ -27,12 +27,12 @@ type useCase interface {
 // @Tags         report_transactions
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
+// @Security    Bearer
 // @Param        user_id   path      int  true  "User ID"
 // @Param        limit     query     int  false  "Limit"
 // @Param        cursor    query     string  false  "Cursor"
-// @Param        sorting   query     string  false  "Sorting"
-// @Param        sorting_direction query     string  false  "Sorting Direction"
+// @Param        sorting   query     sortingType  false  "Sorting"
+// @Param        sorting_direction query     sortingDirection  false  "Sorting Direction"
 // @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
 // @Failure      401  {object}  handlers_builder.Error
@@ -55,14 +55,52 @@ func (h *reportTransactionsHandler) GetHandler() http.Handler {
 	return makeReportTransactionsHandler(h.auth, h.useCase)
 }
 
+type sortingType string
+
+func (s sortingType) String() string {
+	return string(s)
+}
+
+func (s sortingType) Parse(ctx context.Context, v string) (sortingType, error) {
+	if v == sortingUpdatedAt.String() ||
+		v == sortingAmount.String() {
+		return sortingType(v), nil
+	}
+	return "", errors.New("invalid sorting type")
+}
+
+const (
+	sortingUpdatedAt sortingType = "updated_at"
+	sortingAmount    sortingType = "amount"
+)
+
+type sortingDirection string
+
+func (s sortingDirection) Parse(ctx context.Context, v string) (sortingDirection, error) {
+	if v == sortingDirectionAsc.String() ||
+		v == sortingDirectionDesc.String() {
+		return sortingDirection(v), nil
+	}
+	return "", errors.New("invalid sorting direction")
+}
+
+func (s sortingDirection) String() string {
+	return string(s)
+}
+
+const (
+	sortingDirectionAsc  sortingDirection = "asc"
+	sortingDirectionDesc sortingDirection = "desc"
+)
+
 func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
 	var (
 		b, _                  = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
 		paramUserID           = ergo.RouterParamInt64("user_id").Attach(b)
 		paramLimit            = ergo.QueryParamUInt64Maybe("limit").Attach(b)
 		paramCursor           = ergo.QueryParamStringMaybe("cursor").Attach(b)
-		paramSorting          = ergo.QueryParamStringMaybe("sorting").Attach(b)
-		paramSortingDirection = ergo.QueryParamStringMaybe("sorting_direction").Attach(b)
+		paramSorting          = ergo.QueryParamWithParserMaybe[sortingType]("sorting").Attach(b)
+		paramSortingDirection = ergo.QueryParamWithParserMaybe[sortingDirection]("sorting_direction").Attach(b)
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
@@ -70,8 +108,8 @@ func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) ht
 			paramUserID.Get(r),
 			paramCursor.GetDefault(r, ""),
 			paramLimit.GetDefault(r, uint64(0)),
-			paramSorting.GetDefault(r, ""),
-			paramSortingDirection.GetDefault(r, ""),
+			paramSorting.GetDefault(r, "").String(),
+			paramSortingDirection.GetDefault(r, "").String(),
 		)
 
 		if err != nil {

@@ -1,0 +1,17 @@
+package main
+
+import (
+	"net/http"
+
+	_ "github.com/nktknshn/avito-internship-2022/api/openapi"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
+	httpSwagger "github.com/swaggo/http-swagger"
+)
+
+func swaggerHandler(cfg *config.Config) http.Handler {
+	handler := httpSwagger.Handler(
+		httpSwagger.PersistAuthorization(true),
+	)
+	return handler
+}

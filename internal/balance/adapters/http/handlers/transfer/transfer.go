@@ -27,7 +27,7 @@ type useCase interface {
 // @Tags         transfer
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
+// @Security    Bearer
 // @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error
@@ -53,9 +53,9 @@ func (h *TransferHandler) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	FromUserID int64 `json:"from_user_id"`
-	ToUserID   int64 `json:"to_user_id"`
-	Amount     int64 `json:"amount"`
+	FromUserID int64 `json:"from_user_id" example:"1"`
+	ToUserID   int64 `json:"to_user_id" example:"2"`
+	Amount     int64 `json:"amount" example:"100"`
 }
 
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {

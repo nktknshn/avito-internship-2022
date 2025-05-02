@@ -11,6 +11,10 @@ import (
 	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
+var (
+	errInternal = errors.New("internal server error")
+)
+
 func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
 
 	var errorBody any
@@ -22,7 +26,7 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	if errors.As(err, &internalServerError) {
 		// InternalServerError подразумевает, что ошибка не будет показана клиенту
 		status = http.StatusInternalServerError
-		errorBody = makeErrorBody(errors.New("internal server error"))
+		errorBody = makeErrorBody(errInternal)
 	} else if errors.As(err, &errorWithHttpStatus) {
 		// если ошибка обернута в хендлере с http статусом, то используем этот статус
 		status = errorWithHttpStatus.HttpStatusCode
@@ -37,7 +41,7 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		status = http.StatusBadRequest
 	} else {
 		// прочие ошибки
-		errorBody = makeErrorBody(errors.New("internal server error"))
+		errorBody = makeErrorBody(errInternal)
 		status = http.StatusInternalServerError
 	}
 

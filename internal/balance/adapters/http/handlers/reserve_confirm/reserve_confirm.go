@@ -27,7 +27,7 @@ type useCase interface {
 // @Tags         reserve_confirm
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
+// @Security    Bearer
 // @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error
@@ -53,10 +53,10 @@ func (h *HandlerReserveConfirm) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	UserID    int64 `json:"user_id"`
-	OrderID   int64 `json:"order_id"`
-	ProductID int64 `json:"product_id"`
-	Amount    int64 `json:"amount"`
+	UserID    int64 `json:"user_id" example:"1"`
+	OrderID   int64 `json:"order_id" example:"1"`
+	ProductID int64 `json:"product_id" example:"1"`
+	Amount    int64 `json:"amount" example:"100"`
 }
 
 func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.Handler {

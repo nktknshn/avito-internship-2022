@@ -25,7 +25,7 @@ type useCase interface {
 // @Tags         report_revenue
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
+// @Security    Bearer
 // @Param        year   query      int  true  "Year"
 // @Param        month  query      int  true  "Month"
 // @Success      200  {object}  handlers_builder.Result[responseBody]
@@ -51,9 +51,9 @@ func (h *reportRevenueHandler) GetHandler() http.Handler {
 }
 
 type responseRecord struct {
-	ProductID    int64  `json:"product_id"`
-	ProductTitle string `json:"product_title"`
-	TotalRevenue int64  `json:"total_revenue"`
+	ProductID    int64  `json:"product_id" example:"1"`
+	ProductTitle string `json:"product_title" example:"delivery"`
+	TotalRevenue int64  `json:"total_revenue" example:"100"`
 }
 
 type responseBody struct {
@@ -88,11 +88,9 @@ func makeReportRevenueHandler(auth handlers_auth.AuthUseCase, u useCase) http.Ha
 			paramYear.Get(r),
 			paramMonth.Get(r),
 		)
-
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)
 		}
-
 		out, err := u.Handle(r.Context(), in)
 		if err != nil {
 			return nil, err

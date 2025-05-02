@@ -16,8 +16,11 @@ jwt:
 
 http:
   addr: 0.0.0.0:8080
-  api_prefix: /api/v1
+  api_prefix: /api
   handler_timeout: 10s
+  swagger:
+    enabled: true
+    path: /swagger
 
 prometheus:
   port: 8081

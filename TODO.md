@@ -13,6 +13,7 @@ TODO
 - [ ] opentracing
 - [ ] graceful shutdown
 - [ ] certs
+- [ ] strip username/password/token from logs
 - [x] FOR UPDATE
 - [x] more test coverage
 - [x] migrations

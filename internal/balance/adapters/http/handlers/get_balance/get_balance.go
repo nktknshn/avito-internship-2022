@@ -3,7 +3,6 @@ package get_balance
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -29,8 +28,8 @@ type useCase interface {
 // @Tags         balance
 // @Accept       json
 // @Produce      json
-// @Security     BearerAuth
-// @Param        user_id   path      int  true  "User ID"
+// @Security    Bearer
+// @Param        user_id   path      int  true  "User ID" example=1
 // @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
 // @Failure      404  {object}  handlers_builder.Error
@@ -66,8 +65,6 @@ func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handl
 	)
 
 	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
-		fmt.Println("paramUserID.Get(r)", paramUserID.Get(r))
-
 		in, err := get_balance.NewInFromValues(paramUserID.Get(r))
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)

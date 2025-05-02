@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
+	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 )
@@ -36,20 +36,35 @@ func main() {
 	}
 
 	handlers := adaptersHttp.NewHttpAdapter(&app.Application)
-	router := router.NewMuxRouter(handlers)
+	apiRouter := NewGorillaRouter()
 
-	mux := http.NewServeMux()
+	apiRouter.Use(NewMiddlewareRecover(
+		func(ctx context.Context, w http.ResponseWriter, r *http.Request, err any) {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		},
+	))
 
-	prefix := cfg.GetHTTP().GetApiPrefix()
+	apiRouter.Use(NewOptionsMiddleware())
 
-	mux.Handle(prefix+"/", http.StripPrefix(prefix, router))
-	mux.Handle("/metrics", app.MetricsHandler)
+	balanceRouter.AttachHandlers(apiRouter, handlers)
 
-	fmt.Println(prefix)
+	apiPrefix := cfg.GetHTTP().GetApiPrefix()
+
+	server := http.NewServeMux()
+
+	if cfg.GetHTTP().GetSwagger().GetEnabled() {
+		app.Logger.Info(ctx, "Swagger enabled")
+		swaggerRouter := mux.NewRouter()
+		swaggerRouter.PathPrefix(cfg.GetHTTP().GetSwagger().GetPath()).
+			Handler(swaggerHandler(cfg))
+		server.Handle("/", swaggerRouter)
+	}
+
+	server.Handle(apiPrefix+"/", http.StripPrefix(apiPrefix, apiRouter))
+	server.Handle("/metrics", app.MetricsHandler)
 
 	app.Logger.Info(ctx, "Starting server on", "addr", cfg.GetHTTP().GetAddr())
 
-	http.ListenAndServe(cfg.GetHTTP().GetAddr(), mux)
+	http.ListenAndServe(cfg.GetHTTP().GetAddr(), server)
 
-	_ = app
 }

@@ -17,19 +17,14 @@ func NewCliAdapter(app *app.Application) *CliAdapter {
 }
 
 func (a *CliAdapter) SignUp(ctx context.Context, username string, password string, role string) error {
-
 	in, err := auth_signup.NewInFromValues(username, password, role)
-
 	if err != nil {
 		return err
 	}
-
 	err = a.app.AuthSignup.Handle(ctx, in)
-
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
