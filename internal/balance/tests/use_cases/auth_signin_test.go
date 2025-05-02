@@ -2,12 +2,14 @@ package use_cases_test
 
 import (
 	"context"
+	"errors"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
+	"github.com/stretchr/testify/mock"
 )
 
 var (
@@ -45,4 +47,29 @@ func (s *AuthSuiteTest) TestAuthSignin_InvalidPassword() {
 	s.Require().Error(err)
 	s.Require().Empty(out)
 	s.Require().ErrorIs(err, domainAuth.ErrInvalidAuthUserPassword)
+}
+
+func (s *AuthSuiteTest) TestAuthSignin_HasherError() {
+	s.mockedAuthRepo.On("GetUserByUsername", mock.Anything, mock.Anything).Return(&fixtures.AuthUser, nil)
+
+	s.mockedHasher.On("Verify", mock.Anything, mock.Anything).Return(false, errors.New("hasher error"))
+
+	out, err := s.mockedSignin.Handle(context.Background(), inAuthSignin)
+	s.Require().Error(err)
+	s.Require().Empty(out)
+	s.Require().ErrorIs(err, domainAuth.ErrInvalidAuthUserPassword)
+}
+
+func (s *AuthSuiteTest) TestAuthSignin_TokenGenError() {
+	s.mockedAuthRepo.On("GetUserByUsername", mock.Anything, mock.Anything).Return(&fixtures.AuthUser, nil)
+
+	s.mockedHasher.On("Verify", mock.Anything, mock.Anything).Return(true, nil)
+
+	s.mockedTokenGen.On("GenerateToken", mock.Anything, mock.Anything).Return("", errors.New("token gen error"))
+
+	out, err := s.mockedSignin.Handle(context.Background(), inAuthSignin)
+	s.Require().Error(err)
+	s.Require().Empty(out)
+	s.Require().ErrorContains(err, "token gen error")
+
 }

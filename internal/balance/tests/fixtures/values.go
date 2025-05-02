@@ -18,12 +18,19 @@ var (
 	AuthUserRole_str       string                  = "admin"
 	AuthUserRole           domainAuth.AuthUserRole = domainAuth.AuthUserRoleAdmin
 	//
-	UsernameAdmin_str     string                      = "admin"
-	UsernameAdmin         domainAuth.AuthUserUsername = domainAuth.AuthUserUsername(UsernameAdmin_str)
-	PasswordAdmin_str     string                      = "password123"
-	PasswordAdmin         domainAuth.AuthUserPassword = domainAuth.AuthUserPassword(PasswordAdmin_str)
-	PasswordHashAdmin_str string                      = "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTEscD00JFRHNVZkMFJVTkhWUFFqazJNR3B3YWckWHRUSG5xVVFlUmpjWFRWZ0NUSGZQeEFPbm9BYThaREpkOFIxdkhUTDVEcw=="
-	PasswordHashAdmin     domainAuth.AuthUserPassword = domainAuth.AuthUserPassword(PasswordHashAdmin_str)
+	UsernameAdmin_str     string                          = "admin"
+	UsernameAdmin         domainAuth.AuthUserUsername     = domainAuth.AuthUserUsername(UsernameAdmin_str)
+	PasswordAdmin_str     string                          = "password123"
+	PasswordAdmin         domainAuth.AuthUserPassword     = domainAuth.AuthUserPassword(PasswordAdmin_str)
+	PasswordHashAdmin_str string                          = "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTEscD00JFRHNVZkMFJVTkhWUFFqazJNR3B3YWckWHRUSG5xVVFlUmpjWFRWZ0NUSGZQeEFPbm9BYThaREpkOFIxdkhUTDVEcw=="
+	PasswordHashAdmin     domainAuth.AuthUserPasswordHash = domainAuth.AuthUserPasswordHash(PasswordHashAdmin_str)
+	//
+	AuthUser domainAuth.AuthUser = domainAuth.AuthUser{
+		ID:           AuthUserID,
+		Username:     UsernameAdmin,
+		PasswordHash: PasswordHashAdmin,
+		Role:         AuthUserRole,
+	}
 	//
 	AccountID_i64         int64                   = 1
 	AccountID_str         string                  = "1"
