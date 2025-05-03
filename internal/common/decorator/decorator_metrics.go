@@ -12,7 +12,17 @@ type DecoratorCommandMetrics[T any] struct {
 	metrics metrics.Metrics
 }
 
-func (d *DecoratorCommandMetrics[T]) Handle(ctx context.Context, in T) error {
+func (d *DecoratorCommandMetrics[T]) Handle(ctx context.Context, in T) (err error) {
+	started := time.Now()
+	defer func() {
+		status := metrics.StatusSuccess
+		if err != nil {
+			status = metrics.StatusError
+		}
+		d.metrics.IncHits(status, d.base.GetName())
+		d.metrics.ObserveResponseTime(status, d.base.GetName(), time.Since(started).Seconds())
+	}()
+
 	return d.base.Handle(ctx, in)
 }
 
