@@ -1,6 +1,7 @@
 TODO
 
-- [ ] swagger
+- [ ] export file
+- [.] swagger
 - [ ] transactional outbox
 - [ ] kafka
 - [ ] ctx timeouts
@@ -14,6 +15,7 @@ TODO
 - [ ] graceful shutdown
 - [ ] certs
 - [ ] strip username/password/token from logs
+- [ ] already paid
 - [x] FOR UPDATE
 - [x] more test coverage
 - [x] migrations

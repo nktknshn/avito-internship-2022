@@ -474,6 +474,7 @@ paths:
       - description: Limit
         in: query
         name: limit
+        required: true
         type: integer
       - description: Cursor
         in: query
@@ -485,6 +486,7 @@ paths:
         - amount
         in: query
         name: sorting
+        required: true
         type: string
       - description: Sorting Direction
         enum:
@@ -492,6 +494,7 @@ paths:
         - desc
         in: query
         name: sorting_direction
+        required: true
         type: string
       produces:
       - application/json

@@ -510,7 +510,8 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "Limit",
                         "name": "limit",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -526,7 +527,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Sorting",
                         "name": "sorting",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "enum": [
@@ -536,7 +538,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Sorting Direction",
                         "name": "sorting_direction",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {

@@ -29,10 +29,10 @@ type useCase interface {
 // @Produce      json
 // @Security    Bearer
 // @Param        user_id   path      int  true  "User ID"
-// @Param        limit     query     int  false  "Limit"
+// @Param        limit     query     int  true  "Limit"
 // @Param        cursor    query     string  false  "Cursor"
-// @Param        sorting   query     sortingType  false  "Sorting"
-// @Param        sorting_direction query     sortingDirection  false  "Sorting Direction"
+// @Param        sorting   query     sortingType  true  "Sorting"
+// @Param        sorting_direction query     sortingDirection  true  "Sorting Direction"
 // @Success      200  {object}  handlers_builder.Result[responseBody]
 // @Failure      400  {object}  handlers_builder.Error
 // @Failure      401  {object}  handlers_builder.Error
@@ -70,8 +70,8 @@ func (s sortingType) Parse(ctx context.Context, v string) (sortingType, error) {
 }
 
 const (
-	sortingUpdatedAt sortingType = "updated_at"
-	sortingAmount    sortingType = "amount"
+	sortingUpdatedAt sortingType = sortingType(report_transactions.SortingUpdatedAt)
+	sortingAmount    sortingType = sortingType(report_transactions.SortingAmount)
 )
 
 type sortingDirection string
@@ -89,8 +89,8 @@ func (s sortingDirection) String() string {
 }
 
 const (
-	sortingDirectionAsc  sortingDirection = "asc"
-	sortingDirectionDesc sortingDirection = "desc"
+	sortingDirectionAsc  sortingDirection = sortingDirection(report_transactions.SortingDirectionAsc)
+	sortingDirectionDesc sortingDirection = sortingDirection(report_transactions.SortingDirectionDesc)
 )
 
 func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {

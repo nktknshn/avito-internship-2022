@@ -82,6 +82,10 @@ const (
 	SortingAmount    Sorting = "amount"
 )
 
+func (s Sorting) Value() string {
+	return string(s)
+}
+
 func (s Sorting) IsZero() bool {
 	return s == ""
 }
