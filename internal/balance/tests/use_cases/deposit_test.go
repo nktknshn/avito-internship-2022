@@ -15,7 +15,7 @@ func (s *SuiteTest) TestDeposit_Errors() {
 	s.mockedAccountsRepo.On("GetByUserID", mock.Anything, mock.Anything).Return(nil, domainAccount.ErrAccountNotFound)
 	s.mockedAccountsRepo.On("Save", mock.Anything, mock.Anything).Return(nil, errors.New("save error"))
 
-	err := s.mockedDeposit.Handle(context.Background(), fixtures.InDeposit)
+	err := s.mockedDeposit.Handle(context.Background(), fixtures.InDeposit100)
 
 	s.Require().Error(err)
 	fmt.Println(err)

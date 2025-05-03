@@ -13,12 +13,28 @@ import (
 
 var (
 	// Use cases
-	InValidateToken  = must.Must(auth_validate_token.NewInFromValues(AuthToken))
-	InGetBalance     = must.Must(get_balance.NewInFromValues(UserID_i64))
-	InDeposit        = must.Must(deposit.NewInFromValues(UserID_i64, Amount100_i64, DepositSource_str))
-	InReserve        = must.Must(reserve.NewInFromValues(UserID_i64, ProductID_i64, ProductTitle_str, OrderID_i64, Amount100_i64))
-	InReserveConfirm = must.Must(reserve_confirm.NewInFromValues(UserID_i64, ProductID_i64, OrderID_i64, Amount100_i64))
-	InAuthSignup     = must.Must(auth_signup.NewInFromValues(
+	InValidateToken = must.Must(auth_validate_token.NewInFromValues(AuthToken))
+	InGetBalance    = must.Must(get_balance.NewInFromValues(UserID_i64))
+	InDeposit100    = must.Must(deposit.NewInFromValues(
+		UserID_i64,
+		Amount100_i64,
+		DepositSource_str,
+	))
+	InReserve100 = must.Must(reserve.NewInFromValues(
+		UserID_i64,
+		ProductID_i64,
+		ProductTitle_str,
+		OrderID_i64,
+		Amount100_i64,
+	))
+	InReserveConfirm = must.Must(reserve_confirm.NewInFromValues(
+		UserID_i64,
+		ProductID_i64,
+		OrderID_i64,
+		Amount100_i64,
+	))
+	// Auth
+	InAuthSignup = must.Must(auth_signup.NewInFromValues(
 		UsernameAdmin_str,
 		PasswordAdmin_str,
 		AuthUserRole_str,

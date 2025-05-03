@@ -6,11 +6,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 func (s *UseCasesSuiteIntegrationTest) TestReserve_Success() {
@@ -18,15 +16,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_Success() {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	in := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserve.Handle(context.Background(), in)
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID)
@@ -46,17 +36,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_Success() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserve_AccountNotFound() {
-
-	in := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserve.Handle(context.Background(), in)
-
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
@@ -65,15 +45,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_InsufficientBalance() {
 	acc, err := s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
-	in := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err = s.reserve.Handle(context.Background(), in)
+	err = s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().ErrorIs(err, domainAccount.ErrInsufficientAvailableBalance)
 }
 
@@ -82,13 +54,13 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyPaid() {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	err := s.reserve.Handle(context.Background(), fixtures.InReserve)
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().NoError(err)
 
 	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm)
 	s.Require().NoError(err)
 
-	err = s.reserve.Handle(context.Background(), fixtures.InReserve)
+	err = s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
 }
 
@@ -97,10 +69,10 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyExists() {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	err := s.reserve.Handle(context.Background(), fixtures.InReserve)
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().NoError(err)
 
-	err = s.reserve.Handle(context.Background(), fixtures.InReserve)
+	err = s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyExists)
 }
 
@@ -108,14 +80,6 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 	acc := s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
-
-	in := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
 
 	workers := 20
 
@@ -127,7 +91,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 		go func() {
 			defer wg.Done()
 			<-lock
-			err := s.reserve.Handle(context.Background(), in)
+			err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 			if err != nil {
 				errorCount.Add(1)
 				isPaidOrExists := errors.Is(err,
