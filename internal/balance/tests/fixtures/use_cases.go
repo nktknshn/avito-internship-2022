@@ -6,15 +6,19 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 var (
 	// Use cases
-	InValidateToken = must.Must(auth_validate_token.NewInFromValues(AuthToken))
-	InGetBalance    = must.Must(get_balance.NewInFromValues(UserID_i64))
-	InDeposit       = must.Must(deposit.NewInFromValues(UserID_i64, Amount100_i64, DepositSource_str))
-	InAuthSignup    = must.Must(auth_signup.NewInFromValues(
+	InValidateToken  = must.Must(auth_validate_token.NewInFromValues(AuthToken))
+	InGetBalance     = must.Must(get_balance.NewInFromValues(UserID_i64))
+	InDeposit        = must.Must(deposit.NewInFromValues(UserID_i64, Amount100_i64, DepositSource_str))
+	InReserve        = must.Must(reserve.NewInFromValues(UserID_i64, ProductID_i64, ProductTitle_str, OrderID_i64, Amount100_i64))
+	InReserveConfirm = must.Must(reserve_confirm.NewInFromValues(UserID_i64, ProductID_i64, OrderID_i64, Amount100_i64))
+	InAuthSignup     = must.Must(auth_signup.NewInFromValues(
 		UsernameAdmin_str,
 		PasswordAdmin_str,
 		AuthUserRole_str,

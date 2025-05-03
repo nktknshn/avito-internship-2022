@@ -2,6 +2,7 @@ package use_cases_test
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"sync/atomic"
 
@@ -76,6 +77,33 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_InsufficientBalance() {
 	s.Require().ErrorIs(err, domainAccount.ErrInsufficientAvailableBalance)
 }
 
+func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyPaid() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
+	})
+
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve)
+	s.Require().NoError(err)
+
+	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm)
+	s.Require().NoError(err)
+
+	err = s.reserve.Handle(context.Background(), fixtures.InReserve)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
+}
+
+func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyExists() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
+	})
+
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve)
+	s.Require().NoError(err)
+
+	err = s.reserve.Handle(context.Background(), fixtures.InReserve)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyExists)
+}
+
 func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 	acc := s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
@@ -102,7 +130,10 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 			err := s.reserve.Handle(context.Background(), in)
 			if err != nil {
 				errorCount.Add(1)
-				s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyExists)
+				isPaidOrExists := errors.Is(err,
+					domainTransaction.ErrTransactionAlreadyPaid) ||
+					errors.Is(err, domainTransaction.ErrTransactionAlreadyExists)
+				s.Require().True(isPaidOrExists)
 			}
 		}()
 	}

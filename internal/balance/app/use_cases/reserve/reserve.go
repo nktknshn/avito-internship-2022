@@ -62,7 +62,10 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 
 		for _, transaction := range orderTransactions {
 			// если существует транзакция с таким OrderID и статус не canceled, то ошибка
-			if transaction.Status != domainTransaction.TransactionSpendStatusCanceled {
+			if transaction.Status == domainTransaction.TransactionSpendStatusConfirmed {
+				return domainTransaction.ErrTransactionAlreadyPaid
+			}
+			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
 				return domainTransaction.ErrTransactionAlreadyExists
 			}
 		}
