@@ -16,24 +16,9 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_Success() {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	inReserve := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
 
-	s.Require().NoError(s.reserve.Handle(context.Background(), inReserve))
-
-	in := must.Must(reserve_confirm.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveConfirm.Handle(context.Background(), in)
+	err := s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
 	s.Require().NoError(err)
 
 	acc, err := s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID)
@@ -102,4 +87,19 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionAmountMisma
 
 	err := s.reserveConfirm.Handle(context.Background(), in)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAmountMismatch)
+}
+
+func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionAlreadyPaid() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
+	})
+
+	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
+	s.Require().NoError(err)
+
+	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
+	s.Require().NoError(err)
+
+	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
 }

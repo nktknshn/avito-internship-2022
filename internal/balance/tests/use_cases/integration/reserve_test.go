@@ -57,7 +57,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyPaid() {
 	err := s.reserve.Handle(context.Background(), fixtures.InReserve100)
 	s.Require().NoError(err)
 
-	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm)
+	err = s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
 	s.Require().NoError(err)
 
 	err = s.reserve.Handle(context.Background(), fixtures.InReserve100)

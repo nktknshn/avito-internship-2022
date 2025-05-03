@@ -5,6 +5,7 @@ import (
 	"flag"
 	"net/http"
 
+	middleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/gorilla/mux"
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
@@ -38,11 +39,16 @@ func main() {
 	handlers := adaptersHttp.NewHttpAdapter(&app.Application)
 	apiRouter := NewGorillaRouter()
 
-	apiRouter.Use(NewMiddlewareRecover(
-		func(ctx context.Context, w http.ResponseWriter, r *http.Request, err any) {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		},
-	))
+	apiRouter.Use(middleware.Recoverer)
+	apiRouter.Use(middleware.Logger)
+	apiRouter.Use(middleware.RequestID)
+	apiRouter.Use(middleware.RealIP)
+
+	// apiRouter.Use(NewMiddlewareRecover(
+	// 	func(ctx context.Context, w http.ResponseWriter, r *http.Request, err any) {
+	// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	// 	},
+	// ))
 
 	apiRouter.Use(NewOptionsMiddleware())
 

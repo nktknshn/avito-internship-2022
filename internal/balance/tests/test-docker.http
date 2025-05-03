@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYwMzg0MDcsImlhdCI6MTc0NjAzNDgwNywiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.mqlEbRzADfCc7SkqK1oNIuZSSwa3n5Dn-Ja2j4fKtbg
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYyNTk3MjYsImlhdCI6MTc0NjI1NjEyNiwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.M17nttGLveUg0tSvb1SmjhUz5F9SVmqW1L-jUItWfYo
 
 ###
 
@@ -17,7 +17,8 @@ Authorization: Bearer {{token}}
 
 {
     "user_id": 1,
-    "amount": 100
+    "amount": 100,
+    "source": "credit"
 }
 
 ###

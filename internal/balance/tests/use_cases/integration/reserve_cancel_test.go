@@ -3,12 +3,9 @@ package use_cases_test
 import (
 	"context"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_Success() {
@@ -16,24 +13,9 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_Success() {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	inReserve := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
 
-	s.Require().NoError(s.reserve.Handle(context.Background(), inReserve))
-
-	inCancel := must.Must(reserve_cancel.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveCancel.Handle(context.Background(), inCancel)
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
 	s.Require().NoError(err)
 
 	acc, err := s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID)
@@ -51,58 +33,34 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_Success() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_AccountNotFound() {
-	in := must.Must(reserve_cancel.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveCancel.Handle(context.Background(), in)
-
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionNotFound() {
-
 	_ = s.newAccountSaved()
-
-	in := must.Must(reserve_cancel.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveCancel.Handle(context.Background(), in)
-
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionNotFound)
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAmountMismatch() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		a.BalanceDeposit(fixtures.AmountPositive100)
+	})
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel50)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAmountMismatch)
+}
 
+func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAlreadyPaid() {
 	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.BalanceDeposit(fixtures.AmountPositive100)
 	})
 
-	inReserve := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
+	s.Require().NoError(err)
 
-	s.Require().NoError(s.reserve.Handle(context.Background(), inReserve))
-
-	in := must.Must(reserve_cancel.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive50_i64,
-	))
-
-	err := s.reserveCancel.Handle(context.Background(), in)
-
-	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAmountMismatch)
+	err = s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
 }

@@ -15,7 +15,7 @@ TODO
 - [ ] graceful shutdown
 - [ ] certs
 - [ ] strip username/password/token from logs
-- [ ] reserve: already paid
+- [x] reserve: already paid
 - [x] FOR UPDATE
 - [x] more test coverage
 - [x] migrations

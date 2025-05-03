@@ -17,6 +17,10 @@ var (
 	Amount0_str string              = "0"
 	Amount0     domainAmount.Amount = must.Must(domainAmount.New(0))
 	//
+	Amount50_i64 int64               = 50
+	Amount50_str string              = "50"
+	Amount50     domainAmount.Amount = must.Must(domainAmount.New(50))
+	//
 	Amount100_i64 int64               = 100
 	Amount100_str string              = "100"
 	Amount100     domainAmount.Amount = must.Must(domainAmount.New(100))

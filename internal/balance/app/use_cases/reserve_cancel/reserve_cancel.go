@@ -57,6 +57,11 @@ func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
 		var transaction *domainTransaction.TransactionSpend
 
 		for _, transaction = range orderTransactions {
+
+			if transaction.Status == domainTransaction.TransactionSpendStatusCanceled {
+				return domainTransaction.ErrTransactionAlreadyPaid
+			}
+
 			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
 				break
 			}

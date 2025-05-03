@@ -7,6 +7,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
@@ -27,11 +28,23 @@ var (
 		OrderID_i64,
 		Amount100_i64,
 	))
-	InReserveConfirm = must.Must(reserve_confirm.NewInFromValues(
+	InReserveConfirm100 = must.Must(reserve_confirm.NewInFromValues(
 		UserID_i64,
 		ProductID_i64,
 		OrderID_i64,
 		Amount100_i64,
+	))
+	InReserveCancel100 = must.Must(reserve_cancel.NewInFromValues(
+		UserID_i64,
+		OrderID_i64,
+		ProductID_i64,
+		Amount100_i64,
+	))
+	InReserveCancel50 = must.Must(reserve_cancel.NewInFromValues(
+		UserID_i64,
+		OrderID_i64,
+		ProductID_i64,
+		Amount50_i64,
 	))
 	// Auth
 	InAuthSignup = must.Must(auth_signup.NewInFromValues(
