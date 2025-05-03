@@ -24,6 +24,7 @@ type useCase interface {
 }
 
 // @Summary      Get balance
+// @ID           getBalance
 // @Description  Get balance
 // @Tags         balance
 // @Accept       json

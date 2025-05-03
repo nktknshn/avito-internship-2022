@@ -131,7 +131,7 @@ func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any, url 
 
 func (s *HttpTestSuite) setRouteParams(params map[string]string) {
 	// TODO: исправить на конструктор для NewHttpAdapter
-	ergo.DefaultVarsGetter = NewMuxVarsGetterMock(params)
+	ergo.SetVarsGetter(NewMuxVarsGetterMock(params))
 }
 
 // setupAuthAdmin авторизация вернет роль администратора

@@ -21,6 +21,7 @@ type useCase interface {
 }
 
 // @Summary      Report revenue
+// @ID           reportRevenue
 // @Description  Report revenue
 // @Tags         report_revenue
 // @Accept       json
@@ -60,7 +61,7 @@ type responseBody struct {
 	Records []responseRecord `json:"records"`
 }
 
-func outToResult(out report_revenue.Out) responseBody {
+func outToResponse(out report_revenue.Out) responseBody {
 	result := responseBody{
 		Records: make([]responseRecord, len(out.Records)),
 	}
@@ -96,6 +97,6 @@ func makeReportRevenueHandler(auth handlers_auth.AuthUseCase, u useCase) http.Ha
 			return nil, err
 		}
 
-		return outToResult(out), nil
+		return outToResponse(out), nil
 	})
 }

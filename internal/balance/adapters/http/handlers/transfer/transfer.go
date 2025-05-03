@@ -23,6 +23,7 @@ type useCase interface {
 }
 
 // @Summary      Transfer
+// @ID           transfer
 // @Description  Transfer money between accounts
 // @Tags         transfer
 // @Accept       json

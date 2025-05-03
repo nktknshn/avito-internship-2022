@@ -23,6 +23,7 @@ type useCase interface {
 }
 
 // @Summary      Reserve cancel
+// @ID           reserveCancel
 // @Description  Cancel money reservation
 // @Tags         reserve_cancel
 // @Accept       json

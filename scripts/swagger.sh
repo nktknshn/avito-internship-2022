@@ -1,3 +1,3 @@
 #!/bin/sh
 
-swag init --parseDependency -g internal/balance/adapters/http/api.go -o api/openapi
+go run github.com/swaggo/swag/v2/cmd/swag init --v3.1 --parseDependency --parseInternal -g internal/balance/adapters/http/api.go -o api/openapi

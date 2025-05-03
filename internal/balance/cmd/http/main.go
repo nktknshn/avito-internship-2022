@@ -6,11 +6,15 @@ import (
 	"net/http"
 
 	middleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/gorilla/mux"
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/chi"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
+	ergo "github.com/nktknshn/go-ergo-handler"
+	ergoChi "github.com/nktknshn/go-ergo-handler/adapters/chi"
 )
 
 var (
@@ -36,23 +40,26 @@ func main() {
 		panic(err)
 	}
 
-	handlers := adaptersHttp.NewHttpAdapter(&app.Application)
-	apiRouter := NewGorillaRouter()
+	ergo.SetVarsGetter(ergoChi.New())
 
+	apiRouter := chi.NewChiRouter()
 	apiRouter.Use(middleware.Recoverer)
 	apiRouter.Use(middleware.Logger)
 	apiRouter.Use(middleware.RequestID)
 	apiRouter.Use(middleware.RealIP)
 
-	// apiRouter.Use(NewMiddlewareRecover(
-	// 	func(ctx context.Context, w http.ResponseWriter, r *http.Request, err any) {
-	// 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	// 	},
-	// ))
+	mwCors := cors.New(cors.Options{
+		AllowedOrigins:   cfg.GetHTTP().GetCors().GetAllowedOrigins(),
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	})
 
-	apiRouter.Use(NewOptionsMiddleware())
+	apiRouter.Use(mwCors.Handler)
 
-	balanceRouter.AttachHandlers(apiRouter, handlers)
+	handlers := adaptersHttp.NewHttpAdapter(&app.Application)
+	balanceRouter.Attach(apiRouter, handlers)
 
 	apiPrefix := cfg.GetHTTP().GetApiPrefix()
 
@@ -66,8 +73,11 @@ func main() {
 		server.Handle("/", swaggerRouter)
 	}
 
-	server.Handle(apiPrefix+"/", http.StripPrefix(apiPrefix, apiRouter))
-	server.Handle("/metrics", app.MetricsHandler)
+	server.Handle(apiPrefix+"/", http.StripPrefix(apiPrefix, apiRouter.GetHandler()))
+
+	if app.MetricsHandler != nil {
+		server.Handle("/metrics", app.MetricsHandler)
+	}
 
 	app.Logger.Info(ctx, "Starting server on", "addr", cfg.GetHTTP().GetAddr())
 

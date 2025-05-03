@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYyNTk3MjYsImlhdCI6MTc0NjI1NjEyNiwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.M17nttGLveUg0tSvb1SmjhUz5F9SVmqW1L-jUItWfYo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYyODk5MDAsImlhdCI6MTc0NjI4NjMwMCwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.UiGAPhNYGewyKDZsr-CaRoO3t6fyrrDHOxX0EWFCysI
 
 ###
 
@@ -77,4 +77,10 @@ OPTIONS http://localhost:5050/api/v1/balance/deposit
 
 ###
 
+GET http://localhost:5050/api/v1/report/revenue?year=2025&month=5
+Authorization: Bearer {{token}}
 
+###
+
+GET http://localhost:5050/api/v1/report/revenue
+Authorization: Bearer {{token}}

@@ -43,7 +43,7 @@ type responseTransactionTransfer struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-func outToResult(out report_transactions.Out) *responseBody {
+func outToResponse(out report_transactions.Out) *responseBody {
 	result := responseBody{
 		Transactions: make([]any, len(out.Transactions)),
 		Cursor:       out.Cursor.Value(),

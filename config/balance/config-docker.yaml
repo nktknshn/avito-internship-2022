@@ -21,7 +21,10 @@ http:
   swagger:
     enabled: true
     path: /swagger
-
+  cors:
+    allowed_origins:
+      - "*"
+      
 prometheus:
   port: 8081
   path: /metrics

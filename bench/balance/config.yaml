@@ -1,0 +1,8 @@
+http:
+  url: http://localhost:5050
+  username: admin
+  password: admin1234
+grpc:
+  url: localhost:50051
+  username: admin
+  password: admin1234

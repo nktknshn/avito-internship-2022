@@ -1,161 +1,168 @@
-basePath: /
-definitions:
-  github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error:
-    properties:
-      error:
-        type: string
-    type: object
-  ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody
-  : properties:
-      result:
-        $ref: '#/definitions/internal_balance_adapters_http_handlers_get_balance.responseBody'
-    type: object
-  ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody
-  : properties:
-      result:
-        $ref: '#/definitions/internal_balance_adapters_http_handlers_report_revenue.responseBody'
-    type: object
-  ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody
-  : properties:
-      result:
-        $ref: '#/definitions/internal_balance_adapters_http_handlers_report_transactions.responseBody'
-    type: object
-  ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody
-  : properties:
-      result:
-        $ref: '#/definitions/internal_balance_adapters_http_handlers_signin.responseBody'
-    type: object
-  github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty:
-    properties:
-      result:
-        type: object
-    type: object
-  internal_balance_adapters_http_handlers_deposit.requestBody:
-    properties:
-      amount:
-        example: 100
-        type: integer
-      source:
-        example: credit card
-        type: string
-      user_id:
-        example: 1
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_get_balance.responseBody:
-    properties:
-      available:
-        type: integer
-      reserved:
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_report_revenue.responseBody:
-    properties:
-      records:
-        items:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_report_revenue.responseRecord'
-        type: array
-    type: object
-  internal_balance_adapters_http_handlers_report_revenue.responseRecord:
-    properties:
-      product_id:
-        example: 1
-        type: integer
-      product_title:
-        example: delivery
-        type: string
-      total_revenue:
-        example: 100
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_report_transactions.responseBody:
-    properties:
-      cursor:
-        type: string
-      has_more:
-        type: boolean
-      transactions:
-        items: {}
-        type: array
-    type: object
-  internal_balance_adapters_http_handlers_reserve.requestBody:
-    properties:
-      amount:
-        example: 100
-        type: integer
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
-      product_title:
-        example: delivery
-        type: string
-      user_id:
-        example: 1
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_reserve_cancel.requestBody:
-    properties:
-      amount:
-        example: 100
-        type: integer
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
-      user_id:
-        example: 1
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_reserve_confirm.requestBody:
-    properties:
-      amount:
-        example: 100
-        type: integer
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
-      user_id:
-        example: 1
-        type: integer
-    type: object
-  internal_balance_adapters_http_handlers_signin.requestBody:
-    properties:
-      password:
-        example: admin1234
-        type: string
-      username:
-        example: admin
-        type: string
-    type: object
-  internal_balance_adapters_http_handlers_signin.responseBody:
-    properties:
-      token:
-        type: string
-    type: object
-  internal_balance_adapters_http_handlers_transfer.requestBody:
-    properties:
-      amount:
-        example: 100
-        type: integer
-      from_user_id:
-        example: 1
-        type: integer
-      to_user_id:
-        example: 2
-        type: integer
-    type: object
+components:
+  schemas:
+    github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error:
+      properties:
+        error:
+          type: string
+      type: object
+    ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody
+    : properties:
+        result:
+          $ref: '#/components/schemas/internal_balance_adapters_http_handlers_get_balance.responseBody'
+      type: object
+    ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody
+    : properties:
+        result:
+          $ref: '#/components/schemas/internal_balance_adapters_http_handlers_report_revenue.responseBody'
+      type: object
+    ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody
+    : properties:
+        result:
+          $ref: '#/components/schemas/internal_balance_adapters_http_handlers_report_transactions.responseBody'
+      type: object
+    ? github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody
+    : properties:
+        result:
+          $ref: '#/components/schemas/internal_balance_adapters_http_handlers_signin.responseBody'
+      type: object
+    github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty:
+      properties:
+        result:
+          type: object
+      type: object
+    internal_balance_adapters_http_handlers_deposit.requestBody:
+      properties:
+        amount:
+          example: 100
+          type: integer
+        source:
+          example: credit card
+          type: string
+        user_id:
+          example: 1
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_get_balance.responseBody:
+      properties:
+        available:
+          type: integer
+        reserved:
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_report_revenue.responseBody:
+      properties:
+        records:
+          items:
+            $ref: '#/components/schemas/internal_balance_adapters_http_handlers_report_revenue.responseRecord'
+          type: array
+          uniqueItems: false
+      type: object
+    internal_balance_adapters_http_handlers_report_revenue.responseRecord:
+      properties:
+        product_id:
+          example: 1
+          type: integer
+        product_title:
+          example: delivery
+          type: string
+        total_revenue:
+          example: 100
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_report_transactions.responseBody:
+      properties:
+        cursor:
+          type: string
+        has_more:
+          type: boolean
+        transactions:
+          items: {}
+          type: array
+          uniqueItems: false
+      type: object
+    internal_balance_adapters_http_handlers_reserve.requestBody:
+      properties:
+        amount:
+          example: 100
+          type: integer
+        order_id:
+          example: 1
+          type: integer
+        product_id:
+          example: 1
+          type: integer
+        product_title:
+          example: delivery
+          type: string
+        user_id:
+          example: 1
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_reserve_cancel.requestBody:
+      properties:
+        amount:
+          example: 100
+          type: integer
+        order_id:
+          example: 1
+          type: integer
+        product_id:
+          example: 1
+          type: integer
+        user_id:
+          example: 1
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_reserve_confirm.requestBody:
+      properties:
+        amount:
+          example: 100
+          type: integer
+        order_id:
+          example: 1
+          type: integer
+        product_id:
+          example: 1
+          type: integer
+        user_id:
+          example: 1
+          type: integer
+      type: object
+    internal_balance_adapters_http_handlers_signin.requestBody:
+      properties:
+        password:
+          example: admin1234
+          type: string
+        username:
+          example: admin
+          type: string
+      type: object
+    internal_balance_adapters_http_handlers_signin.responseBody:
+      properties:
+        token:
+          type: string
+      type: object
+    internal_balance_adapters_http_handlers_transfer.requestBody:
+      properties:
+        amount:
+          example: 100
+          type: integer
+        from_user_id:
+          example: 1
+          type: integer
+        to_user_id:
+          example: 2
+          type: integer
+      type: object
+  securitySchemes:
+    Bearer:
+      description: Type "Bearer" followed by a space and JWT token.
+      in: header
+      name: Authorization
+      type: apiKey
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
-host: localhost:5050
 info:
   contact:
     email: nikita@kanash.in
@@ -168,45 +175,61 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Balance Microservice API
   version: "1.0"
+openapi: 3.1.0
 paths:
   /api/v1/balance/{user_id}:
     get:
-      consumes:
-      - application/json
       description: Get balance
+      operationId: getBalance
       parameters:
       - description: User ID
         in: path
         name: user_id
         required: true
-        type: integer
-      produces:
-      - application/json
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Not Found
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Get balance
@@ -214,39 +237,46 @@ paths:
       - balance
   /api/v1/balance/deposit:
     post:
-      consumes:
-      - application/json
       description: Deposit money to account
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: deposit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_deposit.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_deposit.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Deposit money
@@ -254,39 +284,46 @@ paths:
       - deposit
   /api/v1/balance/reserve:
     post:
-      consumes:
-      - application/json
       description: Reserve money
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: reserve
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_reserve.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_reserve.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Reserve
@@ -294,39 +331,46 @@ paths:
       - reserve
   /api/v1/balance/reserve/cancel:
     post:
-      consumes:
-      - application/json
       description: Cancel money reservation
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: reserveCancel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_reserve_cancel.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_reserve_cancel.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Reserve cancel
@@ -334,43 +378,52 @@ paths:
       - reserve_cancel
   /api/v1/balance/reserve/confirm:
     post:
-      consumes:
-      - application/json
       description: Confirm money reservation
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: reserveConfirm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_reserve_confirm.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_reserve_confirm.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Not Found
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Reserve confirm
@@ -378,39 +431,46 @@ paths:
       - reserve_confirm
   /api/v1/balance/transfer:
     post:
-      consumes:
-      - application/json
       description: Transfer money between accounts
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: transfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_transfer.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_transfer.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Transfer
@@ -418,43 +478,57 @@ paths:
       - transfer
   /api/v1/report/revenue:
     get:
-      consumes:
-      - application/json
       description: Report revenue
+      operationId: reportRevenue
       parameters:
       - description: Year
         in: query
         name: year
         required: true
-        type: integer
+        schema:
+          type: integer
       - description: Month
         in: query
         name: month
         required: true
-        type: integer
-      produces:
-      - application/json
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Report revenue
@@ -462,63 +536,80 @@ paths:
       - report_revenue
   /api/v1/report/transactions/{user_id}:
     get:
-      consumes:
-      - application/json
       description: Report transactions
+      operationId: reportTransactions
       parameters:
       - description: User ID
         in: path
         name: user_id
         required: true
-        type: integer
+        schema:
+          type: integer
       - description: Limit
         in: query
         name: limit
         required: true
-        type: integer
+        schema:
+          type: integer
       - description: Cursor
         in: query
         name: cursor
-        type: string
+        schema:
+          type: string
       - description: Sorting
-        enum:
-        - updated_at
-        - amount
         in: query
         name: sorting
         required: true
-        type: string
+        schema:
+          enum:
+          - updated_at
+          - amount
+          type: string
       - description: Sorting Direction
-        enum:
-        - asc
-        - desc
         in: query
         name: sorting_direction
         required: true
-        type: string
-      produces:
-      - application/json
+        schema:
+          enum:
+          - asc
+          - desc
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Forbidden
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       security:
       - Bearer: []
       summary: Report transactions
@@ -526,42 +617,42 @@ paths:
       - report_transactions
   /api/v1/signin:
     post:
-      consumes:
-      - application/json
       description: Sign in
-      parameters:
-      - description: Payload
-        in: body
-        name: payload
+      operationId: signIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_balance_adapters_http_handlers_signin.requestBody'
+        description: Payload
         required: true
-        schema:
-          $ref: '#/definitions/internal_balance_adapters_http_handlers_signin.requestBody'
-      produces:
-      - application/json
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody'
           description: OK
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody'
         "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Bad Request
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Unauthorized
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
         "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
           description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error'
       summary: Sign in
       tags:
       - signin
-securityDefinitions:
-  Bearer:
-    description: Type "Bearer" followed by a space and JWT token.
-    in: header
-    name: Authorization
-    type: apiKey
-swagger: "2.0"
+servers:
+- url: localhost:5050/

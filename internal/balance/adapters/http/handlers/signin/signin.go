@@ -22,6 +22,7 @@ type usecase interface {
 }
 
 // @Summary      Sign in
+// @ID           signIn
 // @Description  Sign in
 // @Tags         signin
 // @Accept       json

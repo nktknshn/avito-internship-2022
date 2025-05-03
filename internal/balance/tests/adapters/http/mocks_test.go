@@ -2,21 +2,16 @@ package http_test
 
 import (
 	"net/http"
-
-	"github.com/stretchr/testify/mock"
 )
 
 type MuxVarsGetterMock struct {
-	mock.Mock
+	vars map[string]string
 }
 
-func (m *MuxVarsGetterMock) GetVars(r *http.Request) map[string]string {
-	args := m.Called(r)
-	return args.Get(0).(map[string]string)
+func (m *MuxVarsGetterMock) GetVar(r *http.Request, key string) (string, bool) {
+	return m.vars[key], m.vars[key] != ""
 }
 
 func NewMuxVarsGetterMock(vars map[string]string) *MuxVarsGetterMock {
-	m := &MuxVarsGetterMock{}
-	m.On("GetVars", mock.Anything).Return(vars)
-	return m
+	return &MuxVarsGetterMock{vars: vars}
 }

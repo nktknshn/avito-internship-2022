@@ -93,7 +93,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 
 	// logs & metrics
 	logger := logging.NewSlog()
-	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app")
+	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app_balance")
 
 	if err != nil {
 		return nil, err

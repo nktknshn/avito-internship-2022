@@ -23,6 +23,7 @@ type useCase interface {
 }
 
 // @Summary      Reserve
+// @ID           reserve
 // @Description  Reserve money
 // @Tags         reserve
 // @Accept       json

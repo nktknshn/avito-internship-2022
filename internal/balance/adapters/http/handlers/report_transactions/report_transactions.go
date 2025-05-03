@@ -23,6 +23,7 @@ type useCase interface {
 }
 
 // @Summary      Report transactions
+// @ID           reportTransactions
 // @Description  Report transactions
 // @Tags         report_transactions
 // @Accept       json
@@ -126,6 +127,6 @@ func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) ht
 			return nil, err
 		}
 
-		return outToResult(res), nil
+		return outToResponse(res), nil
 	})
 }

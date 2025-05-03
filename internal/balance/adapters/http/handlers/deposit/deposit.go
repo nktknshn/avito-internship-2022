@@ -23,11 +23,13 @@ type useCase interface {
 }
 
 // @Summary      Deposit money
+// @ID           deposit
 // @Description  Deposit money to account
 // @Tags         deposit
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
+// @OperationId  deposit
 // @Param        payload   body      requestBody  true  "Payload"
 // @Success      200  {object}  handlers_builder.ResultEmpty
 // @Failure      400  {object}  handlers_builder.Error

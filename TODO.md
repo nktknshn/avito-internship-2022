@@ -1,6 +1,7 @@
 TODO
 
-- [ ] export file
+- [ ] reserve confirm/cancel: productID mismatch
+- [ ] revenue export file
 - [.] swagger
 - [ ] transactional outbox
 - [ ] kafka
@@ -15,6 +16,7 @@ TODO
 - [ ] graceful shutdown
 - [ ] certs
 - [ ] strip username/password/token from logs
+- [ ] .env
 - [x] reserve: already paid
 - [x] FOR UPDATE
 - [x] more test coverage
