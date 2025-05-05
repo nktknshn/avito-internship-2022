@@ -34,6 +34,12 @@ var (
 		OrderID_i64,
 		Amount100_i64,
 	))
+	InReserveConfirm50 = must.Must(reserve_confirm.NewInFromValues(
+		UserID_i64,
+		ProductID_i64,
+		OrderID_i64,
+		Amount50_i64,
+	))
 	InReserveCancel100 = must.Must(reserve_cancel.NewInFromValues(
 		UserID_i64,
 		OrderID_i64,

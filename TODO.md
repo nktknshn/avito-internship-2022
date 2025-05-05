@@ -1,6 +1,8 @@
 TODO
 
-- [ ] reserve confirm/cancel: productID mismatch
+- [ ] pprof
+- [ ] cover panic recovery
+- [ ] additional data for metrics decorator (like adapter name)
 - [ ] revenue export file
 - [.] swagger
 - [ ] transactional outbox
@@ -17,6 +19,7 @@ TODO
 - [ ] certs
 - [ ] strip username/password/token from logs
 - [ ] .env
+- [x] reserve confirm/cancel: productID mismatch
 - [x] reserve: already paid
 - [x] FOR UPDATE
 - [x] more test coverage

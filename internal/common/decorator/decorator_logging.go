@@ -6,12 +6,12 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 )
 
-type DecoratorCommandLogging[T any] struct {
-	base   UseCaseCommandHandler[T]
+type Decorator0Logging[T any] struct {
+	base   UseCase0Handler[T]
 	logger logging.Logger
 }
 
-func (d *DecoratorCommandLogging[T]) Handle(ctx context.Context, in T) (err error) {
+func (d *Decorator0Logging[T]) Handle(ctx context.Context, in T) (err error) {
 	defer func() {
 		if err != nil {
 			d.logger.Error(ctx, d.base.GetName(), "use_case", d.base.GetName(), "error", err)
@@ -21,16 +21,16 @@ func (d *DecoratorCommandLogging[T]) Handle(ctx context.Context, in T) (err erro
 	return d.base.Handle(ctx, in)
 }
 
-func (d *DecoratorCommandLogging[T]) GetName() string {
+func (d *Decorator0Logging[T]) GetName() string {
 	return d.base.GetName()
 }
 
-type DecoratorQueryLogging[T any, R any] struct {
-	base   UseCaseQueryHandler[T, R]
+type Decorator1Logging[T any, R any] struct {
+	base   UseCase1Handler[T, R]
 	logger logging.Logger
 }
 
-func (d *DecoratorQueryLogging[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
+func (d *Decorator1Logging[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
 	defer func() {
 		if err != nil {
 			d.logger.Error(ctx, d.base.GetName(), "use_case", d.base.GetName(), "error", err)
@@ -40,6 +40,6 @@ func (d *DecoratorQueryLogging[T, R]) Handle(ctx context.Context, in T) (result 
 	return d.base.Handle(ctx, in)
 }
 
-func (d *DecoratorQueryLogging[T, R]) GetName() string {
+func (d *Decorator1Logging[T, R]) GetName() string {
 	return d.base.GetName()
 }

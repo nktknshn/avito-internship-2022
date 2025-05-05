@@ -7,23 +7,23 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/common/metrics"
 )
 
-type UseCaseCommandHandler[T any] interface {
+type UseCase0Handler[T any] interface {
 	Handle(ctx context.Context, in T) error
 	GetName() string
 }
 
-type UseCaseQueryHandler[T any, R any] interface {
+type UseCase1Handler[T any, R any] interface {
 	Handle(ctx context.Context, in T) (R, error)
 	GetName() string
 }
 
-func DecorateCommand[T any](
-	base UseCaseCommandHandler[T],
+func Decorate0[T any](
+	base UseCase0Handler[T],
 	metrics metrics.Metrics,
 	logger logging.Logger,
-) UseCaseCommandHandler[T] {
-	return &DecoratorCommandLogging[T]{
-		base: &DecoratorCommandMetrics[T]{
+) UseCase0Handler[T] {
+	return &Decorator0Logging[T]{
+		base: &Decorator0Metrics[T]{
 			base:    base,
 			metrics: metrics,
 		},
@@ -31,13 +31,13 @@ func DecorateCommand[T any](
 	}
 }
 
-func DecorateQuery[T any, R any](
-	base UseCaseQueryHandler[T, R],
+func Decorate1[T any, R any](
+	base UseCase1Handler[T, R],
 	metrics metrics.Metrics,
 	logger logging.Logger,
-) UseCaseQueryHandler[T, R] {
-	return &DecoratorQueryLogging[T, R]{
-		base: &DecoratorQueryMetrics[T, R]{
+) UseCase1Handler[T, R] {
+	return &Decorator1Logging[T, R]{
+		base: &Decorator1Metrics[T, R]{
 			base:    base,
 			metrics: metrics,
 		},

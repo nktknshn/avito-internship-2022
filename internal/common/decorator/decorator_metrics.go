@@ -7,12 +7,12 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/common/metrics"
 )
 
-type DecoratorCommandMetrics[T any] struct {
-	base    UseCaseCommandHandler[T]
+type Decorator0Metrics[T any] struct {
+	base    UseCase0Handler[T]
 	metrics metrics.Metrics
 }
 
-func (d *DecoratorCommandMetrics[T]) Handle(ctx context.Context, in T) (err error) {
+func (d *Decorator0Metrics[T]) Handle(ctx context.Context, in T) (err error) {
 	started := time.Now()
 	defer func() {
 		status := metrics.StatusSuccess
@@ -26,16 +26,16 @@ func (d *DecoratorCommandMetrics[T]) Handle(ctx context.Context, in T) (err erro
 	return d.base.Handle(ctx, in)
 }
 
-func (d *DecoratorCommandMetrics[T]) GetName() string {
+func (d *Decorator0Metrics[T]) GetName() string {
 	return d.base.GetName()
 }
 
-type DecoratorQueryMetrics[T any, R any] struct {
-	base    UseCaseQueryHandler[T, R]
+type Decorator1Metrics[T any, R any] struct {
+	base    UseCase1Handler[T, R]
 	metrics metrics.Metrics
 }
 
-func (d *DecoratorQueryMetrics[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
+func (d *Decorator1Metrics[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
 	started := time.Now()
 	defer func() {
 		status := metrics.StatusSuccess
@@ -49,6 +49,6 @@ func (d *DecoratorQueryMetrics[T, R]) Handle(ctx context.Context, in T) (result 
 	return d.base.Handle(ctx, in)
 }
 
-func (d *DecoratorQueryMetrics[T, R]) GetName() string {
+func (d *Decorator1Metrics[T, R]) GetName() string {
 	return d.base.GetName()
 }
