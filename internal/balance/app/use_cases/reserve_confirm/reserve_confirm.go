@@ -62,6 +62,11 @@ func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 			if transaction.Status == domainTransaction.TransactionSpendStatusConfirmed {
 				return domainTransaction.ErrTransactionAlreadyPaid
 			}
+
+			if transaction.ProductID != in.ProductID {
+				return domainTransaction.ErrTransactionProductIDMismatch
+			}
+
 			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
 				break
 			}

@@ -62,9 +62,14 @@ func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
 				return domainTransaction.ErrTransactionAlreadyPaid
 			}
 
+			if transaction.ProductID != in.ProductID {
+				return domainTransaction.ErrTransactionProductIDMismatch
+			}
+
 			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
 				break
 			}
+
 		}
 
 		if transaction == nil {

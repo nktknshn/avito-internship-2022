@@ -3,12 +3,9 @@ package use_cases_test
 import (
 	"context"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_Success() {
@@ -36,14 +33,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_Success() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_AccountNotFound() {
-	in := must.Must(reserve_confirm.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveConfirm.Handle(context.Background(), in)
+	err := s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
@@ -52,14 +42,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionNotFound() 
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	in := must.Must(reserve_confirm.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive100_i64,
-	))
-
-	err := s.reserveConfirm.Handle(context.Background(), in)
+	err := s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionNotFound)
 }
 
@@ -68,25 +51,24 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionAmountMisma
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	inReserve := must.Must(reserve.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.ProductID_i64,
-		fixtures.ProductTitle_str,
-		fixtures.OrderID_i64,
-		fixtures.AmountPositive100_i64,
-	))
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
 
-	s.Require().NoError(s.reserve.Handle(context.Background(), inReserve))
-
-	in := must.Must(reserve_confirm.NewInFromValues(
-		fixtures.UserID_i64,
-		fixtures.OrderID_i64,
-		fixtures.ProductID_i64,
-		fixtures.AmountPositive50_i64,
-	))
-
-	err := s.reserveConfirm.Handle(context.Background(), in)
+	err := s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm50)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAmountMismatch)
+}
+
+func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionProductIDMismatch() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
+	})
+
+	s.Require().NoError(s.reserve.Handle(context.Background(), fixtures.InReserve100))
+
+	copyIn := fixtures.InReserveConfirm100
+	copyIn.ProductID = 6666
+
+	err := s.reserveConfirm.Handle(context.Background(), copyIn)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionProductIDMismatch)
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserveConfirm_TransactionAlreadyPaid() {
