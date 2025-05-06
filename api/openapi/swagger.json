@@ -17,6 +17,14 @@
                 },
                 "type": "object"
             },
+            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody": {
+                "properties": {
+                    "result": {
+                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_report_revenue_export.responseBody"
+                    }
+                },
+                "type": "object"
+            },
             "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody": {
                 "properties": {
                     "result": {
@@ -102,6 +110,15 @@
                     "total_revenue": {
                         "example": 100,
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "internal_balance_adapters_http_handlers_report_revenue_export.responseBody": {
+                "properties": {
+                    "url": {
+                        "example": "https://example.com/data/report_revenue_export.csv",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -847,6 +864,102 @@
                 "summary": "Report revenue",
                 "tags": [
                     "report_revenue"
+                ]
+            }
+        },
+        "/api/v1/report/revenue/export": {
+            "get": {
+                "description": "Report revenue export",
+                "operationId": "reportRevenueExport",
+                "parameters": [
+                    {
+                        "description": "Year",
+                        "in": "query",
+                        "name": "year",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Month",
+                        "in": "query",
+                        "name": "month",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "summary": "Report revenue export",
+                "tags": [
+                    "report_revenue_export"
                 ]
             }
         },

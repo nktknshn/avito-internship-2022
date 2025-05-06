@@ -6,6 +6,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_revenue"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_revenue_export"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/reserve_cancel"
@@ -20,15 +21,16 @@ type Handler interface {
 }
 
 type HttpAdapter struct {
-	GetBalance         Handler
-	Deposit            Handler
-	Reserve            Handler
-	ReserveCancel      Handler
-	ReserveConfirm     Handler
-	Transfer           Handler
-	ReportTransactions Handler
-	ReportRevenue      Handler
-	AuthSignIn         Handler
+	GetBalance          Handler
+	Deposit             Handler
+	Reserve             Handler
+	ReserveCancel       Handler
+	ReserveConfirm      Handler
+	Transfer            Handler
+	ReportTransactions  Handler
+	ReportRevenue       Handler
+	ReportRevenueExport Handler
+	AuthSignIn          Handler
 }
 
 func NewHttpAdapter(app *app.Application) *HttpAdapter {
@@ -42,16 +44,18 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 	handlerSignIn := signin.New(app.AuthSignin)
 	handlerReportTransactions := report_transactions.New(app.AuthValidateToken, app.ReportTransactions)
 	handlerReportRevenue := report_revenue.New(app.AuthValidateToken, app.ReportRevenue)
+	handlerReportRevenueExport := report_revenue_export.New(app.AuthValidateToken, app.ReportRevenueExport)
 
 	return &HttpAdapter{
-		GetBalance:         handlerGetBalance,
-		Deposit:            handlerDeposit,
-		Reserve:            handlerReserve,
-		ReserveCancel:      handlerReserveCancel,
-		ReserveConfirm:     handlerReserveConfirm,
-		Transfer:           handlerTransfer,
-		AuthSignIn:         handlerSignIn,
-		ReportTransactions: handlerReportTransactions,
-		ReportRevenue:      handlerReportRevenue,
+		GetBalance:          handlerGetBalance,
+		Deposit:             handlerDeposit,
+		Reserve:             handlerReserve,
+		ReserveCancel:       handlerReserveCancel,
+		ReserveConfirm:      handlerReserveConfirm,
+		Transfer:            handlerTransfer,
+		AuthSignIn:          handlerSignIn,
+		ReportTransactions:  handlerReportTransactions,
+		ReportRevenue:       handlerReportRevenue,
+		ReportRevenueExport: handlerReportRevenueExport,
 	}
 }

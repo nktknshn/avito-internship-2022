@@ -43,6 +43,7 @@ func main() {
 	ergo.SetVarsGetter(ergoChi.New())
 
 	apiRouter := chi.NewChiRouter()
+
 	apiRouter.Use(middleware.Recoverer)
 	apiRouter.Use(middleware.Logger)
 	apiRouter.Use(middleware.RequestID)
@@ -66,20 +67,30 @@ func main() {
 	server := http.NewServeMux()
 
 	if cfg.GetHTTP().GetSwagger().GetEnabled() {
-		app.Logger.Info(ctx, "Swagger enabled")
+		swaggerPath := cfg.GetHTTP().GetSwagger().GetPath()
+		app.GetLogger().Info("Swagger enabled", "path", swaggerPath)
 		swaggerRouter := mux.NewRouter()
-		swaggerRouter.PathPrefix(cfg.GetHTTP().GetSwagger().GetPath()).
+		swaggerRouter.PathPrefix(swaggerPath).
 			Handler(swaggerHandler(cfg))
 		server.Handle("/", swaggerRouter)
 	}
 
 	server.Handle(apiPrefix+"/", http.StripPrefix(apiPrefix, apiRouter.GetHandler()))
 
-	if app.MetricsHandler != nil {
-		server.Handle("/metrics", app.MetricsHandler)
+	app.GetLogger().Info("Binding revenue exporter", "url", cfg.GetUseCases().GetReportRevenueExport().GetURL())
+
+	server.Handle(
+		cfg.GetUseCases().GetReportRevenueExport().GetURL(),
+		app.GetRevenueExporterHandler(),
+	)
+
+	app.RunRevenueExporterCleanup(ctx)
+
+	if app.GetMetricsHandler() != nil {
+		server.Handle("/metrics", app.GetMetricsHandler())
 	}
 
-	app.Logger.Info(ctx, "Starting server on", "addr", cfg.GetHTTP().GetAddr())
+	app.GetLogger().Info("Starting server on", "addr", cfg.GetHTTP().GetAddr())
 
 	http.ListenAndServe(cfg.GetHTTP().GetAddr(), server)
 

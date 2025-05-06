@@ -1,7 +1,6 @@
 package server_grpc
 
 import (
-	"context"
 	"net"
 
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
@@ -21,13 +20,13 @@ func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func
 
 	listen, err := net.Listen("tcp", addr)
 	if err != nil {
-		logger.Fatal(context.Background(), "failed to listen: %v", "error", err)
+		logger.Fatal("failed to listen: %v", "error", err)
 	}
 
 	go func() {
 		err = grpcServer.Serve(listen)
 		if err != nil {
-			logger.Fatal(context.Background(), "failed to serve: %v", "error", err)
+			logger.Fatal("failed to serve: %v", "error", err)
 		}
 	}()
 

@@ -11,6 +11,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue_export"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -22,32 +23,34 @@ import (
 
 type AppMocked struct {
 	app.Application
-	GetBalanceUseCaseMock         *GetBalanceUseCaseMock
-	ReserveUseCaseMock            *ReserveUseCaseMock
-	DepositUseCaseMock            *DepositUseCaseMock
-	TransferUseCaseMock           *TransferUseCaseMock
-	ReserveCancelUseCaseMock      *ReserveCancelUseCaseMock
-	ReserveConfirmUseCaseMock     *ReserveConfirmUseCaseMock
-	AuthSigninUseCaseMock         *AuthSigninUseCaseMock
-	AuthSignupUseCaseMock         *AuthSignupUseCaseMock
-	AuthValidateTokenUseCaseMock  *AuthValidateTokenUseCaseMock
-	ReportTransactionsUseCaseMock *ReportTransactionsUseCaseMock
-	ReportRevenueUseCaseMock      *ReportRevenueUseCaseMock
+	GetBalanceUseCaseMock          *GetBalanceUseCaseMock
+	ReserveUseCaseMock             *ReserveUseCaseMock
+	DepositUseCaseMock             *DepositUseCaseMock
+	TransferUseCaseMock            *TransferUseCaseMock
+	ReserveCancelUseCaseMock       *ReserveCancelUseCaseMock
+	ReserveConfirmUseCaseMock      *ReserveConfirmUseCaseMock
+	AuthSigninUseCaseMock          *AuthSigninUseCaseMock
+	AuthSignupUseCaseMock          *AuthSignupUseCaseMock
+	AuthValidateTokenUseCaseMock   *AuthValidateTokenUseCaseMock
+	ReportTransactionsUseCaseMock  *ReportTransactionsUseCaseMock
+	ReportRevenueUseCaseMock       *ReportRevenueUseCaseMock
+	ReportRevenueExportUseCaseMock *ReportRevenueExportUseCaseMock
 }
 
 func NewMockedApp() *AppMocked {
 	a := &AppMocked{
-		GetBalanceUseCaseMock:         &GetBalanceUseCaseMock{},
-		ReserveUseCaseMock:            &ReserveUseCaseMock{},
-		DepositUseCaseMock:            &DepositUseCaseMock{},
-		TransferUseCaseMock:           &TransferUseCaseMock{},
-		ReserveCancelUseCaseMock:      &ReserveCancelUseCaseMock{},
-		ReserveConfirmUseCaseMock:     &ReserveConfirmUseCaseMock{},
-		AuthSigninUseCaseMock:         &AuthSigninUseCaseMock{},
-		AuthSignupUseCaseMock:         &AuthSignupUseCaseMock{},
-		AuthValidateTokenUseCaseMock:  &AuthValidateTokenUseCaseMock{},
-		ReportTransactionsUseCaseMock: &ReportTransactionsUseCaseMock{},
-		ReportRevenueUseCaseMock:      &ReportRevenueUseCaseMock{},
+		GetBalanceUseCaseMock:          &GetBalanceUseCaseMock{},
+		ReserveUseCaseMock:             &ReserveUseCaseMock{},
+		DepositUseCaseMock:             &DepositUseCaseMock{},
+		TransferUseCaseMock:            &TransferUseCaseMock{},
+		ReserveCancelUseCaseMock:       &ReserveCancelUseCaseMock{},
+		ReserveConfirmUseCaseMock:      &ReserveConfirmUseCaseMock{},
+		AuthSigninUseCaseMock:          &AuthSigninUseCaseMock{},
+		AuthSignupUseCaseMock:          &AuthSignupUseCaseMock{},
+		AuthValidateTokenUseCaseMock:   &AuthValidateTokenUseCaseMock{},
+		ReportTransactionsUseCaseMock:  &ReportTransactionsUseCaseMock{},
+		ReportRevenueUseCaseMock:       &ReportRevenueUseCaseMock{},
+		ReportRevenueExportUseCaseMock: &ReportRevenueExportUseCaseMock{},
 	}
 
 	a.Application.GetBalance = a.GetBalanceUseCaseMock
@@ -62,7 +65,7 @@ func NewMockedApp() *AppMocked {
 	a.Application.AuthSignin = a.AuthSigninUseCaseMock
 	a.Application.AuthSignup = a.AuthSignupUseCaseMock
 	a.Application.AuthValidateToken = a.AuthValidateTokenUseCaseMock
-
+	a.Application.ReportRevenueExport = a.ReportRevenueExportUseCaseMock
 	return a
 }
 
@@ -212,4 +215,17 @@ func (m *ReportRevenueUseCaseMock) Handle(ctx context.Context, in report_revenue
 
 func (m *ReportRevenueUseCaseMock) GetName() string {
 	return use_cases.NameReportRevenue
+}
+
+type ReportRevenueExportUseCaseMock struct {
+	mock.Mock
+}
+
+func (m *ReportRevenueExportUseCaseMock) Handle(ctx context.Context, in report_revenue_export.In) (report_revenue_export.Out, error) {
+	args := m.Called(ctx, in)
+	return args.Get(0).(report_revenue_export.Out), args.Error(1)
+}
+
+func (m *ReportRevenueExportUseCaseMock) GetName() string {
+	return use_cases.NameReportRevenueExport
 }

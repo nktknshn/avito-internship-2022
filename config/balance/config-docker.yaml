@@ -10,6 +10,13 @@ postgres:
   return_utc: true
   migrations_dir: ./internal/balance/migrations/postgres
 
+use_cases:
+  report_revenue_export:
+    folder: /tmp
+    ttl: 1h
+    url: /data/report_revenue_export/
+    zip: true
+    
 jwt:
   secret: "secret_key"
   ttl: 1h

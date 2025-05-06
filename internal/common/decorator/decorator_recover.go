@@ -2,7 +2,8 @@ package decorator
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/nktknshn/avito-internship-2022/internal/common/errors"
 )
 
 type RecorverHandler = func(ctx context.Context, err error) (errRecovered error)
@@ -12,35 +13,10 @@ type Decorator1Recover[T any, R any] struct {
 	recoverHandler RecorverHandler
 }
 
-type ErrPanic struct {
-	Arg any
-	err error
-}
-
-func NewErrPanic(arg any) *ErrPanic {
-	if e, ok := arg.(error); ok {
-		return &ErrPanic{Arg: arg, err: e}
-	}
-	return &ErrPanic{Arg: arg}
-}
-
-func (p *ErrPanic) Error() string {
-	switch e := p.Arg.(type) {
-	case error:
-		return fmt.Sprintf("panic: %v", e.Error())
-	default:
-		return fmt.Sprintf("panic: %v", e)
-	}
-}
-
-func (p *ErrPanic) Unwrap() error {
-	return p.err
-}
-
 func (d *Decorator1Recover[T, R]) Handle(ctx context.Context, in T) (out R, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			err = d.recoverHandler(ctx, NewErrPanic(r))
+			err = d.recoverHandler(ctx, errors.NewErrPanic(r))
 		}
 	}()
 	return d.base.Handle(ctx, in)
@@ -62,7 +38,7 @@ type Decorator0Recover[T any] struct {
 func (d *Decorator0Recover[T]) Handle(ctx context.Context, in T) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			err = d.recoverHandler(ctx, NewErrPanic(r))
+			err = d.recoverHandler(ctx, errors.NewErrPanic(r))
 		}
 	}()
 	return d.base.Handle(ctx, in)

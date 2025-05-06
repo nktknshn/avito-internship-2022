@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 	"github.com/nktknshn/avito-internship-2022/internal/common/metrics"
 )
 
@@ -18,6 +19,9 @@ func (d *Decorator0Metrics[T]) Handle(ctx context.Context, in T) (err error) {
 		status := metrics.StatusSuccess
 		if err != nil {
 			status = metrics.StatusError
+		}
+		if commonErrors.IsErrPanic(err) {
+			status = metrics.StatusPanic
 		}
 		d.metrics.IncHits(status, d.base.GetName())
 		d.metrics.ObserveResponseTime(status, d.base.GetName(), time.Since(started).Seconds())

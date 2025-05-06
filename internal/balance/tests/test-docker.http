@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDYyODk5MDAsImlhdCI6MTc0NjI4NjMwMCwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.UiGAPhNYGewyKDZsr-CaRoO3t6fyrrDHOxX0EWFCysI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDY1NjE4NjIsImlhdCI6MTc0NjU1ODI2MiwiRGF0YSI6eyJBdXRoVXNlcklEIjoxLCJBdXRoVXNlclJvbGUiOiJhZG1pbiJ9fQ.GP3sDRRAo-AzsVfSgNCLG-b2h3MT8bOnB_2yQo7jH60
 
 ###
 
@@ -82,5 +82,19 @@ Authorization: Bearer {{token}}
 
 ###
 
+GET http://localhost:5050/api/v1/report/revenue/export?year=2025&month=5
+Authorization: Bearer {{token}}
+
+###
+
 GET http://localhost:5050/api/v1/report/revenue
 Authorization: Bearer {{token}}
+
+
+### 
+
+GET http://localhost:5050/data/report_revenue_export/35554a59-c801-4db2-96ee-f1f82b30003b_revenue_report_2025-05-05_14-12-12.csv
+
+
+###
+GET http://localhost:5050/data/report_revenue_export/96212492-5cc6-4991-b8e0-a9452f2f264c_revenue_report_2025-05-06_19-07-50.csv.zip

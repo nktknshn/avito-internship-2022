@@ -1,15 +1,11 @@
 package logging
 
-import (
-	"context"
-)
-
 type Logger interface {
-	InitLogger(ctx context.Context, args ...interface{})
+	InitLogger(args ...interface{})
 	GetLogger() any
-	Debug(ctx context.Context, msg string, args ...interface{})
-	Info(ctx context.Context, msg string, args ...interface{})
-	Warn(ctx context.Context, msg string, args ...interface{})
-	Error(ctx context.Context, msg string, args ...interface{})
-	Fatal(ctx context.Context, msg string, args ...interface{})
+	Debug(msg string, args ...interface{})
+	Info(msg string, args ...interface{})
+	Warn(msg string, args ...interface{})
+	Error(msg string, args ...interface{})
+	Fatal(msg string, args ...interface{})
 }

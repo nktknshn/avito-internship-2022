@@ -17,6 +17,15 @@ type UseCase1Handler[T any, R any] interface {
 	GetName() string
 }
 
+type recoverHandler struct {
+	logger logging.Logger
+}
+
+func (h recoverHandler) Handle(ctx context.Context, err error) (errRecovered error) {
+	h.logger.Error("panic recovered", "error", err)
+	return err
+}
+
 func Decorate0[T any](
 	base UseCase0Handler[T],
 	metrics metrics.Metrics,
@@ -24,7 +33,10 @@ func Decorate0[T any](
 ) UseCase0Handler[T] {
 	return &Decorator0Logging[T]{
 		base: &Decorator0Metrics[T]{
-			base:    base,
+			base: &Decorator0Recover[T]{
+				base:           base,
+				recoverHandler: recoverHandler{logger}.Handle,
+			},
 			metrics: metrics,
 		},
 		logger: logger,
@@ -38,7 +50,10 @@ func Decorate1[T any, R any](
 ) UseCase1Handler[T, R] {
 	return &Decorator1Logging[T, R]{
 		base: &Decorator1Metrics[T, R]{
-			base:    base,
+			base: &Decorator1Recover[T, R]{
+				base:           base,
+				recoverHandler: recoverHandler{logger}.Handle,
+			},
 			metrics: metrics,
 		},
 		logger: logger,

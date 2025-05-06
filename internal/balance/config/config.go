@@ -8,6 +8,7 @@ type Config struct {
 	JWT      *ConfigJWT      `yaml:"jwt" env-required:"true"`
 	GRPC     *ConfigGRPC     `yaml:"grpc" env-required:"true"`
 	Mode     string          `yaml:"mode" env-required:"true"`
+	UseCases *ConfigUseCases `yaml:"use_cases" env-required:"true"`
 }
 
 func NewConfig() *Config {
@@ -32,6 +33,10 @@ func (c *Config) GetGRPC() *ConfigGRPC {
 
 func (c *Config) GetMode() string {
 	return c.Mode
+}
+
+func (c *Config) GetUseCases() *ConfigUseCases {
+	return c.UseCases
 }
 
 func LoadConfig(path string) (*Config, error) {

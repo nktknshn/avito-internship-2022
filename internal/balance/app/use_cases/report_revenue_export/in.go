@@ -23,5 +23,5 @@ func NewInFromValues(year int, month int) (In, error) {
 }
 
 type Out struct {
-	File []byte
+	URL string
 }

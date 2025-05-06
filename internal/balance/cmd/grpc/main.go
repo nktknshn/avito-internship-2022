@@ -71,7 +71,7 @@ func main() {
 	}
 
 	go func() {
-		app.Logger.Info(ctx, "GRPC server started", "address", listen.Addr().String())
+		app.GetLogger().Info("GRPC server started", "address", listen.Addr().String())
 		err = grpcServer.Serve(listen)
 		if err != nil {
 			panic(err)
@@ -82,7 +82,7 @@ func main() {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 
-	app.Logger.Info(ctx, "GRPC server stopped")
+	app.GetLogger().Info("GRPC server stopped")
 
 	grpcServer.GracefulStop()
 

@@ -80,10 +80,10 @@ func Attach(router commonHttp.RouteAttacher, handlers *adaptersHttp.HttpAdapter)
 		Handler: handlers.ReportRevenue.GetHandler(),
 	})
 
-	// router.Attach(Route{
-	// 	Path:    "/v1/report/revenue/export",
-	// 	Methods: []string{http.MethodGet},
-	// 	Handler: handlers.ReportRevenueExport.GetHandler(),
-	// })
+	router.Attach(Route{
+		Path:    "/v1/report/revenue/export",
+		Methods: []string{http.MethodGet},
+		Handler: handlers.ReportRevenueExport.GetHandler(),
+	})
 
 }

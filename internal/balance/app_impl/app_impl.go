@@ -3,6 +3,7 @@ package app_impl
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/avito-tech/go-transaction-manager/sql"
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
@@ -17,6 +18,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue_export"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
@@ -26,6 +28,7 @@ import (
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
+	"github.com/nktknshn/avito-internship-2022/pkg/file_exporter_http"
 	"github.com/nktknshn/avito-internship-2022/pkg/metrics_prometheus"
 	"github.com/nktknshn/avito-internship-2022/pkg/password_hasher_argon"
 	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
@@ -34,8 +37,47 @@ import (
 
 type Application struct {
 	app.Application
-	MetricsHandler http.Handler
-	Logger         logging.Logger
+	metricsHandler http.Handler
+	logger         logging.Logger
+
+	config                 *config.Config
+	revenueExporterCleanup func()
+	revenueExporterHandler http.Handler
+}
+
+func (a *Application) GetRevenueExporterHandler() http.Handler {
+	return a.revenueExporterHandler
+}
+
+func (a *Application) GetMetricsHandler() http.Handler {
+	return a.metricsHandler
+}
+
+func (a *Application) GetLogger() logging.Logger {
+	return a.logger
+}
+
+func (a *Application) GetRevenueExporterCleanup() func() {
+	return a.revenueExporterCleanup
+}
+
+func (a *Application) GetConfig() *config.Config {
+	return a.config
+}
+
+func (a *Application) RunRevenueExporterCleanup(ctx context.Context) {
+	a.logger.Info("Running revenue exporter cleanup goroutine")
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				a.logger.Info("Revenue exporter cleanup goroutine finished")
+				return
+			case <-time.After(a.config.GetUseCases().GetReportRevenueExport().GetTTL()):
+				a.revenueExporterCleanup()
+			}
+		}
+	}()
 }
 
 // NewApplication создает новую реализацию приложения для использования в адаптерах
@@ -53,6 +95,14 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 
 	trmFactory := trmsqlx.NewFactory(db, sql.NewSavePoint())
 	trm, err := manager.New(trmFactory)
+	if err != nil {
+		return nil, err
+	}
+
+	// logs & metrics
+	logger := logging.NewSlog()
+	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app_balance")
+
 	if err != nil {
 		return nil, err
 	}
@@ -76,28 +126,41 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 		authValidateToken = auth_validate_token.New(trm, tokenValidator, authRepository)
 	)
 
+	exporter, err := file_exporter_http.New(
+		file_exporter_http.Config{
+			Folder: cfg.GetUseCases().GetReportRevenueExport().GetFolder(),
+			TTL:    cfg.GetUseCases().GetReportRevenueExport().GetTTL(),
+			URL:    cfg.GetUseCases().GetReportRevenueExport().GetURL(),
+			Zip:    cfg.GetUseCases().GetReportRevenueExport().GetZip(),
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	exporterCleanup := func() {
+		err := exporter.Cleanup()
+		if err != nil {
+			logger.Error("exporter.Cleanup()", "error", err)
+		}
+	}
+
 	// balance
 	var (
 		accountsRepository     = accounts_pg.New(db, trmsqlx.DefaultCtxGetter)
 		transactionsRepository = transactions_pg.New(db, trmsqlx.DefaultCtxGetter)
 
-		getBalance         = get_balance.New(trm, accountsRepository)
-		deposit            = deposit.New(trm, accountsRepository, transactionsRepository)
-		reserve            = reserve.New(trm, accountsRepository, transactionsRepository)
-		reserveCancel      = reserve_cancel.New(trm, accountsRepository, transactionsRepository)
-		reserveConfirm     = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
-		transfer           = transfer.New(trm, accountsRepository, transactionsRepository)
-		reportTransactions = report_transactions.New(transactionsRepository)
-		reportRevenue      = report_revenue.New(transactionsRepository)
+		getBalance          = get_balance.New(trm, accountsRepository)
+		deposit             = deposit.New(trm, accountsRepository, transactionsRepository)
+		reserve             = reserve.New(trm, accountsRepository, transactionsRepository)
+		reserveCancel       = reserve_cancel.New(trm, accountsRepository, transactionsRepository)
+		reserveConfirm      = reserve_confirm.New(trm, accountsRepository, transactionsRepository)
+		transfer            = transfer.New(trm, accountsRepository, transactionsRepository)
+		reportTransactions  = report_transactions.New(transactionsRepository)
+		reportRevenue       = report_revenue.New(transactionsRepository)
+		reportRevenueExport = report_revenue_export.New(exporter, transactionsRepository)
 	)
-
-	// logs & metrics
-	logger := logging.NewSlog()
-	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app_balance")
-
-	if err != nil {
-		return nil, err
-	}
 
 	return &Application{
 		Application: app.Application{
@@ -106,16 +169,20 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 			AuthSignup:        decorator.Decorate0(authSignup, metricsClient, logger),
 			AuthValidateToken: decorator.Decorate1(authValidateToken, metricsClient, logger),
 			// balance
-			GetBalance:         decorator.Decorate1(getBalance, metricsClient, logger),
-			Deposit:            decorator.Decorate0(deposit, metricsClient, logger),
-			Reserve:            decorator.Decorate0(reserve, metricsClient, logger),
-			ReserveCancel:      decorator.Decorate0(reserveCancel, metricsClient, logger),
-			ReserveConfirm:     decorator.Decorate0(reserveConfirm, metricsClient, logger),
-			Transfer:           decorator.Decorate0(transfer, metricsClient, logger),
-			ReportTransactions: decorator.Decorate1(reportTransactions, metricsClient, logger),
-			ReportRevenue:      decorator.Decorate1(reportRevenue, metricsClient, logger),
+			GetBalance:          decorator.Decorate1(getBalance, metricsClient, logger),
+			Deposit:             decorator.Decorate0(deposit, metricsClient, logger),
+			Reserve:             decorator.Decorate0(reserve, metricsClient, logger),
+			ReserveCancel:       decorator.Decorate0(reserveCancel, metricsClient, logger),
+			ReserveConfirm:      decorator.Decorate0(reserveConfirm, metricsClient, logger),
+			Transfer:            decorator.Decorate0(transfer, metricsClient, logger),
+			ReportTransactions:  decorator.Decorate1(reportTransactions, metricsClient, logger),
+			ReportRevenue:       decorator.Decorate1(reportRevenue, metricsClient, logger),
+			ReportRevenueExport: decorator.Decorate1(reportRevenueExport, metricsClient, logger),
 		},
-		MetricsHandler: metricsClient.GetHandler(),
-		Logger:         logger,
+		config:                 cfg,
+		metricsHandler:         metricsClient.GetHandler(),
+		logger:                 logger,
+		revenueExporterHandler: exporter.GetHandler(),
+		revenueExporterCleanup: exporterCleanup,
 	}, nil
 }

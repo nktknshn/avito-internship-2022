@@ -1,10 +1,8 @@
 TODO
 
 - [ ] pprof
-- [ ] cover panic recovery
 - [ ] additional data for metrics decorator (like adapter name)
 - [ ] revenue export file
-- [.] swagger
 - [ ] transactional outbox
 - [ ] kafka
 - [ ] ctx timeouts
@@ -13,12 +11,17 @@ TODO
 - [ ] error wrapping
 - [ ] метрики
 - [ ] логи
-- [.] графана, прометей
 - [ ] opentracing
 - [ ] graceful shutdown
 - [ ] certs
 - [ ] strip username/password/token from logs
 - [ ] .env
+- [.] swagger
+- [.] графана, прометей
+    - [ ] grafana dashboard config
+    - [ ] http
+    - [ ] grpc
+- [x] use case panic recovery
 - [x] reserve confirm/cancel: productID mismatch
 - [x] reserve: already paid
 - [x] FOR UPDATE
