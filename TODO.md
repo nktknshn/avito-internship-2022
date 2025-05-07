@@ -19,6 +19,8 @@ TODO
 - [ ] loki
     - [ ] retention_period
 - [.] swagger
+- [ ] prometheus
+    - [ ] alerts
 - [.] графана, прометей
     - [ ] grafana dashboard config
     - [ ] http

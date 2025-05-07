@@ -51,6 +51,11 @@ grpc:
     max_connection_age: 10s
     max_connection_age_grace: 10s
 
+jaeger:
+  host: localhost:6831
+  service_name: balance-service
+  log_spans: true
+
 mode: dev
 
 lagging:

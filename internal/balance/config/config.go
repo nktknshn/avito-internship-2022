@@ -14,6 +14,7 @@ type Config struct {
 	Mode     string          `yaml:"mode" env-required:"true"`
 	UseCases *ConfigUseCases `yaml:"use_cases" env-required:"true"`
 	Lagging  *ConfigLagging  `yaml:"lagging" env-required:"true"`
+	Jaeger   *ConfigJaeger   `yaml:"jaeger" env-required:"true"`
 }
 
 func NewConfig() *Config {

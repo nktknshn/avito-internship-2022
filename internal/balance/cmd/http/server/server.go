@@ -116,7 +116,6 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 			"env": "dev",
 		},
 		QuietDownRoutes: []string{
-			// "/",
 			"/ping",
 			"/metrics",
 		},
