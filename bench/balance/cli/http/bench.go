@@ -63,7 +63,7 @@ func (b *Bench) getBalance(ctx context.Context, userID int) {
 	req := b.c2.BalanceAPI.GetBalance(ctx, int32(userID))
 	_, resp, err := req.Execute()
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("getBalance", "error", err, "body", respBody, "userID", userID)
 	}
 }
