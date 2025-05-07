@@ -12,6 +12,7 @@ import (
 func swaggerHandler(cfg *config.Config) http.Handler {
 	handler := httpSwagger.Handler(
 		httpSwagger.PersistAuthorization(true),
+		// httpSwagger.URL("swagger.json"),
 	)
 	return handler
 }

@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/internal/balance/cmd",
+            "program": "${workspaceFolder}/internal/balance/cmd/http",
             "args": [
                 "-cfg_path",
                 "config/balance/config-local.yaml"
