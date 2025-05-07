@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nktknshn/avito-internship-2022-bench/client_http"
+	openapi "github.com/nktknshn/avito-internship-2022-bench/api"
 	"github.com/nktknshn/avito-internship-2022-bench/fixtures"
 	"github.com/nktknshn/avito-internship-2022-bench/logger"
 )
@@ -16,7 +16,7 @@ func orderID() int {
 }
 
 type Bench struct {
-	client *client_http.ClientWithResponses
+	c2 *openapi.APIClient
 }
 
 var delay = 300 * time.Millisecond
@@ -69,23 +69,97 @@ func (b *Bench) worker() {
 }
 
 func (b *Bench) getBalance(ctx context.Context, userID int) {
-	_, err := b.client.GetBalanceWithResponse(ctx, userID, client_http.GetBalanceJSONRequestBody{})
-
+	req := b.c2.BalanceAPI.GetBalance(ctx, int32(userID))
+	_, _, err := req.Execute()
 	if err != nil {
 		logger.GetLogger().Error("getBalance", "error", err)
 	}
 }
 
 func (b *Bench) deposit(ctx context.Context, userID int, amount int) {
+	req := b.c2.DepositAPI.Deposit(ctx)
+	amount32 := int32(amount)
+	userID32 := int32(userID)
 	source := fixtures.RandomDepositSource()
-	_, err := b.client.DepositWithResponse(ctx, client_http.DepositJSONRequestBody{
-		Amount: &amount,
-		UserId: &userID,
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersDepositRequestBody{
+		Amount: &amount32,
 		Source: &source,
+		UserId: &userID32,
 	})
-
+	_, _, err := req.Execute()
 	if err != nil {
 		logger.GetLogger().Error("deposit", "error", err)
+	}
+}
+
+func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+	req := b.c2.ReserveAPI.Reserve(ctx)
+	amount32 := int32(amount)
+	orderID32 := int32(orderID)
+	productID32 := int32(productID)
+	userID32 := int32(userID)
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersReserveRequestBody{
+		Amount:       &amount32,
+		OrderId:      &orderID32,
+		ProductId:    &productID32,
+		ProductTitle: &productTitle,
+		UserId:       &userID32,
+	})
+	_, _, err := req.Execute()
+	if err != nil {
+		logger.GetLogger().Error("reserve", "error", err)
+	}
+}
+
+func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+	req := b.c2.ReserveConfirmAPI.ReserveConfirm(ctx)
+	amount32 := int32(amount)
+	orderID32 := int32(orderID)
+	productID32 := int32(productID)
+	userID32 := int32(userID)
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersReserveConfirmRequestBody{
+		Amount:    &amount32,
+		OrderId:   &orderID32,
+		ProductId: &productID32,
+		UserId:    &userID32,
+	})
+	_, _, err := req.Execute()
+	if err != nil {
+		logger.GetLogger().Error("reserveConfirm", "error", err)
+	}
+}
+
+func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+	req := b.c2.ReserveCancelAPI.ReserveCancel(ctx)
+	amount32 := int32(amount)
+	orderID32 := int32(orderID)
+	productID32 := int32(productID)
+	userID32 := int32(userID)
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersReserveCancelRequestBody{
+		Amount:    &amount32,
+		OrderId:   &orderID32,
+		ProductId: &productID32,
+		UserId:    &userID32,
+	})
+	_, _, err := req.Execute()
+	if err != nil {
+		logger.GetLogger().Error("reserveCancel", "error", err)
+	}
+}
+
+func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amount int) {
+	req := b.c2.TransferAPI.Transfer(ctx)
+	amount32 := int32(amount)
+	fromUserID32 := int32(fromUserID)
+	toUserID32 := int32(toUserID)
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersTransferRequestBody{
+		Amount:     &amount32,
+		FromUserId: &fromUserID32,
+		ToUserId:   &toUserID32,
+	})
+	_, _, err := req.Execute()
+	if err != nil {
+		logger.GetLogger().Error("transfer", "error", err)
 	}
 }
 
@@ -101,56 +175,4 @@ func (b *Bench) scenarioReserveCancel(ctx context.Context, userID int, orderID i
 	b.reserve(ctx, userID, orderID, productID, productTitle, amount)
 	time.Sleep(b.getDelay())
 	b.reserveCancel(ctx, userID, orderID, productID, productTitle, amount)
-}
-
-func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
-	_, err := b.client.ReserveWithResponse(ctx, client_http.ReserveJSONRequestBody{
-		Amount:       &amount,
-		OrderId:      &orderID,
-		ProductId:    &productID,
-		ProductTitle: &productTitle,
-		UserId:       &userID,
-	})
-
-	if err != nil {
-		logger.GetLogger().Error("reserve", "error", err)
-	}
-}
-
-func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
-	_, err := b.client.ReserveConfirmWithResponse(ctx, client_http.ReserveConfirmJSONRequestBody{
-		OrderId:   &orderID,
-		ProductId: &productID,
-		UserId:    &userID,
-		Amount:    &amount,
-	})
-
-	if err != nil {
-		logger.GetLogger().Error("reserveConfirm", "error", err)
-	}
-}
-
-func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
-	_, err := b.client.ReserveCancelWithResponse(ctx, client_http.ReserveCancelJSONRequestBody{
-		OrderId:   &orderID,
-		ProductId: &productID,
-		UserId:    &userID,
-		Amount:    &amount,
-	})
-
-	if err != nil {
-		logger.GetLogger().Error("reserveCancel", "error", err)
-	}
-}
-
-func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amount int) {
-	_, err := b.client.TransferWithResponse(ctx, client_http.TransferJSONRequestBody{
-		Amount:     &amount,
-		FromUserId: &fromUserID,
-		ToUserId:   &toUserID,
-	})
-
-	if err != nil {
-		logger.GetLogger().Error("transfer", "error", err)
-	}
 }

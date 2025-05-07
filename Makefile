@@ -27,5 +27,5 @@ generate-protobuf:
 .PHONY: generate-protobuf
 
 generate-swagger:
-	./scripts/swagger.sh
+	./scripts/swagger.sh && ./scripts/openapi-generate-client.sh
 .PHONY: generate-swagger

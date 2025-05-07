@@ -26,23 +26,14 @@ var cmdBench = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		logger.GetLogger().Info("HTTP benchmark")
 
-		client, err := getClientAuthorized("http://localhost:5050")
+		c2, err := getClientOpenAPIAuthorized("http://localhost:5050")
 		if err != nil {
 			logger.GetLogger().Error("Failed to get client", "error", err)
 			return
 		}
 
-		b := Bench{client}
+		b := Bench{c2}
 		b.Bench(cmd.Context())
-
-		// resp, err := client.GetBalanceWithResponse(context.Background(), 1, client_http.GetBalanceJSONRequestBody{})
-
-		// if err != nil {
-		// 	logger.GetLogger().Error("Failed to get balance", "error", err)
-		// 	return
-		// }
-
-		// logger.GetLogger().Info("Balance", "balance", string(resp.Body))
 
 	},
 }

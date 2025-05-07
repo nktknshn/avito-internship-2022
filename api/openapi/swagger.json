@@ -1,1166 +1,959 @@
 {
-    "components": {
-        "schemas": {
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error": {
-                "properties": {
-                    "error": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody": {
-                "properties": {
-                    "result": {
-                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_get_balance.responseBody"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody": {
-                "properties": {
-                    "result": {
-                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_report_revenue_export.responseBody"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody": {
-                "properties": {
-                    "result": {
-                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_report_revenue.responseBody"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody": {
-                "properties": {
-                    "result": {
-                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_report_transactions.responseBody"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody": {
-                "properties": {
-                    "result": {
-                        "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_signin.responseBody"
-                    }
-                },
-                "type": "object"
-            },
-            "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty": {
-                "properties": {
-                    "result": {
-                        "type": "object"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_deposit.requestBody": {
-                "properties": {
-                    "amount": {
-                        "example": 100,
-                        "type": "integer"
-                    },
-                    "source": {
-                        "example": "credit card",
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "example": 1,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_get_balance.responseBody": {
-                "properties": {
-                    "available": {
-                        "type": "integer"
-                    },
-                    "reserved": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_report_revenue.responseBody": {
-                "properties": {
-                    "records": {
-                        "items": {
-                            "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_report_revenue.responseRecord"
-                        },
-                        "type": "array",
-                        "uniqueItems": false
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_report_revenue.responseRecord": {
-                "properties": {
-                    "product_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "product_title": {
-                        "example": "delivery",
-                        "type": "string"
-                    },
-                    "total_revenue": {
-                        "example": 100,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_report_revenue_export.responseBody": {
-                "properties": {
-                    "url": {
-                        "example": "https://example.com/data/report_revenue_export.csv",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_report_transactions.responseBody": {
-                "properties": {
-                    "cursor": {
-                        "type": "string"
-                    },
-                    "has_more": {
-                        "type": "boolean"
-                    },
-                    "transactions": {
-                        "items": {},
-                        "type": "array",
-                        "uniqueItems": false
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_reserve.requestBody": {
-                "properties": {
-                    "amount": {
-                        "example": 100,
-                        "type": "integer"
-                    },
-                    "order_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "product_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "product_title": {
-                        "example": "delivery",
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "example": 1,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_reserve_cancel.requestBody": {
-                "properties": {
-                    "amount": {
-                        "example": 100,
-                        "type": "integer"
-                    },
-                    "order_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "product_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "user_id": {
-                        "example": 1,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_reserve_confirm.requestBody": {
-                "properties": {
-                    "amount": {
-                        "example": 100,
-                        "type": "integer"
-                    },
-                    "order_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "product_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "user_id": {
-                        "example": 1,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_signin.requestBody": {
-                "properties": {
-                    "password": {
-                        "example": "admin1234",
-                        "type": "string"
-                    },
-                    "username": {
-                        "example": "admin",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_signin.responseBody": {
-                "properties": {
-                    "token": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "internal_balance_adapters_http_handlers_transfer.requestBody": {
-                "properties": {
-                    "amount": {
-                        "example": 100,
-                        "type": "integer"
-                    },
-                    "from_user_id": {
-                        "example": 1,
-                        "type": "integer"
-                    },
-                    "to_user_id": {
-                        "example": 2,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            }
-        },
-        "securitySchemes": {
-            "Bearer": {
-                "description": "Type \"Bearer\" followed by a space and JWT token.",
-                "in": "header",
-                "name": "Authorization",
-                "type": "apiKey"
-            }
-        }
-    },
+    "swagger": "2.0",
     "info": {
-        "contact": {
-            "email": "nikita@kanash.in",
-            "name": "API Support",
-            "url": "https://github.com/nktknshn"
-        },
         "description": "Balance Microservice API",
+        "title": "Balance Microservice API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "https://github.com/nktknshn",
+            "email": "nikita@kanash.in"
+        },
         "license": {
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "termsOfService": "http://swagger.io/terms/",
-        "title": "Balance Microservice API",
         "version": "1.0"
     },
-    "externalDocs": {
-        "description": "OpenAPI",
-        "url": "https://swagger.io/resources/open-api/"
-    },
+    "host": "localhost:5050",
+    "basePath": "/",
     "paths": {
         "/api/v1/balance/deposit": {
             "post": {
-                "description": "Deposit money to account",
-                "operationId": "deposit",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_deposit.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Deposit money",
+                "description": "Deposit money to account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "deposit"
-                ]
+                ],
+                "summary": "Deposit money",
+                "operationId": "deposit",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_deposit.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/balance/reserve": {
             "post": {
-                "description": "Reserve money",
-                "operationId": "reserve",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_reserve.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Reserve",
+                "description": "Reserve money",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "reserve"
-                ]
+                ],
+                "summary": "Reserve",
+                "operationId": "reserve",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_reserve.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/balance/reserve/cancel": {
             "post": {
-                "description": "Cancel money reservation",
-                "operationId": "reserveCancel",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_reserve_cancel.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Reserve cancel",
+                "description": "Cancel money reservation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "reserve_cancel"
-                ]
+                ],
+                "summary": "Reserve cancel",
+                "operationId": "reserveCancel",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_reserve_cancel.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/balance/reserve/confirm": {
             "post": {
-                "description": "Confirm money reservation",
-                "operationId": "reserveConfirm",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_reserve_confirm.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Reserve confirm",
+                "description": "Confirm money reservation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "reserve_confirm"
-                ]
+                ],
+                "summary": "Reserve confirm",
+                "operationId": "reserveConfirm",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_reserve_confirm.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/balance/transfer": {
             "post": {
-                "description": "Transfer money between accounts",
-                "operationId": "transfer",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_transfer.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Transfer",
+                "description": "Transfer money between accounts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "transfer"
-                ]
+                ],
+                "summary": "Transfer",
+                "operationId": "transfer",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_transfer.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/balance/{user_id}": {
             "get": {
-                "description": "Get balance",
-                "operationId": "getBalance",
-                "parameters": [
-                    {
-                        "description": "User ID",
-                        "in": "path",
-                        "name": "user_id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Get balance",
+                "description": "Get balance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "balance"
-                ]
+                ],
+                "summary": "Get balance",
+                "operationId": "getBalance",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/report/revenue": {
             "get": {
-                "description": "Report revenue",
-                "operationId": "reportRevenue",
-                "parameters": [
-                    {
-                        "description": "Year",
-                        "in": "query",
-                        "name": "year",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Month",
-                        "in": "query",
-                        "name": "month",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Report revenue",
+                "description": "Report revenue",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "report_revenue"
-                ]
+                ],
+                "summary": "Report revenue",
+                "operationId": "reportRevenue",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/report/revenue/export": {
             "get": {
-                "description": "Report revenue export",
-                "operationId": "reportRevenueExport",
-                "parameters": [
-                    {
-                        "description": "Year",
-                        "in": "query",
-                        "name": "year",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Month",
-                        "in": "query",
-                        "name": "month",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Report revenue export",
+                "description": "Report revenue export",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "report_revenue_export"
-                ]
+                ],
+                "summary": "Report revenue export",
+                "operationId": "reportRevenueExport",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Year",
+                        "name": "year",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Month",
+                        "name": "month",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/report/transactions/{user_id}": {
             "get": {
-                "description": "Report transactions",
-                "operationId": "reportTransactions",
-                "parameters": [
-                    {
-                        "description": "User ID",
-                        "in": "path",
-                        "name": "user_id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Limit",
-                        "in": "query",
-                        "name": "limit",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Cursor",
-                        "in": "query",
-                        "name": "cursor",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Sorting",
-                        "in": "query",
-                        "name": "sorting",
-                        "required": true,
-                        "schema": {
-                            "enum": [
-                                "updated_at",
-                                "amount"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Sorting Direction",
-                        "in": "query",
-                        "name": "sorting_direction",
-                        "required": true,
-                        "schema": {
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ],
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "403": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "summary": "Report transactions",
+                "description": "Report transactions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "report_transactions"
-                ]
+                ],
+                "summary": "Report transactions",
+                "operationId": "reportTransactions",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cursor",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "updated_at",
+                            "amount"
+                        ],
+                        "type": "string",
+                        "description": "Sorting",
+                        "name": "sorting",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "Sorting Direction",
+                        "name": "sorting_direction",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/signin": {
             "post": {
                 "description": "Sign in",
-                "operationId": "signIn",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/internal_balance_adapters_http_handlers_signin.requestBody"
-                            }
-                        }
-                    },
-                    "description": "Payload",
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
-                "summary": "Sign in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "signin"
-                ]
+                ],
+                "summary": "Sign in",
+                "operationId": "signIn",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_balance_adapters_http_handlers_signin.requestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error"
+                        }
+                    }
+                }
             }
         }
     },
-    "openapi": "3.1.0",
-    "servers": [
-        {
-            "url": ":5050/"
+    "definitions": {
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Error": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_get_balance_responseBody": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/internal_balance_adapters_http_handlers_get_balance.responseBody"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_export_responseBody": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/internal_balance_adapters_http_handlers_report_revenue_export.responseBody"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_revenue_responseBody": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/internal_balance_adapters_http_handlers_report_revenue.responseBody"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_report_transactions_responseBody": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/internal_balance_adapters_http_handlers_report_transactions.responseBody"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.Result-internal_balance_adapters_http_handlers_signin_responseBody": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/internal_balance_adapters_http_handlers_signin.responseBody"
+                }
+            }
+        },
+        "github_com_nktknshn_avito-internship-2022_internal_balance_adapters_http_handlers_handlers_builder.ResultEmpty": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "type": "object"
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_deposit.requestBody": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "source": {
+                    "type": "string",
+                    "example": "credit card"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_get_balance.responseBody": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "integer"
+                },
+                "reserved": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_report_revenue.responseBody": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_balance_adapters_http_handlers_report_revenue.responseRecord"
+                    }
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_report_revenue.responseRecord": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "product_title": {
+                    "type": "string",
+                    "example": "delivery"
+                },
+                "total_revenue": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_report_revenue_export.responseBody": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "example": "https://example.com/data/report_revenue_export.csv"
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_report_transactions.responseBody": {
+            "type": "object",
+            "properties": {
+                "cursor": {
+                    "type": "string"
+                },
+                "has_more": {
+                    "type": "boolean"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {}
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_reserve.requestBody": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "order_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "product_title": {
+                    "type": "string",
+                    "example": "delivery"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_reserve_cancel.requestBody": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "order_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_reserve_confirm.requestBody": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "order_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "product_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_signin.requestBody": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "admin1234"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_signin.responseBody": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_balance_adapters_http_handlers_transfer.requestBody": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "from_user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "to_user_id": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
         }
-    ]
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
+    }
 }

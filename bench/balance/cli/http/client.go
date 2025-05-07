@@ -2,50 +2,58 @@ package http
 
 import (
 	"context"
-	"net/http"
 
-	"github.com/nktknshn/avito-internship-2022-bench/client_http"
-	"github.com/nktknshn/avito-internship-2022-bench/logger"
+	openapi "github.com/nktknshn/avito-internship-2022-bench/api"
 )
 
 var username = "admin"
 var password = "admin1234"
-var host = "http://localhost:5050"
+var host = "localhost"
 
-func getClient(host string) (*client_http.ClientWithResponses, error) {
-	client, err := client_http.NewClientWithResponses(host)
-	if err != nil {
-		return nil, err
+func getConfig(host string) *openapi.Configuration {
+	conf := openapi.NewConfiguration()
+	conf.Servers = openapi.ServerConfigurations{
+		{
+			URL:         host,
+			Description: "No description provided",
+		},
 	}
+	return conf
+}
+
+func getClientOpenAPI(host string) (*openapi.APIClient, error) {
+	conf := getConfig(host)
+	client := openapi.NewAPIClient(conf)
 	return client, nil
 }
 
-func getClientAuthorized(host string) (*client_http.ClientWithResponses, error) {
-	client, err := getClient(host)
+func getClientOpenAPIAuthorized(host string) (*openapi.APIClient, error) {
+	client, err := getClientOpenAPI(host)
+
 	if err != nil {
 		return nil, err
 	}
 
-	respSignIn, err := client.SignInWithResponse(context.Background(), client_http.SignInJSONRequestBody{
+	req := client.SigninAPI.SignIn(context.Background())
+
+	req = req.Payload(openapi.InternalBalanceAdaptersHttpHandlersSigninRequestBody{
 		Username: &username,
 		Password: &password,
 	})
 
-	if err != nil {
-		logger.GetLogger().Error("Failed to sign in", "error", err)
-		return nil, err
-	}
-
-	token := respSignIn.JSON200.Result.Token
-
-	authClient, err := client_http.NewClientWithResponses(host, client_http.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
-		req.Header.Set("Authorization", "Bearer "+*token)
-		return nil
-	}))
-
+	resp, _, err := req.Execute()
 	if err != nil {
 		return nil, err
 	}
+
+	token := resp.Result.Token
+
+	conf := getConfig(host)
+	conf.DefaultHeader = map[string]string{
+		"Authorization": "Bearer " + *token,
+	}
+
+	authClient := openapi.NewAPIClient(conf)
 
 	return authClient, nil
 }

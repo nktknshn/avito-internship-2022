@@ -12,7 +12,7 @@ package http
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host :5050
+// @host localhost:5050
 // @BasePath  /
 
 // @securityDefinitions.apikey Bearer
