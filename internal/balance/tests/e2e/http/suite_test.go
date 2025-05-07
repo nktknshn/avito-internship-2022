@@ -64,21 +64,21 @@ func (s *E2ETestSuite) TestHttpServer() {
 	s.Run("should expose metrics", func() {
 		recorder := httptest.NewRecorder()
 		request := httptest.NewRequest(http.MethodGet, "/metrics", nil)
-		s.server.GetServeMux().ServeHTTP(recorder, request)
+		s.server.GetHandler().ServeHTTP(recorder, request)
 		s.Require().Equal(http.StatusOK, recorder.Code)
 	})
 
 	s.Run("should expose swagger", func() {
 		recorder := httptest.NewRecorder()
 		request := httptest.NewRequest(http.MethodGet, "/swagger/index.html", nil)
-		s.server.GetServeMux().ServeHTTP(recorder, request)
+		s.server.GetHandler().ServeHTTP(recorder, request)
 		s.Require().Equal(http.StatusOK, recorder.Code)
 	})
 
 	s.Run("should expose api", func() {
 		recorder := httptest.NewRecorder()
 		request := httptest.NewRequest(http.MethodGet, "/api/v1/balance/1", nil)
-		s.server.GetServeMux().ServeHTTP(recorder, request)
+		s.server.GetHandler().ServeHTTP(recorder, request)
 		s.Require().Equal(http.StatusUnauthorized, recorder.Code)
 	})
 
@@ -86,7 +86,14 @@ func (s *E2ETestSuite) TestHttpServer() {
 		recorder := httptest.NewRecorder()
 		request := httptest.NewRequest(http.MethodOptions, "/api/v1/balance/1", nil)
 		request.Header.Set("Access-Control-Request-Method", "POST")
-		s.server.GetServeMux().ServeHTTP(recorder, request)
+		s.server.GetHandler().ServeHTTP(recorder, request)
+		s.Require().Equal(http.StatusOK, recorder.Code)
+	})
+
+	s.Run("should handle ping", func() {
+		recorder := httptest.NewRecorder()
+		request := httptest.NewRequest(http.MethodGet, "/ping", nil)
+		s.server.GetHandler().ServeHTTP(recorder, request)
 		s.Require().Equal(http.StatusOK, recorder.Code)
 	})
 }

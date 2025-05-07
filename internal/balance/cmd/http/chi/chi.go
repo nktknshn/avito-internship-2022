@@ -30,3 +30,11 @@ func (r *ChiRouter) Attach(route commonHttp.Route) {
 func (r *ChiRouter) Use(middleware ...func(http.Handler) http.Handler) {
 	r.router.Use(middleware...)
 }
+
+func (r *ChiRouter) GetChi() *chi.Mux {
+	return r.router
+}
+
+func (r *ChiRouter) Handle(path string, handler http.Handler) {
+	r.router.Handle(path, handler)
+}
