@@ -724,4 +724,4 @@ paths:
       tags:
       - signin
 servers:
-- url: localhost:5050/
+- url: :5050/

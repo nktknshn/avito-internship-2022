@@ -65,6 +65,10 @@ func (dt *DockerDatabase) GetRunningPort() (string, error) {
 	return dt.runningDocker.GetPort("5432/tcp"), nil
 }
 
+func (dt *DockerDatabase) GetDockerConfig() DatabaseTestDockerConfig {
+	return dt.dockerConfig
+}
+
 func (dt *DockerDatabase) RunPostgresDocker(ctx context.Context) error {
 
 	pool, err := dockertest.NewPool("")

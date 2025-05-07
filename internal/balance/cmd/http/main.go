@@ -23,7 +23,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cfg, err := config.LoadConfig(flagConfigPath)
+	cfg, err := config.LoadConfigFromFile(flagConfigPath)
 
 	if err != nil {
 		panic(err)

@@ -1,6 +1,10 @@
 package config
 
-import "github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
+import (
+	"io"
+
+	"github.com/nktknshn/avito-internship-2022/pkg/config_cleanenv"
+)
 
 type Config struct {
 	HTTP     *ConfigHTTP     `yaml:"http" env-required:"true"`
@@ -39,8 +43,14 @@ func (c *Config) GetUseCases() *ConfigUseCases {
 	return c.UseCases
 }
 
-func LoadConfig(path string) (*Config, error) {
+func LoadConfigFromFile(path string) (*Config, error) {
 	var cfg Config
 	config_cleanenv.LoadConfig(path, &cfg)
+	return &cfg, nil
+}
+
+func LoadConfigFromReader(reader io.Reader) (*Config, error) {
+	var cfg Config
+	config_cleanenv.ParseYAML(reader, &cfg)
 	return &cfg, nil
 }

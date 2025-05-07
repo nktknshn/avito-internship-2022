@@ -75,6 +75,12 @@ Authorization: Bearer {{token}}
 
 OPTIONS http://localhost:5050/api/v1/balance/deposit
 
+
+###
+
+OPTIONS http://localhost:8080/api/v1/balance/deposit
+Access-Control-Request-Method: POST
+
 ###
 
 GET http://localhost:5050/api/v1/report/revenue?year=2025&month=5

@@ -93,9 +93,12 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 		return nil, err
 	}
 
-	err = sqlx_pg.Migrate(ctx, db.DB, cfg.GetPostgres().GetMigrationsDir())
-	if err != nil {
-		return nil, err
+	if cfg.GetPostgres().GetMigrationsDir() != "" {
+
+		err = sqlx_pg.Migrate(ctx, db.DB, cfg.GetPostgres().GetMigrationsDir())
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	trmFactory := trmsqlx.NewFactory(db, sql.NewSavePoint())

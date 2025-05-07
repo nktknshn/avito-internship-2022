@@ -53,6 +53,7 @@ func (s *BalanceHttpServer) GetServeMux() *http.ServeMux {
 func (s *BalanceHttpServer) GetLogger() logging.Logger {
 	return s.app.GetLogger()
 }
+
 func (s *BalanceHttpServer) Init(ctx context.Context) error {
 
 	var err error
