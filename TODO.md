@@ -7,22 +7,21 @@ TODO
 - [ ] kafka
 - [ ] http ctx timeouts
 - [ ] ошибка таймаута
-- [ ] bench
 - [ ] panic recovery
 - [ ] error wrapping
 - [ ] метрики
 - [ ] логи
 - [ ] opentracing
-- [ ] graceful shutdown
-- [ ] certs
 - [ ] strip username/password/token from logs
 - [ ] .env
 - [ ] tls
+- [.] bench
 - [.] swagger
 - [.] графана, прометей
     - [ ] grafana dashboard config
     - [ ] http
     - [ ] grpc
+- [x] graceful shutdown
 - [x] use case panic recovery
 - [x] reserve confirm/cancel: productID mismatch
 - [x] reserve: already paid

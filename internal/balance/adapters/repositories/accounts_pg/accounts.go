@@ -160,7 +160,7 @@ func (r *AccountsRepository) update(ctx context.Context, tr trmsqlx.Tr, accDto *
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "AccountsRepository.update.GetContext")
 	}
 
 	return &newDTO, nil

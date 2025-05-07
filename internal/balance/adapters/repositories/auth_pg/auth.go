@@ -74,8 +74,4 @@ func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainA
 	return user, nil
 }
 
-func (r *AuthRepository) GetBlacklist(ctx context.Context) ([]domainAuth.AuthUserToken, error) {
-	return nil, nil
-}
-
 var _ domainAuth.AuthRepository = &AuthRepository{}

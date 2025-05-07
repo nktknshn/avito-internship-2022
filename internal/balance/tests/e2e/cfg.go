@@ -1,6 +1,6 @@
-package http_test
+package e2e
 
-var cfg = `
+var Cfg = `
 postgres:
   addr: postgres:5432
   user_name: balance

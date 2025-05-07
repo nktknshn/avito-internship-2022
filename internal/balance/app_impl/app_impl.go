@@ -94,7 +94,6 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 	}
 
 	if cfg.GetPostgres().GetMigrationsDir() != "" {
-
 		err = sqlx_pg.Migrate(ctx, db.DB, cfg.GetPostgres().GetMigrationsDir())
 		if err != nil {
 			return nil, err
@@ -110,7 +109,6 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 	// logs & metrics
 	logger := logging.NewSlog()
 	metricsClient, err := metrics_prometheus.NewMetricsPrometheus("app_balance")
-
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"io"
 	"math/rand/v2"
 	"sync"
 	"time"
@@ -37,25 +38,6 @@ func (b *Bench) Bench(ctx context.Context) {
 	wg.Wait()
 }
 
-func (b *Bench) randomScenario(ctx context.Context, userID int) {
-	orderID := orderID()
-	product := fixtures.RandomProduct()
-	amount := rand.IntN(1000)
-
-	switch rand.IntN(5) {
-	case 0:
-		b.scenarioReserveSuccess(ctx, userID, orderID, product.ID, product.Title, amount)
-	case 1:
-		b.scenarioReserveCancel(ctx, userID, orderID, product.ID, product.Title, amount)
-	case 2:
-		b.deposit(ctx, userID, amount)
-	case 3:
-		b.getBalance(ctx, userID)
-	case 4:
-		b.transfer(ctx, userID, rand.IntN(1000), amount)
-	}
-}
-
 func (b *Bench) getDelay() time.Duration {
 	return time.Duration(rand.IntN(100)) * time.Millisecond
 }
@@ -70,9 +52,10 @@ func (b *Bench) worker() {
 
 func (b *Bench) getBalance(ctx context.Context, userID int) {
 	req := b.c2.BalanceAPI.GetBalance(ctx, int32(userID))
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
 	if err != nil {
-		logger.GetLogger().Error("getBalance", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("getBalance", "error", err, "body", respBody, "userID", userID)
 	}
 }
 
@@ -86,9 +69,10 @@ func (b *Bench) deposit(ctx context.Context, userID int, amount int) {
 		Source: &source,
 		UserId: &userID32,
 	})
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
 	if err != nil {
-		logger.GetLogger().Error("deposit", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("deposit", "error", err, "body", respBody, "userID", userID, "amount", amount, "source", source)
 	}
 }
 
@@ -105,9 +89,10 @@ func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID 
 		ProductTitle: &productTitle,
 		UserId:       &userID32,
 	})
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
 	if err != nil {
-		logger.GetLogger().Error("reserve", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("reserve", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
 
@@ -123,9 +108,11 @@ func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, pro
 		ProductId: &productID32,
 		UserId:    &userID32,
 	})
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
+
 	if err != nil {
-		logger.GetLogger().Error("reserveConfirm", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("reserveConfirm", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
 
@@ -141,9 +128,10 @@ func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, prod
 		ProductId: &productID32,
 		UserId:    &userID32,
 	})
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
 	if err != nil {
-		logger.GetLogger().Error("reserveCancel", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("reserveCancel", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
 
@@ -157,9 +145,29 @@ func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amou
 		FromUserId: &fromUserID32,
 		ToUserId:   &toUserID32,
 	})
-	_, _, err := req.Execute()
+	_, resp, err := req.Execute()
 	if err != nil {
-		logger.GetLogger().Error("transfer", "error", err)
+		respBody, _ := io.ReadAll(resp.Body)
+		logger.GetLogger().Error("transfer", "error", err, "body", respBody, "fromUserID", fromUserID, "toUserID", toUserID, "amount", amount)
+	}
+}
+
+func (b *Bench) randomScenario(ctx context.Context, userID int) {
+	orderID := orderID()
+	product := fixtures.RandomProduct()
+	amount := rand.IntN(1000)
+
+	switch rand.IntN(5) {
+	case 0:
+		b.scenarioReserveSuccess(ctx, userID, orderID, product.ID, product.Title, amount)
+	case 1:
+		b.scenarioReserveCancel(ctx, userID, orderID, product.ID, product.Title, amount)
+	case 2:
+		b.deposit(ctx, userID, amount)
+	case 3:
+		b.getBalance(ctx, userID)
+	case 4:
+		b.transfer(ctx, userID, rand.IntN(1000), amount)
 	}
 }
 

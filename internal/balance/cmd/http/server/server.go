@@ -20,6 +20,10 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 )
 
+var (
+	maxHeaderBytes = 1 << 20
+)
+
 type BalanceHttpServer struct {
 	server    *http.Server
 	serveMux  *http.ServeMux
@@ -29,6 +33,11 @@ type BalanceHttpServer struct {
 }
 
 func NewHttpServer(cfg *config.Config) *BalanceHttpServer {
+
+	if cfg == nil {
+		panic("cfg is nil")
+	}
+
 	return &BalanceHttpServer{
 		cfg: cfg,
 	}
@@ -117,10 +126,11 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 	logger.Info("Starting server on", "addr", s.cfg.GetHTTP().GetAddr())
 
 	s.server = &http.Server{
-		Addr:         s.cfg.GetHTTP().GetAddr(),
-		Handler:      http.TimeoutHandler(s.serveMux, s.cfg.GetHTTP().GetHandlerTimeout(), "Timeout"),
-		ReadTimeout:  s.cfg.GetHTTP().GetReadTimeout(),
-		WriteTimeout: s.cfg.GetHTTP().GetWriteTimeout(),
+		Addr:           s.cfg.GetHTTP().GetAddr(),
+		Handler:        http.TimeoutHandler(s.serveMux, s.cfg.GetHTTP().GetHandlerTimeout(), "Timeout"),
+		ReadTimeout:    s.cfg.GetHTTP().GetReadTimeout(),
+		WriteTimeout:   s.cfg.GetHTTP().GetWriteTimeout(),
+		MaxHeaderBytes: maxHeaderBytes,
 	}
 
 	if s.cfg.GetHTTP().GetTLS().GetEnabled() {
@@ -131,29 +141,31 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 }
 
 func (s *BalanceHttpServer) Run(ctx context.Context) error {
+	s.app.RunRevenueExporterCleanup(ctx)
+	go s.runHTTPServer()
+	return nil
+}
+
+func (s *BalanceHttpServer) runHTTPServer() {
 	logger := s.app.GetLogger()
 
-	s.app.RunRevenueExporterCleanup(ctx)
+	var err error
 
-	go func() {
-		var err error
-		if s.cfg.GetHTTP().GetTLS().GetEnabled() {
-			logger.Info("Starting server with TLS", "cert_file", s.cfg.GetHTTP().GetTLS().GetCertFile(), "key_file", s.cfg.GetHTTP().GetTLS().GetKeyFile())
+	if s.cfg.GetHTTP().GetTLS().GetEnabled() {
+		logger.Info("Starting server with TLS", "cert_file", s.cfg.GetHTTP().GetTLS().GetCertFile(), "key_file", s.cfg.GetHTTP().GetTLS().GetKeyFile())
 
-			err = s.server.ListenAndServeTLS(
-				s.cfg.GetHTTP().GetTLS().GetCertFile(),
-				s.cfg.GetHTTP().GetTLS().GetKeyFile(),
-			)
-		} else {
-			err = s.server.ListenAndServe()
-		}
+		err = s.server.ListenAndServeTLS(
+			s.cfg.GetHTTP().GetTLS().GetCertFile(),
+			s.cfg.GetHTTP().GetTLS().GetKeyFile(),
+		)
+	} else {
+		err = s.server.ListenAndServe()
+	}
 
-		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Error("Failed to start server", "error", err)
-		}
-	}()
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		logger.Error("Failed to start server", "error", err)
+	}
 
-	return nil
 }
 
 func (s *BalanceHttpServer) Shutdown(ctx context.Context) error {

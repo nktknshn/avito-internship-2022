@@ -9,6 +9,7 @@ import (
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/e2e"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 	"github.com/stretchr/testify/suite"
@@ -36,7 +37,7 @@ func (s *E2ETestSuite) TearDownSubTest() {
 
 func (s *E2ETestSuite) SetupTest() {
 
-	cfg, err := config.LoadConfigFromReader(strings.NewReader(cfg))
+	cfg, err := config.LoadConfigFromReader(strings.NewReader(e2e.Cfg))
 	s.Require().NoError(err)
 
 	port, err := s.DT.GetRunningPort()
