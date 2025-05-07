@@ -5,7 +5,8 @@ TODO
 - [ ] revenue export file
 - [ ] transactional outbox
 - [ ] kafka
-- [ ] ctx timeouts
+- [ ] http ctx timeouts
+- [ ] ошибка таймаута
 - [ ] bench
 - [ ] panic recovery
 - [ ] error wrapping
@@ -16,6 +17,7 @@ TODO
 - [ ] certs
 - [ ] strip username/password/token from logs
 - [ ] .env
+- [ ] tls
 - [.] swagger
 - [.] графана, прометей
     - [ ] grafana dashboard config

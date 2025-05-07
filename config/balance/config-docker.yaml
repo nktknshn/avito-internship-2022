@@ -12,26 +12,33 @@ postgres:
 
 use_cases:
   report_revenue_export:
-    folder: /tmp
+    folder: /tmp/report_revenue_export
     ttl: 1h
     url: /data/report_revenue_export/
     zip: true
     
 jwt:
   secret: "secret_key"
-  ttl: 1h
+  ttl: 24h
 
 http:
   addr: 0.0.0.0:8080
   api_prefix: /api
   handler_timeout: 10s
+  read_timeout: 10s
+  write_timeout: 10s
   swagger:
     enabled: true
     path: /swagger
   cors:
     allowed_origins:
       - "*"
-      
+  tls:
+    enabled: true
+    cert_file: ./certs/cert.pem
+    key_file: ./certs/key.pem
+  
+
 prometheus:
   port: 8081
   path: /metrics

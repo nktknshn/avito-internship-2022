@@ -74,6 +74,7 @@ func (a *Application) RunRevenueExporterCleanup(ctx context.Context) {
 				a.logger.Info("Revenue exporter cleanup goroutine finished")
 				return
 			case <-time.After(a.config.GetUseCases().GetReportRevenueExport().GetTTL()):
+				a.logger.Info("Running revenue exporter cleanup")
 				a.revenueExporterCleanup()
 			}
 		}

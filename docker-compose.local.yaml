@@ -14,26 +14,6 @@ volumes:
 
 services:
 
-  balance-service-http:
-    build:
-      context: ./deployment/docker/balance/http
-      dockerfile: Dockerfile
-    volumes:
-      - ./:/balance
-      - ./config/balance:/config/balance
-      - ./.go-pkg:/go/pkg
-      - ./.go-cache:/go-cache
-    working_dir: /balance
-    ports:
-      - 5050:8080
-    # env_file:
-    #   - .env
-    environment:
-      GOCACHE: /go-cache
-      GOPATH: /go/pkg
-    # depends_on:
-    #   - postgres
-
   postgres:
     # profiles: [donotstart]
     image: postgres
@@ -41,6 +21,8 @@ services:
     environment:
       - POSTGRES_USER=balance
       - POSTGRES_PASSWORD=balance
+      - TZ=UTC
+      - PGTZ=UTC
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
