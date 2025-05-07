@@ -7,3 +7,8 @@ type Hasher interface {
 type HashVerifier interface {
 	Verify(password, hash string) (bool, error)
 }
+
+type HasherVerifier interface {
+	Hasher
+	HashVerifier
+}

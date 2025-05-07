@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"net"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -23,9 +24,11 @@ type BalanceGrpcServer struct {
 }
 
 func NewGrpcServer(cfg *config.Config) *BalanceGrpcServer {
+
 	if cfg == nil {
 		panic("cfg is nil")
 	}
+
 	return &BalanceGrpcServer{
 		cfg: cfg,
 	}
@@ -86,6 +89,10 @@ func (s *BalanceGrpcServer) Init(ctx context.Context) error {
 }
 
 func (s *BalanceGrpcServer) Run(ctx context.Context) error {
+
+	if s.app == nil {
+		return errors.New("Init() must be called before Run()")
+	}
 
 	listen, err := net.Listen("tcp", s.cfg.GRPC.GetAddr())
 	if err != nil {

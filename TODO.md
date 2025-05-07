@@ -27,6 +27,11 @@ TODO
     - [ ] race
     - [ ] check ddd project
     - [ ] parallel tests
+    - [ ] lagging app
+- [ ] grpc
+    - [ ] metrics endpoint
+    - [ ] healthcheck endpoint
+    - [ ] timeouts
 - [x] graceful shutdown
 - [x] use case panic recovery
 - [x] reserve confirm/cancel: productID mismatch

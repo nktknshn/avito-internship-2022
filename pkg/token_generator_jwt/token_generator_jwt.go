@@ -94,3 +94,23 @@ func (t *TokenValidatorJWT[T]) ValidateToken(ctx context.Context, token string) 
 
 	return nil, token_generator.ErrInvalidToken
 }
+
+type TokenGeneratorJWTVerifier[T any] struct {
+	TokenGenerator token_generator.TokenGenerator[T]
+	TokenValidator token_generator.TokenValidator[T]
+}
+
+func NewTokenGeneratorJWTVerifier[T any](signKey []byte, tokenTTL time.Duration) *TokenGeneratorJWTVerifier[T] {
+	return &TokenGeneratorJWTVerifier[T]{
+		TokenGenerator: NewTokenGeneratorJWT[T](signKey, tokenTTL),
+		TokenValidator: NewTokenValidatorJWT[T](signKey),
+	}
+}
+
+func (t *TokenGeneratorJWTVerifier[T]) GenerateToken(ctx context.Context, claims T) (string, error) {
+	return t.TokenGenerator.GenerateToken(ctx, claims)
+}
+
+func (t *TokenGeneratorJWTVerifier[T]) ValidateToken(ctx context.Context, token string) (*T, error) {
+	return t.TokenValidator.ValidateToken(ctx, token)
+}

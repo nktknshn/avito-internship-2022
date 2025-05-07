@@ -162,6 +162,11 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 }
 
 func (s *BalanceHttpServer) Run(ctx context.Context) error {
+
+	if s.app == nil {
+		return errors.New("Init() must be called before Run()")
+	}
+
 	s.app.RunRevenueExporterCleanup(ctx)
 	go s.runHTTPServer()
 	return nil

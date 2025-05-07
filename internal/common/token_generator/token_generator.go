@@ -17,3 +17,8 @@ type TokenGenerator[T any] interface {
 type TokenValidator[T any] interface {
 	ValidateToken(ctx context.Context, token string) (*T, error)
 }
+
+type TokenGeneratorVerifier[T any] interface {
+	TokenGenerator[T]
+	TokenValidator[T]
+}
