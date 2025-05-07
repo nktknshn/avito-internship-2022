@@ -11,6 +11,10 @@ volumes:
     driver: local
   balance-service-http-data:
     driver: local
+  promtail-data:
+    driver: local
+  loki-data:
+    driver: local
 
 services:
 
@@ -34,7 +38,8 @@ services:
       GOPATH: /go/pkg
     depends_on:
       - postgres
-
+    labels: { logging: "promtail" }
+    
   postgres:
     # profiles: [donotstart]
     image: postgres
@@ -84,3 +89,18 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     ports:
       - 3000:3000
+
+  loki:
+      image: grafana/loki:3.3.2
+      command: -config.file=/etc/loki/local-config.yaml
+      volumes:
+        - ./deployment/loki:/etc/loki
+
+  promtail:
+    image: grafana/promtail:3.3.2
+    command: -config.file=/etc/promtail/docker-config.yaml
+    volumes:
+      - ./deployment/promtail/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on: [loki]
