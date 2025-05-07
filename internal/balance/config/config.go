@@ -13,6 +13,7 @@ type Config struct {
 	GRPC     *ConfigGRPC     `yaml:"grpc" env-required:"true"`
 	Mode     string          `yaml:"mode" env-required:"true"`
 	UseCases *ConfigUseCases `yaml:"use_cases" env-required:"true"`
+	Lagging  *ConfigLagging  `yaml:"lagging" env-required:"true"`
 }
 
 func NewConfig() *Config {
@@ -41,6 +42,10 @@ func (c *Config) GetMode() string {
 
 func (c *Config) GetUseCases() *ConfigUseCases {
 	return c.UseCases
+}
+
+func (c *Config) GetLagging() *ConfigLagging {
+	return c.Lagging
 }
 
 func LoadConfigFromFile(path string) (*Config, error) {

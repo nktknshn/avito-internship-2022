@@ -131,6 +131,21 @@ func (f *FileExporterHTTP) Cleanup() error {
 	return nil
 }
 
+func (f *FileExporterHTTP) CleanupWorker(ctx context.Context) {
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				// logger.Info("File exporter cleanup goroutine finished")
+				return
+			case <-time.After(f.cfg.TTL):
+				// logger.Info("Running file exporter cleanup")
+				f.Cleanup()
+			}
+		}
+	}()
+}
+
 // возвращает HTTP-хэндлер для скачивания файла
 func (f *FileExporterHTTP) GetHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

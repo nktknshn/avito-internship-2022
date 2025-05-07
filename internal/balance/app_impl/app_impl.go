@@ -3,7 +3,6 @@ package app_impl
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
@@ -29,8 +28,7 @@ type Application struct {
 	metricsHandler http.Handler
 	logger         logging.Logger
 
-	config                 *config.Config
-	revenueExporterCleanup func()
+	revenueExporterCleanup func(ctx context.Context)
 	revenueExporterHandler http.Handler
 }
 
@@ -50,24 +48,13 @@ func (a *Application) GetLogger() logging.Logger {
 	return a.logger
 }
 
-func (a *Application) GetRevenueExporterCleanup() func() {
+func (a *Application) GetRevenueExporterCleanup() func(ctx context.Context) {
 	return a.revenueExporterCleanup
 }
 
 func (a *Application) RunRevenueExporterCleanup(ctx context.Context) {
 	a.logger.Info("Running revenue exporter cleanup goroutine")
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				a.logger.Info("Revenue exporter cleanup goroutine finished")
-				return
-			case <-time.After(a.config.GetUseCases().GetReportRevenueExport().GetTTL()):
-				a.logger.Info("Running revenue exporter cleanup")
-				a.revenueExporterCleanup()
-			}
-		}
-	}()
+
 }
 
 func NewApplicationFromDeps(ctx context.Context, deps *AppDeps) (*Application, error) {
@@ -89,11 +76,8 @@ func NewApplicationFromDeps(ctx context.Context, deps *AppDeps) (*Application, e
 		reportRevenueExport = report_revenue_export.New(deps.FileExporter, deps.Repositories.TransactionsRepository)
 	)
 
-	exporterCleanup := func() {
-		err := deps.FileExporter.Cleanup()
-		if err != nil {
-			deps.Logger.Error("exporter.Cleanup()", "error", err)
-		}
+	exporterCleanup := func(ctx context.Context) {
+		deps.FileExporter.CleanupWorker(ctx)
 	}
 
 	return &Application{

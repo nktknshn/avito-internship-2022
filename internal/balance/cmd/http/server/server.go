@@ -14,6 +14,7 @@ import (
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl/lagging"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/chi"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
@@ -67,8 +68,22 @@ func (s *BalanceHttpServer) GetLogger() logging.Logger {
 func (s *BalanceHttpServer) Init(ctx context.Context) error {
 
 	var err error
+	var deps *app_impl.AppDeps
 
-	s.app, err = app_impl.NewApplication(ctx, s.cfg)
+	if s.cfg.GetLagging().GetEnabled() {
+		deps, err = lagging.NewLaggingDeps(ctx, s.cfg)
+		if err != nil {
+			return err
+		}
+	} else {
+		deps, err = app_impl.NewDeps(ctx, s.cfg)
+		if err != nil {
+			return err
+		}
+	}
+
+	s.app, err = app_impl.NewApplicationFromDeps(ctx, deps)
+
 	if err != nil {
 		return err
 	}

@@ -55,4 +55,8 @@ grpc:
     max_connection_age_grace: 10s
 
 mode: dev
+
+lagging:
+  enabled: false
+  
 `

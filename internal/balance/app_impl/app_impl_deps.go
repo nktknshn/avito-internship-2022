@@ -58,7 +58,7 @@ type MetricsWithHandler interface {
 type FileExporterWithHandler interface {
 	file_exporter.FileExporter
 	GetHandler() http.Handler
-	Cleanup() error
+	CleanupWorker(ctx context.Context)
 }
 
 func NewDeps(ctx context.Context, cfg *config.Config) (*AppDeps, error) {
