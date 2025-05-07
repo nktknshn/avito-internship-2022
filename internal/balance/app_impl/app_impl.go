@@ -36,13 +36,17 @@ import (
 )
 
 type Application struct {
-	app.Application
+	app            *app.Application
 	metricsHandler http.Handler
 	logger         logging.Logger
 
 	config                 *config.Config
 	revenueExporterCleanup func()
 	revenueExporterHandler http.Handler
+}
+
+func (a *Application) GetApp() *app.Application {
+	return a.app
 }
 
 func (a *Application) GetRevenueExporterHandler() http.Handler {
@@ -164,7 +168,7 @@ func NewApplication(ctx context.Context, cfg *config.Config) (*Application, erro
 	)
 
 	return &Application{
-		Application: app.Application{
+		app: &app.Application{
 			// auth
 			AuthSignin:        decorator.Decorate1(authSignin, metricsClient, logger),
 			AuthSignup:        decorator.Decorate0(authSignup, metricsClient, logger),

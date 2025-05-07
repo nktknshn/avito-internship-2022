@@ -1,5 +1,6 @@
 package logging
 
+// slog style logger
 type Logger interface {
 	InitLogger(args ...interface{})
 	GetLogger() any

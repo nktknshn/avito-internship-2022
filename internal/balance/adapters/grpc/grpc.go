@@ -24,10 +24,10 @@ import (
 )
 
 type GrpcAdapter struct {
-	app app.Application
+	app *app.Application
 }
 
-func New(application app.Application) *GrpcAdapter {
+func New(application *app.Application) *GrpcAdapter {
 	return &GrpcAdapter{app: application}
 }
 

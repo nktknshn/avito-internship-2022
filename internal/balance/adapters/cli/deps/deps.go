@@ -54,7 +54,7 @@ func GetCliAdapter(ctx context.Context) (*cli.CliAdapter, error) {
 	if err != nil {
 		return nil, err
 	}
-	cliAdapter := cli.NewCliAdapter(&app.Application)
+	cliAdapter := cli.NewCliAdapter(app.GetApp())
 	_cli = cliAdapter
 	return cliAdapter, nil
 }

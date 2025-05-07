@@ -34,7 +34,7 @@ http:
     allowed_origins:
       - "*"
   tls:
-    enabled: true
+    enabled: false
     cert_file: ./certs/cert.pem
     key_file: ./certs/key.pem
   

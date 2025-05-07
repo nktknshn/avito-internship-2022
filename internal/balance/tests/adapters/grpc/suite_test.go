@@ -37,7 +37,7 @@ func (s *GrpcTestSuite) TearDownSubTest() {
 
 func (s *GrpcTestSuite) SetupTest() {
 	s.app = mocked.NewMockedApp()
-	s.grpcAdapter = adaptersGrpc.New(s.app.Application)
+	s.grpcAdapter = adaptersGrpc.New(&s.app.Application)
 	options := []grpc.ServerOption{
 		grpc.UnaryInterceptor(s.grpcAdapter.UnaryServerInterceptor()),
 	}

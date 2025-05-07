@@ -38,7 +38,7 @@ func main() {
 		panic(err)
 	}
 
-	grpcAdapter := adaptersGrpc.New(app.Application)
+	grpcAdapter := adaptersGrpc.New(app.GetApp())
 
 	opts := []grpc.ServerOption{}
 
