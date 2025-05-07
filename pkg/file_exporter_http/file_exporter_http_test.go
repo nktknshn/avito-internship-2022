@@ -1,4 +1,4 @@
-package file_exporter_http_test
+package file_exporter_http
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nktknshn/avito-internship-2022/pkg/file_exporter_http"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,12 +21,12 @@ func TestFileExporterHTTP_ExportFile(t *testing.T) {
 
 	defer os.RemoveAll(dir)
 
-	cfg := file_exporter_http.Config{
+	cfg := Config{
 		Folder: dir,
 		URL:    "",
 	}
 
-	fe, err := file_exporter_http.New(cfg)
+	fe, err := New(cfg)
 	require.NoError(t, err)
 
 	handler := fe.GetHandler()
@@ -54,13 +53,13 @@ func TestFileExporterHTTP_Cleanup(t *testing.T) {
 	require.NoError(t, err)
 	defer os.RemoveAll(dir)
 
-	cfg := file_exporter_http.Config{
+	cfg := Config{
 		Folder: dir,
 		TTL:    time.Millisecond * 200,
 		URL:    "/data/report_revenue_export",
 	}
 
-	fe, err := file_exporter_http.New(cfg)
+	fe, err := New(cfg)
 	require.NoError(t, err)
 
 	filePath, err := fe.ExportFile(context.Background(), "test.txt", strings.NewReader("test"))
@@ -80,4 +79,12 @@ func TestFileExporterHTTP_Cleanup(t *testing.T) {
 
 	_, err = os.Stat(filepath.Join(dir, filepath.Base(filePath2)))
 	require.NoError(t, err)
+}
+
+func TestFileExporterHTTP_ValidateFilePath(t *testing.T) {
+	folder := "/data/report_revenue_export"
+
+	require.True(t, validateFilePath("/data/report_revenue_export/test.txt", folder))
+	require.True(t, validateFilePath("/data/report_revenue_export/abc/../test.txt", folder))
+	require.False(t, validateFilePath("/data/report_revenue_export/../../test.txt", folder))
 }

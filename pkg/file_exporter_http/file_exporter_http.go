@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,32 +22,27 @@ type Config struct {
 	Zip    bool
 }
 
-// записывает файл в локальную файловую систему
-// и предоставляет HTTP-хэндлер для скачивания файла
-// очищает файлы по истечении TTL
-type FileExporterHTTP struct {
-	cfg Config
-}
-
 func newRandomPrefix() string {
 	return uuid.New().String()
 }
 
+type FileExporterHTTP struct {
+	cfg Config
+}
+
+// Создает новый экспортер файлов,
+// который записывает файл в локальную файловую систему
+// и предоставляет HTTP-хэндлер для скачивания файла
+// очищает файлы по истечении TTL
 func New(cfg Config) (*FileExporterHTTP, error) {
 
 	if cfg.Folder == "" {
 		return nil, errors.New("folder is required")
 	}
 
-	// проверяем, существует ли папка
-	folderInfo, err := os.Stat(cfg.Folder)
-
+	err := os.MkdirAll(cfg.Folder, 0755)
 	if err != nil {
-		return nil, errors.New("can't access folder")
-	}
-
-	if !folderInfo.IsDir() {
-		return nil, errors.New("folder is not a directory")
+		return nil, err
 	}
 
 	return &FileExporterHTTP{cfg: cfg}, nil
@@ -60,10 +56,15 @@ func (f *FileExporterHTTP) ExportFile(ctx context.Context, name string, data io.
 	return f.exportFilePlain(ctx, name, data)
 }
 
-func (f *FileExporterHTTP) exportFilePlain(ctx context.Context, name string, data io.Reader) (string, error) {
+func (f *FileExporterHTTP) exportFilePlain(_ context.Context, name string, data io.Reader) (string, error) {
 	prefix := newRandomPrefix()
 	fileName := prefix + "_" + name
-	filePath := filepath.Join(f.cfg.Folder, fileName)
+	filePath := path.Join(f.cfg.Folder, fileName)
+
+	if !validateFilePath(filePath, f.cfg.Folder) {
+		return "", errors.New("invalid file path")
+	}
+
 	file, err := os.Create(filePath)
 	if err != nil {
 		return "", err
@@ -73,14 +74,20 @@ func (f *FileExporterHTTP) exportFilePlain(ctx context.Context, name string, dat
 	if err != nil {
 		return "", err
 	}
-	return f.cfg.URL + "/" + fileName, nil
+
+	return path.Clean(f.cfg.URL + "/" + fileName), nil
 }
 
-func (f *FileExporterHTTP) exportFileZip(ctx context.Context, name string, data io.Reader) (string, error) {
+func (f *FileExporterHTTP) exportFileZip(_ context.Context, name string, data io.Reader) (string, error) {
 	prefix := newRandomPrefix()
 	fileName := prefix + "_" + name
 	zipFileName := fileName + ".zip"
-	zipFilePath := filepath.Join(f.cfg.Folder, zipFileName)
+	zipFilePath := path.Join(f.cfg.Folder, zipFileName)
+
+	if !validateFilePath(zipFilePath, f.cfg.Folder) {
+		return "", errors.New("invalid file path")
+	}
+
 	zipFile, err := os.Create(zipFilePath)
 	if err != nil {
 		return "", err
@@ -99,12 +106,12 @@ func (f *FileExporterHTTP) exportFileZip(ctx context.Context, name string, data 
 		return "", err
 	}
 
-	return f.cfg.URL + "/" + zipFileName, nil
+	return path.Clean(f.cfg.URL + "/" + zipFileName), nil
 }
 
 // Cleanup очищает файлы по истечении TTL
 func (f *FileExporterHTTP) Cleanup() error {
-	files, err := filepath.Glob(filepath.Join(f.cfg.Folder, "*"))
+	files, err := filepath.Glob(path.Join(f.cfg.Folder, "*"))
 	if err != nil {
 		return err
 	}
@@ -130,7 +137,12 @@ func (f *FileExporterHTTP) GetHandler() http.Handler {
 		urlPath := r.URL.Path
 
 		fileName := path.Base(urlPath)
-		urlPath = filepath.Join(f.cfg.Folder, fileName)
+		urlPath = path.Join(f.cfg.Folder, fileName)
+
+		if !validateFilePath(urlPath, f.cfg.Folder) {
+			http.Error(w, "invalid file path", http.StatusBadRequest)
+			return
+		}
 
 		file, err := os.Open(urlPath)
 
@@ -147,7 +159,13 @@ func (f *FileExporterHTTP) GetHandler() http.Handler {
 		defer file.Close()
 
 		w.Header().Set("Content-Type", "application/octet-stream")
-		w.Header().Set("Content-Disposition", "attachment; filename="+filepath.Base(urlPath))
+		w.Header().Set("Content-Disposition", "attachment; filename="+path.Base(urlPath))
 		http.ServeFile(w, r, urlPath)
 	})
+}
+
+// validateFilePath проверяет, является ли путь до файла вложенным в папку folder
+func validateFilePath(filePath string, folder string) bool {
+	cleanPath := path.Clean(filePath)
+	return strings.HasPrefix(cleanPath, folder)
 }
