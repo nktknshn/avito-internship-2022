@@ -68,7 +68,7 @@ func (b *Bench) getBalance(ctx context.Context, userID int) {
 	}
 }
 
-func (b *Bench) deposit(ctx context.Context, userID int, amount int) {
+func (b *Bench) deposit(ctx context.Context, userID int, amount int) error {
 	req := b.c2.DepositAPI.Deposit(ctx)
 	amount32 := int32(amount)
 	userID32 := int32(userID)
@@ -82,10 +82,12 @@ func (b *Bench) deposit(ctx context.Context, userID int, amount int) {
 	if err != nil {
 		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("deposit", "error", err, "body", respBody, "userID", userID, "amount", amount, "source", source)
+		return err
 	}
+	return nil
 }
 
-func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) error {
 	req := b.c2.ReserveAPI.Reserve(ctx)
 	amount32 := int32(amount)
 	orderID32 := int32(orderID)
@@ -102,10 +104,12 @@ func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID 
 	if err != nil {
 		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserve", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
+		return err
 	}
+	return nil
 }
 
-func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) error {
 	req := b.c2.ReserveConfirmAPI.ReserveConfirm(ctx)
 	amount32 := int32(amount)
 	orderID32 := int32(orderID)
@@ -123,10 +127,12 @@ func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, pro
 	if err != nil {
 		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserveConfirm", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
+		return err
 	}
+	return nil
 }
 
-func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
+func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) error {
 	req := b.c2.ReserveCancelAPI.ReserveCancel(ctx)
 	amount32 := int32(amount)
 	orderID32 := int32(orderID)
@@ -143,10 +149,12 @@ func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, prod
 	if err != nil {
 		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserveCancel", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
+		return err
 	}
+	return nil
 }
 
-func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amount int) {
+func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amount int) error {
 	req := b.c2.TransferAPI.Transfer(ctx)
 	amount32 := int32(amount)
 	fromUserID32 := int32(fromUserID)
@@ -160,7 +168,9 @@ func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amou
 	if err != nil {
 		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("transfer", "error", err, "body", respBody, "fromUserID", fromUserID, "toUserID", toUserID, "amount", amount)
+		return err
 	}
+	return nil
 }
 
 func (b *Bench) randomScenario(ctx context.Context, userID int) {
@@ -183,15 +193,27 @@ func (b *Bench) randomScenario(ctx context.Context, userID int) {
 }
 
 func (b *Bench) scenarioReserveSuccess(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
-	b.deposit(ctx, userID, amount+10)
-	b.reserve(ctx, userID, orderID, productID, productTitle, amount)
+	if err := b.deposit(ctx, userID, amount+10); err != nil {
+		return
+	}
+	if err := b.reserve(ctx, userID, orderID, productID, productTitle, amount); err != nil {
+		return
+	}
 	time.Sleep(b.getDelay())
-	b.reserveConfirm(ctx, userID, orderID, productID, productTitle, amount)
+	if err := b.reserveConfirm(ctx, userID, orderID, productID, productTitle, amount); err != nil {
+		return
+	}
 }
 
 func (b *Bench) scenarioReserveCancel(ctx context.Context, userID int, orderID int, productID int, productTitle string, amount int) {
-	b.deposit(ctx, userID, amount+10)
-	b.reserve(ctx, userID, orderID, productID, productTitle, amount)
+	if err := b.deposit(ctx, userID, amount+10); err != nil {
+		return
+	}
+	if err := b.reserve(ctx, userID, orderID, productID, productTitle, amount); err != nil {
+		return
+	}
 	time.Sleep(b.getDelay())
-	b.reserveCancel(ctx, userID, orderID, productID, productTitle, amount)
+	if err := b.reserveCancel(ctx, userID, orderID, productID, productTitle, amount); err != nil {
+		return
+	}
 }

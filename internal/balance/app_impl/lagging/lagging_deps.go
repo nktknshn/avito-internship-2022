@@ -3,7 +3,6 @@ package lagging
 import (
 	"context"
 	"math/rand"
-	"time"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
@@ -45,23 +44,37 @@ type laggingAccountsRepository struct {
 
 func (r *laggingAccountsRepository) GetByUserID(ctx context.Context, userID domain.UserID) (*domainAccount.Account, error) {
 
-	if rand.Intn(10) > 5 {
-		time.Sleep(60 * time.Second)
+	// if rand.Intn(10) > 8 {
+	// 	time.Sleep(60 * time.Second)
+	// }
+
+	if rand.Intn(11) > 9 {
+		panic("lagging")
 	}
 
 	return r.repo.GetByUserID(ctx, userID)
 }
 
 func (r *laggingAccountsRepository) GetByAccountID(ctx context.Context, accountID domainAccount.AccountID) (*domainAccount.Account, error) {
-	if rand.Intn(10) > 5 {
-		time.Sleep(60 * time.Second)
+	// if rand.Intn(10) > 8 {
+	// 	time.Sleep(60 * time.Second)
+	// }
+
+	if rand.Intn(11) > 9 {
+		panic("lagging")
 	}
+
 	return r.repo.GetByAccountID(ctx, accountID)
 }
 
 func (r *laggingAccountsRepository) Save(ctx context.Context, account *domainAccount.Account) (*domainAccount.Account, error) {
-	if rand.Intn(10) > 5 {
-		time.Sleep(60 * time.Second)
+	// if rand.Intn(10) > 8 {
+	// 	time.Sleep(60 * time.Second)
+	// }
+
+	if rand.Intn(11) > 9 {
+		panic("lagging")
 	}
+
 	return r.repo.Save(ctx, account)
 }
