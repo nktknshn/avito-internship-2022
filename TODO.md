@@ -16,11 +16,17 @@ TODO
 - [ ] .env
 - [ ] tls
 - [.] bench
+- [ ] loki
+    - [ ] retention_period
 - [.] swagger
 - [.] графана, прометей
     - [ ] grafana dashboard config
     - [ ] http
     - [ ] grpc
+- [ ] tests
+    - [ ] race
+    - [ ] check ddd project
+    - [ ] parallel tests
 - [x] graceful shutdown
 - [x] use case panic recovery
 - [x] reserve confirm/cancel: productID mismatch

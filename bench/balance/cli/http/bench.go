@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"math/rand/v2"
+	"net/http"
 	"sync"
 	"time"
 
@@ -21,6 +22,14 @@ type Bench struct {
 }
 
 var delay = 300 * time.Millisecond
+
+func readBody(resp *http.Response) ([]byte, error) {
+	if resp == nil {
+		return []byte("nil"), nil
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
 
 func (b *Bench) Bench(ctx context.Context) {
 	workresCount := 50
@@ -71,7 +80,7 @@ func (b *Bench) deposit(ctx context.Context, userID int, amount int) {
 	})
 	_, resp, err := req.Execute()
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("deposit", "error", err, "body", respBody, "userID", userID, "amount", amount, "source", source)
 	}
 }
@@ -91,7 +100,7 @@ func (b *Bench) reserve(ctx context.Context, userID int, orderID int, productID 
 	})
 	_, resp, err := req.Execute()
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserve", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
@@ -108,10 +117,11 @@ func (b *Bench) reserveConfirm(ctx context.Context, userID int, orderID int, pro
 		ProductId: &productID32,
 		UserId:    &userID32,
 	})
+
 	_, resp, err := req.Execute()
 
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserveConfirm", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
@@ -129,8 +139,9 @@ func (b *Bench) reserveCancel(ctx context.Context, userID int, orderID int, prod
 		UserId:    &userID32,
 	})
 	_, resp, err := req.Execute()
+
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("reserveCancel", "error", err, "body", respBody, "userID", userID, "orderID", orderID, "productID", productID, "productTitle", productTitle, "amount", amount)
 	}
 }
@@ -147,7 +158,7 @@ func (b *Bench) transfer(ctx context.Context, fromUserID int, toUserID int, amou
 	})
 	_, resp, err := req.Execute()
 	if err != nil {
-		respBody, _ := io.ReadAll(resp.Body)
+		respBody, _ := readBody(resp)
 		logger.GetLogger().Error("transfer", "error", err, "body", respBody, "fromUserID", fromUserID, "toUserID", toUserID, "amount", amount)
 	}
 }

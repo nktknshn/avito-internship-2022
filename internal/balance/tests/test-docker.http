@@ -85,6 +85,9 @@ Access-Control-Request-Method: POST
 
 GET http://localhost:5050/api/v1/report/revenue?year=2025&month=5
 Authorization: Bearer {{token}}
+###
+
+GET http://localhost:5050/ping
 
 ###
 
@@ -99,7 +102,7 @@ Authorization: Bearer {{token}}
 
 ### 
 
-GET http://localhost:5050/data/report_revenue_export/35554a59-c801-4db2-96ee-f1f82b30003b_revenue_report_2025-05-05_14-12-12.csv
+GET http://localhost:5050/data/report_revenue_export/8dd3499c-7925-4a79-b884-c6999c0b7f58_revenue_report_2025-05-07_16-03-39.csv.zip
 
 
 ###

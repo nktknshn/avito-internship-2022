@@ -6,4 +6,4 @@ COPY reflex.conf /
 
 COPY start.sh /
 
-ENTRYPOINT ["reflex", "-c", "/reflex.conf"]
+ENTRYPOINT ["reflex", "-d", "none", "-c", "/reflex.conf"]
