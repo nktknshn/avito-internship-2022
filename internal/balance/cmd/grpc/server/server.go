@@ -23,14 +23,19 @@ type BalanceGrpcServer struct {
 	app        *app_impl.Application
 }
 
-func NewGrpcServer(cfg *config.Config) *BalanceGrpcServer {
+func NewGrpcServer(cfg *config.Config, app *app_impl.Application) *BalanceGrpcServer {
 
 	if cfg == nil {
 		panic("cfg is nil")
 	}
 
+	if app == nil {
+		panic("app is nil")
+	}
+
 	return &BalanceGrpcServer{
 		cfg: cfg,
+		app: app,
 	}
 }
 
@@ -51,13 +56,6 @@ func (s *BalanceGrpcServer) GetLogger() logging.Logger {
 }
 
 func (s *BalanceGrpcServer) Init(ctx context.Context) error {
-
-	var err error
-
-	s.app, err = app_impl.NewApplication(ctx, s.cfg)
-	if err != nil {
-		return err
-	}
 
 	grpcAdapter := adaptersGrpc.New(s.app.GetApp())
 

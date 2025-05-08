@@ -14,11 +14,11 @@ type LaggingDeps struct {
 	deps *app_impl.AppDeps
 }
 
-func NewLaggingDeps(ctx context.Context, cfg *config.Config) (*app_impl.AppDeps, error) {
+func NewLaggingDeps(ctx context.Context, cfg *config.Config) (*app_impl.AppDeps, func(), error) {
 
-	deps, err := app_impl.NewDeps(ctx, cfg)
+	deps, closer, err := app_impl.NewDeps(ctx, cfg)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	return &app_impl.AppDeps{
@@ -35,7 +35,7 @@ func NewLaggingDeps(ctx context.Context, cfg *config.Config) (*app_impl.AppDeps,
 		FileExporter:  deps.FileExporter,
 		MetricsClient: deps.MetricsClient,
 		Logger:        deps.Logger,
-	}, nil
+	}, closer, nil
 }
 
 type laggingAccountsRepository struct {

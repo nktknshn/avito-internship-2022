@@ -105,10 +105,14 @@ func NewApplicationFromDeps(ctx context.Context, deps *AppDeps) (*Application, e
 }
 
 // NewApplication создает новую реализацию приложения для использования в адаптерах
-func NewApplication(ctx context.Context, cfg *config.Config) (*Application, error) {
-	deps, err := NewDeps(ctx, cfg)
+func NewApplication(ctx context.Context, cfg *config.Config) (*Application, func(), error) {
+	deps, closer, err := NewDeps(ctx, cfg)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return NewApplicationFromDeps(ctx, deps)
+	app, err := NewApplicationFromDeps(ctx, deps)
+	if err != nil {
+		return nil, nil, err
+	}
+	return app, closer, nil
 }

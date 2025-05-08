@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/grpc/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/e2e"
@@ -30,6 +31,7 @@ type E2ESuite struct {
 	server     *server.BalanceGrpcServer
 	clientConn *grpc.ClientConn
 	client     balance.BalanceServiceClient
+	cleanup    func()
 }
 
 func (s *E2ESuite) SetupSubTest() {
@@ -54,7 +56,10 @@ func (s *E2ESuite) SetupTest() {
 	cfg.Postgres.Password = s.DT.GetDockerConfig().DockerPassword
 	cfg.Postgres.MigrationsDir = ""
 
-	s.server = server.NewGrpcServer(cfg)
+	app, cleanup, err := app_impl.NewApplication(context.Background(), cfg)
+	s.Require().NoError(err)
+	s.cleanup = cleanup
+	s.server = server.NewGrpcServer(cfg, app)
 
 	s.Require().NoError(s.server.Init(context.Background()))
 	s.Require().NoError(s.server.Run(context.Background()))
@@ -68,6 +73,7 @@ func (s *E2ESuite) SetupTest() {
 
 func (s *E2ESuite) TearDownTest() {
 	s.Require().NoError(s.server.Shutdown(context.Background()))
+	s.cleanup()
 	helpers.CleanTables(&s.TestSuitePg)
 }
 

@@ -58,5 +58,10 @@ mode: dev
 
 lagging:
   enabled: false
+
+jaeger:
+  host: localhost:6831
+  service_name: balance-service
+  log_spans: true
   
 `

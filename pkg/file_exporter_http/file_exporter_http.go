@@ -27,7 +27,8 @@ func newRandomPrefix() string {
 }
 
 type FileExporterHTTP struct {
-	cfg Config
+	cfg  Config
+	stop chan struct{}
 }
 
 // Создает новый экспортер файлов,
@@ -45,7 +46,7 @@ func New(cfg Config) (*FileExporterHTTP, error) {
 		return nil, err
 	}
 
-	return &FileExporterHTTP{cfg: cfg}, nil
+	return &FileExporterHTTP{cfg: cfg, stop: make(chan struct{})}, nil
 }
 
 // ExportFile экспортирует файл в локальную файловую систему и возвращает URL-адрес файла
@@ -109,6 +110,10 @@ func (f *FileExporterHTTP) exportFileZip(_ context.Context, name string, data io
 	return path.Clean(f.cfg.URL + "/" + zipFileName), nil
 }
 
+func (f *FileExporterHTTP) Stop() {
+	close(f.stop)
+}
+
 // Cleanup очищает файлы по истечении TTL
 func (f *FileExporterHTTP) Cleanup() error {
 	files, err := filepath.Glob(path.Join(f.cfg.Folder, "*"))
@@ -135,6 +140,7 @@ func (f *FileExporterHTTP) CleanupWorker(ctx context.Context) {
 	go func() {
 		for {
 			select {
+			case <-f.stop:
 			case <-ctx.Done():
 				// logger.Info("File exporter cleanup goroutine finished")
 				return

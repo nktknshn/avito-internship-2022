@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/e2e"
@@ -24,7 +25,8 @@ func TestE2ETestSuite(t *testing.T) {
 
 type E2ETestSuite struct {
 	testing_pg.TestSuitePg
-	server *server.BalanceHttpServer
+	server  *server.BalanceHttpServer
+	cleanup func()
 }
 
 func (s *E2ETestSuite) SetupSubTest() {
@@ -50,13 +52,18 @@ func (s *E2ETestSuite) SetupTest() {
 	cfg.Postgres.Password = s.DT.GetDockerConfig().DockerPassword
 	cfg.Postgres.MigrationsDir = ""
 
-	s.server = server.NewHttpServer(cfg)
+	app, cleanup, err := app_impl.NewApplication(context.Background(), cfg)
+	s.Require().NoError(err)
+
+	s.cleanup = cleanup
+	s.server = server.NewHttpServer(cfg, app)
 	s.Require().NoError(s.server.Init(context.Background()))
 
 }
 
 func (s *E2ETestSuite) TearDownTest() {
 	s.Require().NoError(s.server.Shutdown(context.Background()))
+	s.cleanup()
 	helpers.CleanTables(&s.TestSuitePg)
 }
 

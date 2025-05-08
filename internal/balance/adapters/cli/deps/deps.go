@@ -24,7 +24,7 @@ func GetApplication(ctx context.Context) (*app_impl.Application, error) {
 	if err != nil {
 		return nil, err
 	}
-	app, err := app_impl.NewApplication(ctx, cfg)
+	app, _, err := app_impl.NewApplication(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}

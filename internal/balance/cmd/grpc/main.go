@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"flag"
+	"log"
 	"os"
 	"os/signal"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/grpc/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 )
@@ -22,18 +24,27 @@ func main() {
 	ctx := context.Background()
 
 	cfg, err := config.LoadConfigFromFile(flagConfigPath)
+
 	if err != nil {
-		panic(err)
+		log.Fatalf("LoadConfig: %v", err)
 	}
 
-	serv := server.NewGrpcServer(cfg)
+	app, cleanup, err := app_impl.NewApplication(ctx, cfg)
+
+	if err != nil {
+		log.Fatalf("NewApplication: %v", err)
+	}
+
+	defer cleanup()
+
+	serv := server.NewGrpcServer(cfg, app)
 
 	if err := serv.Init(ctx); err != nil {
-		panic(err)
+		log.Fatalf("Init: %v", err)
 	}
 
 	if err := serv.Run(ctx); err != nil {
-		panic(err)
+		log.Fatalf("Run: %v", err)
 	}
 
 	quit := make(chan os.Signal, 1)

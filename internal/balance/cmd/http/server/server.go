@@ -14,7 +14,6 @@ import (
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl/lagging"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/chi"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
@@ -34,14 +33,19 @@ type BalanceHttpServer struct {
 	apiRouter  *chi.ChiRouter
 }
 
-func NewHttpServer(cfg *config.Config) *BalanceHttpServer {
+func NewHttpServer(cfg *config.Config, app *app_impl.Application) *BalanceHttpServer {
 
 	if cfg == nil {
 		panic("cfg is nil")
 	}
 
+	if app == nil {
+		panic("app is nil")
+	}
+
 	return &BalanceHttpServer{
 		cfg: cfg,
+		app: app,
 	}
 }
 
@@ -66,27 +70,6 @@ func (s *BalanceHttpServer) GetLogger() logging.Logger {
 }
 
 func (s *BalanceHttpServer) Init(ctx context.Context) error {
-
-	var err error
-	var deps *app_impl.AppDeps
-
-	if s.cfg.GetLagging().GetEnabled() {
-		deps, err = lagging.NewLaggingDeps(ctx, s.cfg)
-		if err != nil {
-			return err
-		}
-	} else {
-		deps, err = app_impl.NewDeps(ctx, s.cfg)
-		if err != nil {
-			return err
-		}
-	}
-
-	s.app, err = app_impl.NewApplicationFromDeps(ctx, deps)
-
-	if err != nil {
-		return err
-	}
 
 	logger := s.app.GetLogger()
 
@@ -137,13 +120,13 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 		adaptersHttp.NewHttpAdapter(s.app.GetApp()),
 	)
 
-	apiPrefix := path.Clean(s.cfg.GetHTTP().GetApiPrefix())
-
 	if s.cfg.GetHTTP().GetSwagger().GetEnabled() {
 		swaggerPath := s.cfg.GetHTTP().GetSwagger().GetPath()
 		logger.Info("Swagger enabled", "path", swaggerPath)
 		rootRouter.GetChi().Mount(swaggerPath, swaggerHandler(s.cfg))
 	}
+
+	apiPrefix := path.Clean(s.cfg.GetHTTP().GetApiPrefix())
 
 	rootRouter.GetChi().Mount(apiPrefix, apiRouter.GetHandler())
 

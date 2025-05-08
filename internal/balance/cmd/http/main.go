@@ -8,13 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl/lagging"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
-	"github.com/opentracing/opentracing-go"
-	jaeger "github.com/uber/jaeger-client-go"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerlog "github.com/uber/jaeger-client-go/log"
-	jaegermetrics "github.com/uber/jaeger-lib/metrics"
 )
 
 var (
@@ -35,46 +32,47 @@ func main() {
 		log.Fatalf("LoadConfig: %v", err)
 	}
 
-	jaegerCfgInstance := jaegercfg.Configuration{
-		ServiceName: cfg.Jaeger.ServiceName,
-		Sampler: &jaegercfg.SamplerConfig{
-			Type:  jaeger.SamplerTypeConst,
-			Param: 1,
-		},
-		Reporter: &jaegercfg.ReporterConfig{
-			LogSpans:           cfg.Jaeger.LogSpans,
-			LocalAgentHostPort: cfg.Jaeger.Host,
-		},
+	var deps *app_impl.AppDeps
+	var cleanup func()
+
+	if cfg.GetLagging().GetEnabled() {
+		deps, cleanup, err = lagging.NewLaggingDeps(ctx, cfg)
+		if err != nil {
+			log.Fatalf("NewLaggingDeps: %v", err)
+		}
+	} else {
+		deps, cleanup, err = app_impl.NewDeps(ctx, cfg)
+		if err != nil {
+			log.Fatalf("NewDeps: %v", err)
+		}
 	}
 
-	tracer, closer, err := jaegerCfgInstance.NewTracer(
-		jaegercfg.Logger(jaegerlog.StdLogger),
-		jaegercfg.Metrics(jaegermetrics.NullFactory),
-	)
+	defer cleanup()
+
+	app, err := app_impl.NewApplicationFromDeps(ctx, deps)
 
 	if err != nil {
-		log.Fatalf("NewTracer: %v", err)
+		log.Fatalf("NewApplicationFromDeps: %v", err)
 	}
 
-	opentracing.SetGlobalTracer(tracer)
-	defer closer.Close()
-	server := server.NewHttpServer(cfg)
+	server := server.NewHttpServer(cfg, app)
 
 	if err := server.Init(ctx); err != nil {
-		panic(err)
+		log.Fatalf("Init: %v", err)
 	}
 
 	err = server.Run(ctx)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Run: %v", err)
 	}
 
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
 	err = server.Shutdown(ctx)
+
 	if err != nil {
-		panic(err)
+		log.Fatalf("Shutdown: %v", err)
 	}
 }

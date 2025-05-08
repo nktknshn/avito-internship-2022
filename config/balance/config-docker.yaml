@@ -59,4 +59,5 @@ jaeger:
 mode: dev
 
 lagging:
-  enabled: true
+  # enabled: true
+  enabled: false

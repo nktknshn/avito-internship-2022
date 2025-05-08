@@ -37,7 +37,6 @@ func (l *LoggerSlog) Error(msg string, args ...interface{}) {
 }
 
 func (l *LoggerSlog) Fatal(msg string, args ...interface{}) {
-
 	l.logger.Error(msg, args...)
 	os.Exit(1)
 }
