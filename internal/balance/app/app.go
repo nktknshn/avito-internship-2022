@@ -13,23 +13,22 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
-	"github.com/nktknshn/avito-internship-2022/internal/common/decorator"
 )
 
 // Application это интерфейс приложения со всеми используемыми в приложении use case
 type Application struct {
 	// Auth
-	AuthSignin        decorator.UseCase1Handler[auth_signin.In, auth_signin.Out]
-	AuthSignup        decorator.UseCase0Handler[auth_signup.In]
-	AuthValidateToken decorator.UseCase1Handler[auth_validate_token.In, auth_validate_token.Out]
+	AuthSignin        UseCase1[auth_signin.In, auth_signin.Out]
+	AuthSignup        UseCase0[auth_signup.In]
+	AuthValidateToken UseCase1[auth_validate_token.In, auth_validate_token.Out]
 	// Balance
-	GetBalance          decorator.UseCase1Handler[get_balance.In, get_balance.Out]
-	Deposit             decorator.UseCase0Handler[deposit.In]
-	Reserve             decorator.UseCase0Handler[reserve.In]
-	ReserveCancel       decorator.UseCase0Handler[reserve_cancel.In]
-	ReserveConfirm      decorator.UseCase0Handler[reserve_confirm.In]
-	Transfer            decorator.UseCase0Handler[transfer.In]
-	ReportTransactions  decorator.UseCase1Handler[report_transactions.In, report_transactions.Out]
-	ReportRevenue       decorator.UseCase1Handler[report_revenue.In, report_revenue.Out]
-	ReportRevenueExport decorator.UseCase1Handler[report_revenue_export.In, report_revenue_export.Out]
+	GetBalance          UseCase1[get_balance.In, get_balance.Out]
+	Deposit             UseCase0[deposit.In]
+	Reserve             UseCase0[reserve.In]
+	ReserveCancel       UseCase0[reserve_cancel.In]
+	ReserveConfirm      UseCase0[reserve_confirm.In]
+	Transfer            UseCase0[transfer.In]
+	ReportTransactions  UseCase1[report_transactions.In, report_transactions.Out]
+	ReportRevenue       UseCase1[report_revenue.In, report_revenue.Out]
+	ReportRevenueExport UseCase1[report_revenue_export.In, report_revenue_export.Out]
 }
