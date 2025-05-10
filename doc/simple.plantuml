@@ -1,0 +1,109 @@
+@startuml
+
+
+' left to right direction
+top to bottom direction 
+hide empty members
+
+
+' "Domain Layer" -[hidden]down- "Application Layer"
+"Application Layer" -[hidden]down- "Adapters Layer"
+' "Adapters Layer" -[hidden]down- "Frameworks And Drivers Layer"
+
+package "Domain Layer" {
+    class Account {}
+    class AccountBalance {}
+    class Amount {}
+    class AmountPositive {}
+
+    class DomainError {}
+
+    class AccountRepository <<interface>> {}
+    class TransactionRepository <<interface>> {}
+
+    class TransactionSpend {}
+    class TransactionDeposit {}
+    class TransactionTransfer {}
+
+    Account *-- AccountBalance
+    AccountBalance *-- Amount
+    AccountBalance ..> AmountPositive
+
+    AccountRepository ..> Account
+
+    TransactionRepository ..> TransactionSpend
+    TransactionRepository ..> TransactionDeposit
+    TransactionRepository ..> TransactionTransfer
+
+    TransactionSpend *-- AmountPositive
+    TransactionDeposit *-- AmountPositive
+    TransactionTransfer *-- AmountPositive
+
+}
+
+package "Application Layer" {
+    class Application {
+        + GetBalance: GetBalanceUseCase
+        + Deposit: DepositUseCase 
+        + Reserve: ReserveUseCase
+        + Transfer: TransferUseCase
+    }
+    class GetBalanceUseCase {}
+    class DepositUseCase {}
+    class ReserveUseCase {}
+    class TransferUseCase {}
+
+    ' DepositUseCase --o Application
+    ' ReserveUseCase --o Application
+    ' GetBalanceUseCase --o Application
+    ' TransferUseCase --o Application
+
+    TransferUseCase ..> AccountRepository
+    DepositUseCase ..> AccountRepository
+    ReserveUseCase ..> AccountRepository
+    GetBalanceUseCase ..> AccountRepository
+
+    TransferUseCase ..> TransactionRepository
+    DepositUseCase ..> TransactionRepository
+    ReserveUseCase ..> TransactionRepository
+}
+
+package "Adapters Layer" {
+    
+    rectangle "Input" {
+        class HttpAdapter {}
+        class GrpcAdapter {}
+    }
+
+    rectangle "Output" {
+        class AccountRepositoryPostgres {}
+        class TransactionRepositoryPostgres {}
+    }
+
+    HttpAdapter ..> Application
+    GrpcAdapter ..> Application
+}
+
+package "Frameworks And Drivers Layer" {
+    class Main {}
+    class Sqlx {}
+    class MetricsPrometheus {}
+    class Slog {}
+    class Chi {}
+
+    Main ..> Application
+    Main ..> Sqlx
+    Main ..> MetricsPrometheus
+    Main ..> Slog
+    Main ..> Chi
+    Main ..> HttpAdapter
+    Main ..> GrpcAdapter
+    Main ..> AccountRepositoryPostgres
+    Main ..> TransactionRepositoryPostgres
+
+    AccountRepositoryPostgres ..|> AccountRepository
+    TransactionRepositoryPostgres ..|> TransactionRepository
+}
+
+@enduml
+

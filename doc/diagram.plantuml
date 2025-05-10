@@ -1,0 +1,215 @@
+@startuml
+' top to bottom direction
+left to right  direction
+hide empty members
+
+package "Domain Layer" {
+    interface AccountRepository <<interface>> {
+        + Save(account: Account): Account
+        + GetByUserID(userID: UserID): Account
+    }
+    class Account <<entity>> {
+        + AccountID: AccountID
+        + UserID: UserID
+        + Balance: AccountBalance
+    }
+    class AccountBalance <<value object>> {
+        - available: Amount
+        - reserved: Amount
+        + Deposit(amount: AmountPositive): AccountBalance
+        + Reserve(amount: AmountPositive): AccountBalance
+        + ReserveCancel(amount: AmountPositive): AccountBalance
+        + ReserveConfirm(amount: AmountPositive): AccountBalance
+    }
+    class Amount <<value object>> {
+        - value: int64
+        + New(value: int64): Amount
+        + Add(amount: AmountPositive): Amount
+        + Sub(amount: AmountPositive): Amount
+    }
+    class AmountPositive <<value object>> {
+        - value: int64
+        + New(value: int64): AmountPositive
+    }
+    interface TransactionRepository <<interface>> {
+        + SaveSpend(transaction: TransactionSpend): TransactionSpend
+        + SaveDeposit(transaction: TransactionDeposit): TransactionDeposit
+        + SaveTransfer(transaction: TransactionTransfer): TransactionTransfer
+        + GetSpendByOrderID(orderID: OrderID, userID: UserID): TransactionSpend
+    }
+    class TransactionSpend <<entity>> {
+        + ID: UUID
+        + OrderID: OrderID
+        + UserID: UserID
+        + Amount: AmountPositive
+        + ProductID: ProductID
+        + Status: TransactionSpendStatus
+    }
+    class TransactionDeposit <<entity>> {
+        + ID: UUID
+        + UserID: UserID
+        + Amount: AmountPositive
+    }
+    class TransactionTransfer <<entity>> {
+        + ID: UUID
+        + FromUserID: UserID
+        + ToUserID: UserID
+        + Amount: AmountPositive
+    }
+    class DomainError
+    class ErrorAccountNotFound
+    class ErrInsufficientAvailableBalance
+    class ErrInsufficientReservedBalance
+    class ErrSameAccount
+}
+
+package "Application Layer" {
+    interface Application <<interface>> {
+        GetBalance: UseCase<GetBalanceIn, GetBalanceOut>
+        Deposit: UseCase<DepositIn>
+        Reserve: UseCase<ReserveIn>
+        ReserveCancel: UseCase<ReserveCancelIn>
+        ReserveConfirm: UseCase<ReserveConfirmIn>
+        Transfer: UseCase0<TransferIn>
+    }
+    interface Logger <<interface>> {
+        Info(message: string)
+        Error(message: string)
+    }
+    class Metrics {
+        IncCounter(status: string, method: string)
+        ObserveResponseTime(status: string, method: string, observeTime: float64)
+    }
+    interface UseCase <<interface>> {
+        Handle(in: In): (Out, error)
+        GetName(): string
+    }
+    class GetBalanceUseCase {    }
+    class DepositUseCase {    }
+    class ReserveUseCase
+    class ReserveCancelUseCase
+    class ReserveConfirmUseCase
+    class TransferUseCase
+    class ApplicationImpl {
+        GetBalance: GetBalanceUseCase
+        Deposit: DepositUseCase
+        Reserve: ReserveUseCase
+        ReserveCancel: ReserveCancelUseCase
+        ReserveConfirm: ReserveConfirmUseCase
+        Transfer: TransferUseCase
+        + GetMetricsHandler(): http.Handler
+        + GetLogger(): Logger
+    }
+}
+
+package "Adapters Layer" {
+    rectangle "Repositories" {
+        class AccountRepositoryPostgres
+        class TransactionRepositoryPostgres
+    }
+
+    rectangle "HTTP" {
+        interface HttpAdapter {
+            GetBalance: HttpHandler
+            Deposit: HttpHandler
+            Reserve: HttpHandler
+            ReserveCancel: HttpHandler
+            ReserveConfirm: HttpHandler
+            Transfer: HttpHandler
+        }
+        
+        class HttpHandler <<interface>> {
+            GetHandler(): http.Handler
+        }
+        
+        class GetBalanceHandler implements HttpHandler {
+        }
+        class DepositHandler implements HttpHandler {
+        }
+        class ReserveHandler implements HttpHandler {
+        }
+        class ReserveCancelHandler implements HttpHandler {
+        }
+        class ReserveConfirmHandler implements HttpHandler {
+        }
+        class TransferHandler implements HttpHandler {
+        }
+    }
+
+    class GrpcAdapter {
+        GetBalance(request: GetBalanceRequest): GetBalanceResponse
+        Deposit(request: DepositRequest): empty.Empty
+        Reserve(request: ReserveRequest): empty.Empty
+        ReserveCancel(request: ReserveCancelRequest): empty.Empty
+        ReserveConfirm(request: ReserveConfirmRequest): empty.Empty
+        Transfer(request: TransferRequest): empty.Empty
+    }
+}
+
+package "Framework And Drivers Layer" {
+    class Main {}
+    class PostgresSqlx
+    class HttpServerChi
+    class MetricsPrometheus
+    class TokenJWT
+    class LoggerSlog
+}
+
+' Relationships
+AccountRepository ..> Account
+Account *-- AccountBalance
+AccountBalance *-- Amount
+AccountBalance ..> AmountPositive
+TransactionRepository ..> TransactionSpend
+TransactionRepository ..> TransactionDeposit
+TransactionRepository ..> TransactionTransfer
+
+DomainError <|-- ErrorAccountNotFound
+DomainError <|-- ErrInsufficientAvailableBalance
+DomainError <|-- ErrInsufficientReservedBalance
+DomainError <|-- ErrSameAccount
+
+UseCase <|.. GetBalanceUseCase
+UseCase <|.. DepositUseCase
+UseCase <|.. ReserveUseCase
+UseCase <|.. ReserveCancelUseCase
+UseCase <|.. ReserveConfirmUseCase
+UseCase <|.. TransferUseCase
+
+GetBalanceUseCase ..> AccountRepository
+
+DepositUseCase ..> AccountRepository
+DepositUseCase ..> TransactionRepository
+
+ReserveUseCase ..> AccountRepository
+ReserveUseCase ..> TransactionRepository
+
+ReserveCancelUseCase ..> AccountRepository
+ReserveCancelUseCase ..> TransactionRepository
+
+ReserveConfirmUseCase ..> AccountRepository
+ReserveConfirmUseCase ..> TransactionRepository
+
+TransferUseCase ..> AccountRepository
+TransferUseCase ..> TransactionRepository
+
+Application <|-- ApplicationImpl
+
+AccountRepositoryPostgres ..> AccountRepository
+TransactionRepositoryPostgres ..> TransactionRepository
+
+HttpAdapter ..> Application
+GrpcAdapter ..> Application
+
+Main ..> PostgresSqlx
+Main ..> HttpServerChi
+Main ..> MetricsPrometheus
+Main ..> TokenJWT
+Main ..> LoggerSlog
+Main ..> ApplicationImpl
+Main ..> AccountRepositoryPostgres
+Main ..> TransactionRepositoryPostgres
+Main ..> GrpcAdapter
+Main ..> HttpAdapter
+
+@enduml
