@@ -59,6 +59,7 @@ package "Domain Layer" {
         + ToUserID: UserID
         + Amount: AmountPositive
     }
+
     class DomainError
     class ErrorAccountNotFound
     class ErrInsufficientAvailableBalance
@@ -73,6 +74,7 @@ package "Domain Layer" {
             + PasswordHash: AuthUserPasswordHash
             + Role: AuthUserRole
         }
+        
         class AuthUserRole <<enumeration>> {
             + Admin
             + Account
@@ -80,7 +82,7 @@ package "Domain Layer" {
             + Nobody
         }
 
-        class AuthRepository <<interface>> {
+        interface AuthRepository <<interface>> {
             + GetUserByUsername(username): AuthUser
             + CreateUser(username, passwordHash, role): AuthUser
         }
@@ -90,18 +92,18 @@ package "Domain Layer" {
     }
 
     AccountRepository ..> Account
-    Account *-- AccountBalance
+    Account *-up- AccountBalance
     AccountBalance *-- Amount
     AccountBalance ..> AmountPositive
     TransactionRepository ..> TransactionSpend
     TransactionRepository ..> TransactionDeposit
     TransactionRepository ..> TransactionTransfer
 
-    DomainError <|-- ErrorAccountNotFound
-    DomainError <|-- ErrInsufficientAvailableBalance
-    DomainError <|-- ErrInsufficientReservedBalance
-    DomainError <|-- ErrSameAccount
-    DomainError <|-- ErrInvalidAmountPositive
+    DomainError <|-up- ErrorAccountNotFound
+    DomainError <|-up- ErrInsufficientAvailableBalance
+    DomainError <|-up- ErrInsufficientReservedBalance
+    DomainError <|-up- ErrSameAccount
+    DomainError <|-up- ErrInvalidAmountPositive
 }
 
 package "Application Layer" {
@@ -111,15 +113,25 @@ package "Application Layer" {
         + Reserve: UseCase<ReserveIn>
         + ReserveCancel: UseCase<ReserveCancelIn>
         + ReserveConfirm: UseCase<ReserveConfirmIn>
-        + Transfer: UseCase0<TransferIn>
+        + Transfer: UseCase<TransferIn>
         + AuthSignIn: UseCase<AuthSignInIn, AuthSignInOut>
         + AuthSignUp: UseCase<AuthSignUpIn>
         + AuthValidateToken: UseCase<AuthValidateTokenIn, AuthValidateTokenOut>
     }
+    
     interface UseCase <<interface>> {
         Handle(in: In): (Out, error)
         GetName(): string
     }
+
+    class UseCaseDecorator {
+        + UseCase: UseCase
+        + Metrics: Metrics
+        + Logger: Logger
+        + Handle(in: In): (Out, error)
+        + GetName(): string
+    }
+
     class GetBalanceUseCase {}
     class DepositUseCase {}
     class ReserveUseCase {}
@@ -150,7 +162,7 @@ package "Application Layer" {
         Error(message: string)
     }
 
-    class Metrics <<interface>> {
+    interface Metrics <<interface>> {
         IncCounter(status, method)
         ObserveResponseTime(status, method, observeTime)
     }
@@ -165,6 +177,16 @@ package "Application Layer" {
     UseCase <|.. AuthSignInUseCase
     UseCase <|.. AuthSignUpUseCase
     UseCase <|.. AuthValidateTokenUseCase
+
+    ' AuthSignInUseCase ..> "Domain Layer"
+    ' AuthSignUpUseCase ..> "Domain Layer"
+    ' AuthValidateTokenUseCase ..> "Domain Layer"
+    ' GetBalanceUseCase ..> "Domain Layer"
+    ' DepositUseCase ..> "Domain Layer"
+    ' ReserveUseCase ..> "Domain Layer"
+    ' ReserveCancelUseCase ..> "Domain Layer"
+    ' ReserveConfirmUseCase ..> "Domain Layer"
+    ' TransferUseCase ..> "Domain Layer"
 
     AuthSignInUseCase ..> AuthRepository
     AuthSignUpUseCase ..> AuthRepository
@@ -188,8 +210,9 @@ package "Application Layer" {
 
     Application ..> UseCase
     Application <|.. ApplicationImpl
-    ApplicationImpl <.. Metrics
-    ApplicationImpl <.. Logger
+    ApplicationImpl ..> Metrics
+    ApplicationImpl ..> Logger
+    ApplicationImpl ..> UseCaseDecorator
 }
 
 package "Adapters Layer" {
@@ -213,9 +236,7 @@ package "Adapters Layer" {
                 ReserveCancel: HttpHandler
                 ReserveConfirm: HttpHandler
                 Transfer: HttpHandler
-
                 AuthSignIn: HttpHandler
-                AuthValidateToken: HttpHandler
             }
             
             class HttpHandler <<interface>> {
@@ -230,19 +251,18 @@ package "Adapters Layer" {
             class TransferHandler implements HttpHandler {}
 
             class AuthSignInHandler implements HttpHandler {}
-            class AuthValidateTokenHandler implements HttpHandler {}
 
-            ' GetBalanceHandler ..> GetBalanceUseCase
-            ' GetBalanceHandler ..> AuthValidateTokenUseCase
+            GetBalanceHandler ..> Application
+            GetBalanceHandler ..> Application
 
-            ' DepositHandler ..> DepositUseCase
-            ' ReserveHandler ..> ReserveUseCase
-            ' ReserveCancelHandler ..> ReserveCancelUseCase
-            ' ReserveConfirmHandler ..> ReserveConfirmUseCase
-            ' TransferHandler ..> TransferUseCase
+            DepositHandler ..> Application
+            ReserveHandler ..> Application
+            ReserveCancelHandler ..> Application
+            ReserveConfirmHandler ..> Application
+            TransferHandler ..> Application
 
-            ' AuthSignInHandler ..> AuthSignInUseCase
-            ' AuthValidateTokenHandler ..> AuthValidateTokenUseCase
+            AuthSignInHandler ..> Application
+            AuthValidateTokenHandler ..> Application
         }
         
         class GrpcAdapter {
@@ -253,8 +273,7 @@ package "Adapters Layer" {
             ReserveConfirm(request: ReserveConfirmRequest): empty.Empty
             Transfer(request: TransferRequest): empty.Empty
             
-            AuthSignInHandler ..> AuthSignInUseCase
-            AuthValidateTokenHandler ..> AuthValidateTokenUseCase
+            AuthSignIn(request: AuthSignInRequest): AuthSignInResponse
         }
 
         class CliAdapter {
@@ -263,7 +282,7 @@ package "Adapters Layer" {
         }
     }
 
-
+    HttpAdapter ..> HttpHandler
     HttpAdapter ..> Application
     GrpcAdapter ..> Application
     CliAdapter ..> Application
@@ -290,6 +309,7 @@ package "Framework And Drivers Layer" {
     Main ..> AuthRepositoryPostgres
     Main ..> GrpcAdapter
     Main ..> HttpAdapter
+    Main ..> CliAdapter
 }
 
 ' Relationships

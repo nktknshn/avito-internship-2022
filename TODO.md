@@ -1,5 +1,6 @@
 TODO
 
+- [ ] select for update
 - [ ] pprof
 - [ ] additional data for metrics decorator (like adapter name)
 - [ ] revenue export file
