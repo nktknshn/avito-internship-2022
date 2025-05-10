@@ -90,12 +90,15 @@ package "Frameworks And Drivers Layer" {
     class MetricsPrometheus {}
     class Slog {}
     class Chi {}
+    class Pgx {}
 
     Main ..> Application
     Main ..> Sqlx
     Main ..> MetricsPrometheus
     Main ..> Slog
     Main ..> Chi
+    Main ..> Pgx
+    
     Main ..> HttpAdapter
     Main ..> GrpcAdapter
     Main ..> AccountRepositoryPostgres
