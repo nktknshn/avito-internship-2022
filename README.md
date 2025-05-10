@@ -148,6 +148,33 @@ func (d *Decorator0Logging[T]) Handle(ctx context.Context, in T) (err error) {
 
 В данном микросервисе реализованы декораторы: логирование, метрики, panic-recover.
 
+Тип, представляющий собой application-слой микросервиса:
+
+```go
+
+// Application это интерфейс приложения со всеми используемыми в приложении use case
+type Application struct {
+	// Auth
+	AuthSignin        UseCase1[auth_signin.In, auth_signin.Out]
+	AuthSignup        UseCase0[auth_signup.In]
+	AuthValidateToken UseCase1[auth_validate_token.In, auth_validate_token.Out]
+	// Balance
+	GetBalance          UseCase1[get_balance.In, get_balance.Out]
+	Deposit             UseCase0[deposit.In]
+	Reserve             UseCase0[reserve.In]
+	ReserveCancel       UseCase0[reserve_cancel.In]
+	ReserveConfirm      UseCase0[reserve_confirm.In]
+	Transfer            UseCase0[transfer.In]
+	ReportTransactions  UseCase1[report_transactions.In, report_transactions.Out]
+	ReportRevenue       UseCase1[report_revenue.In, report_revenue.Out]
+	ReportRevenueExport UseCase1[report_revenue_export.In, report_revenue_export.Out]
+}
+```
+
+Этот тип, хотя и реализуется, как структура, по своей сути является интерфейсом слоя application и не несет конкретных имплементаций сценариев. Этот тип используют input-адаптеры для работы с приложением, за счет чего: а. их проще тестировать, подменяя реализацию на мок (см [internal/balance/tests/mocked/app.go](internal/balance/tests/mocked/app.go)) б. появляется возможность расширять поведение сценариев за счет декораторов.
+
+Реализация этого интерфейса конструируется в [internal/balance/app_impl](internal/balance/app_impl/app_impl.go), где имплементации сценариев инстанциируюися с завимостями и оборачиваются в необходимые декораторы.
+
 ## Запуск
 
 ### Тесты
