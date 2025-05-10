@@ -61,89 +61,206 @@ package "Domain Layer" {
     class ErrInsufficientAvailableBalance
     class ErrInsufficientReservedBalance
     class ErrSameAccount
+    class ErrInvalidAmountPositive
+
+    rectangle "Auth" {
+        class AuthUser <<entity>> {
+            + ID: AuthUserID
+            + Username: AuthUserUsername
+            + PasswordHash: AuthUserPasswordHash
+            + Role: AuthUserRole
+        }
+        class AuthUserRole <<enumeration>> {
+            + Admin
+            + Account
+            + Report
+            + Nobody
+        }
+
+        class AuthRepository <<interface>> {
+            + GetUserByUsername(username): AuthUser
+            + CreateUser(username, passwordHash, role): AuthUser
+        }
+
+        AuthRepository ..> AuthUser
+        AuthUserRole --* AuthUser
+    }
+
+    AccountRepository ..> Account
+    Account *-- AccountBalance
+    AccountBalance *-- Amount
+    AccountBalance ..> AmountPositive
+    TransactionRepository ..> TransactionSpend
+    TransactionRepository ..> TransactionDeposit
+    TransactionRepository ..> TransactionTransfer
+
+    DomainError <|-- ErrorAccountNotFound
+    DomainError <|-- ErrInsufficientAvailableBalance
+    DomainError <|-- ErrInsufficientReservedBalance
+    DomainError <|-- ErrSameAccount
+    DomainError <|-- ErrInvalidAmountPositive
 }
 
 package "Application Layer" {
     interface Application <<interface>> {
-        GetBalance: UseCase<GetBalanceIn, GetBalanceOut>
-        Deposit: UseCase<DepositIn>
-        Reserve: UseCase<ReserveIn>
-        ReserveCancel: UseCase<ReserveCancelIn>
-        ReserveConfirm: UseCase<ReserveConfirmIn>
-        Transfer: UseCase0<TransferIn>
-    }
-    interface Logger <<interface>> {
-        Info(message: string)
-        Error(message: string)
-    }
-    class Metrics {
-        IncCounter(status: string, method: string)
-        ObserveResponseTime(status: string, method: string, observeTime: float64)
+        + GetBalance: UseCase<GetBalanceIn, GetBalanceOut>
+        + Deposit: UseCase<DepositIn>
+        + Reserve: UseCase<ReserveIn>
+        + ReserveCancel: UseCase<ReserveCancelIn>
+        + ReserveConfirm: UseCase<ReserveConfirmIn>
+        + Transfer: UseCase0<TransferIn>
+        + AuthSignIn: UseCase<AuthSignInIn, AuthSignInOut>
+        + AuthSignUp: UseCase<AuthSignUpIn>
+        + AuthValidateToken: UseCase<AuthValidateTokenIn, AuthValidateTokenOut>
     }
     interface UseCase <<interface>> {
         Handle(in: In): (Out, error)
         GetName(): string
     }
-    class GetBalanceUseCase {    }
-    class DepositUseCase {    }
-    class ReserveUseCase
-    class ReserveCancelUseCase
-    class ReserveConfirmUseCase
-    class TransferUseCase
+    class GetBalanceUseCase {}
+    class DepositUseCase {}
+    class ReserveUseCase {}
+    class ReserveCancelUseCase {}
+    class ReserveConfirmUseCase {}
+    class TransferUseCase {}
+
+    class AuthSignInUseCase {}
+    class AuthSignUpUseCase {}
+    class AuthValidateTokenUseCase {}
+
     class ApplicationImpl {
-        GetBalance: GetBalanceUseCase
-        Deposit: DepositUseCase
-        Reserve: ReserveUseCase
-        ReserveCancel: ReserveCancelUseCase
-        ReserveConfirm: ReserveConfirmUseCase
-        Transfer: TransferUseCase
+        + GetBalance: GetBalanceUseCase
+        + Deposit: DepositUseCase
+        + Reserve: ReserveUseCase
+        + ReserveCancel: ReserveCancelUseCase
+        + ReserveConfirm: ReserveConfirmUseCase
+        + Transfer: TransferUseCase
+        + AuthSignIn: AuthSignInUseCase
+        + AuthSignUp: AuthSignUpUseCase
+        + AuthValidateToken: AuthValidateTokenUseCase
         + GetMetricsHandler(): http.Handler
         + GetLogger(): Logger
     }
+
+    interface Logger <<interface>> {
+        Info(message: string)
+        Error(message: string)
+    }
+
+    class Metrics {
+        IncCounter(status, method)
+        ObserveResponseTime(status, method, observeTime)
+    }
+
+    UseCase <|.. GetBalanceUseCase
+    UseCase <|.. DepositUseCase
+    UseCase <|.. ReserveUseCase
+    UseCase <|.. ReserveCancelUseCase
+    UseCase <|.. ReserveConfirmUseCase
+    UseCase <|.. TransferUseCase
+
+    UseCase <|.. AuthSignInUseCase
+    UseCase <|.. AuthSignUpUseCase
+    UseCase <|.. AuthValidateTokenUseCase
+
+    AuthSignInUseCase ..> AuthRepository
+    AuthSignUpUseCase ..> AuthRepository
+
+    GetBalanceUseCase ..> AccountRepository
+
+    DepositUseCase ..> AccountRepository
+    DepositUseCase ..> TransactionRepository
+
+    ReserveUseCase ..> AccountRepository
+    ReserveUseCase ..> TransactionRepository
+
+    ReserveCancelUseCase ..> AccountRepository
+    ReserveCancelUseCase ..> TransactionRepository
+
+    ReserveConfirmUseCase ..> AccountRepository
+    ReserveConfirmUseCase ..> TransactionRepository
+
+    TransferUseCase ..> AccountRepository
+    TransferUseCase ..> TransactionRepository
+
+    Application <|.. ApplicationImpl
+    ApplicationImpl <.. Metrics
+    ApplicationImpl <.. Logger
 }
 
 package "Adapters Layer" {
-    rectangle "Repositories" {
+    rectangle "Output" {
         class AccountRepositoryPostgres
         class TransactionRepositoryPostgres
+
+        AccountRepositoryPostgres ..> AccountRepository
+        TransactionRepositoryPostgres ..> TransactionRepository
     }
 
-    rectangle "HTTP" {
-        interface HttpAdapter {
-            GetBalance: HttpHandler
-            Deposit: HttpHandler
-            Reserve: HttpHandler
-            ReserveCancel: HttpHandler
-            ReserveConfirm: HttpHandler
-            Transfer: HttpHandler
+    rectangle "Input" {
+
+        rectangle "HTTP" {
+            interface HttpAdapter {
+                GetBalance: HttpHandler
+                Deposit: HttpHandler
+                Reserve: HttpHandler
+                ReserveCancel: HttpHandler
+                ReserveConfirm: HttpHandler
+                Transfer: HttpHandler
+
+                AuthSignIn: HttpHandler
+                AuthValidateToken: HttpHandler
+            }
+            
+            class HttpHandler <<interface>> {
+                GetHandler(): http.Handler
+            }
+            
+            class GetBalanceHandler implements HttpHandler {}
+            class DepositHandler implements HttpHandler {}
+            class ReserveHandler implements HttpHandler {}
+            class ReserveCancelHandler implements HttpHandler {}
+            class ReserveConfirmHandler implements HttpHandler {}
+            class TransferHandler implements HttpHandler {}
+
+            class AuthSignInHandler implements HttpHandler {}
+            class AuthValidateTokenHandler implements HttpHandler {}
+
+            ' GetBalanceHandler ..> GetBalanceUseCase
+            ' GetBalanceHandler ..> AuthValidateTokenUseCase
+
+            ' DepositHandler ..> DepositUseCase
+            ' ReserveHandler ..> ReserveUseCase
+            ' ReserveCancelHandler ..> ReserveCancelUseCase
+            ' ReserveConfirmHandler ..> ReserveConfirmUseCase
+            ' TransferHandler ..> TransferUseCase
+
+            ' AuthSignInHandler ..> AuthSignInUseCase
+            ' AuthValidateTokenHandler ..> AuthValidateTokenUseCase
         }
         
-        class HttpHandler <<interface>> {
-            GetHandler(): http.Handler
+        class GrpcAdapter {
+            GetBalance(request: GetBalanceRequest): GetBalanceResponse
+            Deposit(request: DepositRequest): empty.Empty
+            Reserve(request: ReserveRequest): empty.Empty
+            ReserveCancel(request: ReserveCancelRequest): empty.Empty
+            ReserveConfirm(request: ReserveConfirmRequest): empty.Empty
+            Transfer(request: TransferRequest): empty.Empty
+            
+            AuthSignInHandler ..> AuthSignInUseCase
+            AuthValidateTokenHandler ..> AuthValidateTokenUseCase
         }
-        
-        class GetBalanceHandler implements HttpHandler {
-        }
-        class DepositHandler implements HttpHandler {
-        }
-        class ReserveHandler implements HttpHandler {
-        }
-        class ReserveCancelHandler implements HttpHandler {
-        }
-        class ReserveConfirmHandler implements HttpHandler {
-        }
-        class TransferHandler implements HttpHandler {
+
+        class CliAdapter {
+           AuthSignUp(username, password, role)
+           AuthSignIn(username, password): token
         }
     }
 
-    class GrpcAdapter {
-        GetBalance(request: GetBalanceRequest): GetBalanceResponse
-        Deposit(request: DepositRequest): empty.Empty
-        Reserve(request: ReserveRequest): empty.Empty
-        ReserveCancel(request: ReserveCancelRequest): empty.Empty
-        ReserveConfirm(request: ReserveConfirmRequest): empty.Empty
-        Transfer(request: TransferRequest): empty.Empty
-    }
+
+    HttpAdapter ..> Application
+    GrpcAdapter ..> Application
+    CliAdapter ..> Application
 }
 
 package "Framework And Drivers Layer" {
@@ -153,63 +270,22 @@ package "Framework And Drivers Layer" {
     class MetricsPrometheus
     class TokenJWT
     class LoggerSlog
+
+
+    Main ..> PostgresSqlx
+    Main ..> HttpServerChi
+    Main ..> MetricsPrometheus
+    Main ..> TokenJWT
+    Main ..> LoggerSlog
+    Main ..> ApplicationImpl
+    Main ..> AccountRepositoryPostgres
+    Main ..> TransactionRepositoryPostgres
+    Main ..> GrpcAdapter
+    Main ..> HttpAdapter
 }
 
 ' Relationships
-AccountRepository ..> Account
-Account *-- AccountBalance
-AccountBalance *-- Amount
-AccountBalance ..> AmountPositive
-TransactionRepository ..> TransactionSpend
-TransactionRepository ..> TransactionDeposit
-TransactionRepository ..> TransactionTransfer
 
-DomainError <|-- ErrorAccountNotFound
-DomainError <|-- ErrInsufficientAvailableBalance
-DomainError <|-- ErrInsufficientReservedBalance
-DomainError <|-- ErrSameAccount
 
-UseCase <|.. GetBalanceUseCase
-UseCase <|.. DepositUseCase
-UseCase <|.. ReserveUseCase
-UseCase <|.. ReserveCancelUseCase
-UseCase <|.. ReserveConfirmUseCase
-UseCase <|.. TransferUseCase
-
-GetBalanceUseCase ..> AccountRepository
-
-DepositUseCase ..> AccountRepository
-DepositUseCase ..> TransactionRepository
-
-ReserveUseCase ..> AccountRepository
-ReserveUseCase ..> TransactionRepository
-
-ReserveCancelUseCase ..> AccountRepository
-ReserveCancelUseCase ..> TransactionRepository
-
-ReserveConfirmUseCase ..> AccountRepository
-ReserveConfirmUseCase ..> TransactionRepository
-
-TransferUseCase ..> AccountRepository
-TransferUseCase ..> TransactionRepository
-
-Application <|-- ApplicationImpl
-
-AccountRepositoryPostgres ..> AccountRepository
-TransactionRepositoryPostgres ..> TransactionRepository
-
-HttpAdapter ..> Application
-GrpcAdapter ..> Application
-
-Main ..> PostgresSqlx
-Main ..> HttpServerChi
-Main ..> MetricsPrometheus
-Main ..> TokenJWT
-Main ..> LoggerSlog
-Main ..> ApplicationImpl
-Main ..> AccountRepositoryPostgres
-Main ..> TransactionRepositoryPostgres
-Main ..> GrpcAdapter
-Main ..> HttpAdapter
 
 @enduml
