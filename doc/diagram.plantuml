@@ -124,14 +124,6 @@ package "Application Layer" {
         GetName(): string
     }
 
-    class UseCaseDecorator {
-        + UseCase: UseCase
-        + Metrics: Metrics
-        + Logger: Logger
-        + Handle(in: In): (Out, error)
-        + GetName(): string
-    }
-
     class GetBalanceUseCase {}
     class DepositUseCase {}
     class ReserveUseCase {}
@@ -143,29 +135,6 @@ package "Application Layer" {
     class AuthSignUpUseCase {}
     class AuthValidateTokenUseCase {}
 
-    class ApplicationImpl {
-        + GetBalance: GetBalanceUseCase
-        + Deposit: DepositUseCase
-        + Reserve: ReserveUseCase
-        + ReserveCancel: ReserveCancelUseCase
-        + ReserveConfirm: ReserveConfirmUseCase
-        + Transfer: TransferUseCase
-        + AuthSignIn: AuthSignInUseCase
-        + AuthSignUp: AuthSignUpUseCase
-        + AuthValidateToken: AuthValidateTokenUseCase
-        + GetMetricsHandler(): http.Handler
-        + GetLogger(): Logger
-    }
-
-    interface Logger <<interface>> {
-        Info(message: string)
-        Error(message: string)
-    }
-
-    interface Metrics <<interface>> {
-        IncCounter(status, method)
-        ObserveResponseTime(status, method, observeTime)
-    }
 
     UseCase <|.. GetBalanceUseCase
     UseCase <|.. DepositUseCase
@@ -209,10 +178,7 @@ package "Application Layer" {
     TransferUseCase ..> TransactionRepository
 
     Application ..> UseCase
-    Application <|.. ApplicationImpl
-    ApplicationImpl ..> Metrics
-    ApplicationImpl ..> Logger
-    ApplicationImpl ..> UseCaseDecorator
+
 }
 
 package "Adapters Layer" {
@@ -262,7 +228,6 @@ package "Adapters Layer" {
             TransferHandler ..> Application
 
             AuthSignInHandler ..> Application
-            AuthValidateTokenHandler ..> Application
         }
         
         class GrpcAdapter {
@@ -288,6 +253,28 @@ package "Adapters Layer" {
     CliAdapter ..> Application
 }
 
+package "Common" {
+
+    interface Logger <<interface>> {
+        Info(message: string)
+        Error(message: string)
+    }
+
+    interface Metrics <<interface>> {
+        IncCounter(status, method)
+        ObserveResponseTime(status, method, observeTime)
+    }
+
+
+    class UseCaseDecorator {
+        + UseCase: UseCase
+        + Metrics: Metrics
+        + Logger: Logger
+        + Handle(in: In): (Out, error)
+        + GetName(): string
+    }
+}
+
 package "Framework And Drivers Layer" {
     class Main {}
     class PostgresSqlx
@@ -295,6 +282,26 @@ package "Framework And Drivers Layer" {
     class MetricsPrometheus
     class TokenJWT
     class LoggerSlog
+
+
+    class ApplicationImpl {
+        + GetBalance: GetBalanceUseCase
+        + Deposit: DepositUseCase
+        + Reserve: ReserveUseCase
+        + ReserveCancel: ReserveCancelUseCase
+        + ReserveConfirm: ReserveConfirmUseCase
+        + Transfer: TransferUseCase
+        + AuthSignIn: AuthSignInUseCase
+        + AuthSignUp: AuthSignUpUseCase
+        + AuthValidateToken: AuthValidateTokenUseCase
+        + GetMetricsHandler(): http.Handler
+        + GetLogger(): Logger
+    }
+
+    Application <|.. ApplicationImpl
+    ApplicationImpl ..> Metrics
+    ApplicationImpl ..> Logger
+    ApplicationImpl ..> UseCaseDecorator
 
 
     Main ..> PostgresSqlx
