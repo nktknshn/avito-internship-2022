@@ -27,6 +27,10 @@ type RunningPostgres struct {
 }
 
 func (rp *RunningPostgres) GetPort(name string) string {
+	if rp == nil {
+		return ""
+	}
+
 	return rp.Container.GetPort(name)
 }
 
@@ -166,6 +170,10 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 
 	if err != nil {
 		return nil, err
+	}
+
+	if conn == nil {
+		return nil, errors.New("postgres connection is nil")
 	}
 
 	if cfg.UpMigrations && migrationsDir != "" {

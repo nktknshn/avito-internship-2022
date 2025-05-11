@@ -37,6 +37,10 @@ func (r *AccountsRepository) GetByUserID(ctx context.Context, userID domain.User
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
+	if tr == nil {
+		return nil, errors.New("AccountsRepository.GetByUserID: tr is nil")
+	}
+
 	err := tr.GetContext(ctx, &accDTO, tr.Rebind(sq), userID)
 
 	if errors.Is(err, sql.ErrNoRows) {
@@ -62,6 +66,10 @@ func (r *AccountsRepository) GetByAccountID(ctx context.Context, accountID domai
 	var accDTO accountDTO
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	if tr == nil {
+		return nil, errors.New("AccountsRepository.GetByAccountID: tr is nil")
+	}
 
 	err := tr.GetContext(ctx, &accDTO, tr.Rebind(sq), accountID)
 
@@ -91,6 +99,10 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 	}
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	if tr == nil {
+		return nil, errors.New("AccountsRepository.Save: tr is nil")
+	}
 
 	var newDTO *accountDTO
 
@@ -148,6 +160,7 @@ func (r *AccountsRepository) update(ctx context.Context, tr trmsqlx.Tr, accDto *
 		`
 
 	sq, args, err := tr.BindNamed(sq, accDto)
+
 	if err != nil {
 		return nil, errors.Wrap(err, "AccountsRepository.update.BindNamed")
 	}

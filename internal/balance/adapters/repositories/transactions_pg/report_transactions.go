@@ -214,6 +214,10 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
+	if tr == nil {
+		return report_transactions.ReportTransactionsPage{}, errors.New("TransactionsRepository.GetTransactionsByUserID: tr is nil")
+	}
+
 	sql, args, err := tr.BindNamed(qb.Build(), queryArgs)
 
 	if err != nil {

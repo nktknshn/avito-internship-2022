@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-
 	err := root.RootCmd.Execute()
 
 	if err != nil {

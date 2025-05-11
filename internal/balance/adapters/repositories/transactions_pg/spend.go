@@ -29,6 +29,10 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
+	if tr == nil {
+		return nil, errors.New("TransactionsRepository.GetTransactionSpendByOrderID: tr is nil")
+	}
+
 	var transactions []*transactionSpendDTO
 
 	err := tr.SelectContext(ctx, &transactions, tr.Rebind(sq), userID, orderID)
@@ -50,6 +54,10 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 
 func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domainTransaction.TransactionSpend) (*domainTransaction.TransactionSpend, error) {
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	if tr == nil {
+		return nil, errors.New("TransactionsRepository.SaveTransactionSpend: tr is nil")
+	}
 
 	transactionDTO, err := toTransactionSpendDTO(transaction)
 	if err != nil {

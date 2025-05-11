@@ -18,6 +18,10 @@ func (r *TransactionsRepository) SaveTransactionTransfer(ctx context.Context, tr
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
+	if tr == nil {
+		return nil, errors.New("TransactionsRepository.SaveTransactionTransfer: tr is nil")
+	}
+
 	transactionDTO, err := toTransactionTransferDTO(transaction)
 	if err != nil {
 		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionTransfer.toTransactionTransferDTO")

@@ -1,21 +1,18 @@
+version: 2
 linters:
   disable-all: true
   enable:
-    - deadcode
     - errcheck
     - gosimple
     - govet
     - ineffassign
     - staticcheck
-    - structcheck
     - typecheck
     - unused
-    - varcheck
     - asciicheck
     - bodyclose
     - dogsled
     - exhaustive
-    - exportloopref
     - gocognit
     - goconst
     - gofmt
@@ -30,7 +27,6 @@ linters:
     - sqlclosecheck
     - unconvert
     - unparam
-    - whitespace
     - staticcheck
     - errcheck
     - goimports

@@ -1,3 +1,4 @@
+//nolint:nilaway
 package mocked
 
 import (

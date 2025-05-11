@@ -2,6 +2,7 @@ package auth_signin
 
 import (
 	"context"
+	"errors"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
@@ -59,6 +60,10 @@ func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 
 	if err != nil {
 		return Out{}, err
+	}
+
+	if user == nil {
+		return Out{}, errors.New("user == nil")
 	}
 
 	ok, err := u.hasher.Verify(in.password.String(), user.PasswordHash.Value())

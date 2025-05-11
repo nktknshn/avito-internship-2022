@@ -45,6 +45,10 @@ func (r *TransactionsRepository) GetReportRevenueByMonth(ctx context.Context, re
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
+	if tr == nil {
+		return report_revenue.ReportRevenueResponse{}, errors.New("TransactionsRepository.GetReportRevenueByMonth: tr is nil")
+	}
+
 	sql, args, err := tr.BindNamed(sqlQuery, map[string]interface{}{
 		"t0":     t0,
 		"t1":     t1,

@@ -29,3 +29,11 @@ generate-protobuf:
 generate-swagger:
 	./scripts/swagger.sh && ./scripts/openapi-generate-client.sh
 .PHONY: generate-swagger
+
+lint:
+	./scripts/lint.sh
+.PHONY: lint
+
+lint-nilaway:
+	./scripts/lint-nilaway.sh
+.PHONY: lint-nilaway
