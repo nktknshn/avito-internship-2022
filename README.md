@@ -407,6 +407,41 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 
 Слой использует библиотеку cobra для удобной реализации клиента. Дополнительно слоя абстракции решено было не делать.
 
+### Common
+
+* [internal/common](internal/common)
+
+Здесь описаны интерфейсы зависимостей и вспомогательные инструменты и типы.
+
+- [internal/common/token_generator](internal/common/token_generator) интерфейсы генератора и валидатора токена
+- [internal/common/password_hasher](internal/common/password_hasher) интерфейс хэшера и валидатора хэша паролей
+- [internal/common/decorator](internal/common/decorator) декораторы use-case
+- [internal/common/logger](internal/common/logger) интерфейс логгера
+- [internal/common/metrics](internal/common/metrics) интерфейс метрик
+
+
+### Слой инфрастуктуры
+
+* [internal/balance/cmd](internal/balance/cmd)
+* [internal/balance/app_impl](internal/balance/app_impl)
+
+В данном слое читается конфиг, инициализируются все имплементации зависимостей, создается соединение с базой, инстанциируется реализация слоя application, c которой инициализируются адаптеры.
+
+#### pkg
+
+* [pkg](pkg)
+
+Здесь хранятся реализации инфраструктурных зависимостей, используемых приложением через абстрактные интерфейсы. Каждый подпакет реализует конкретную технологию или интеграцию, необходимую для работы микросервиса. Это позволяет легко подменять реализации (например, для тестирования или смены технологии) и изолировать бизнес-логику от деталей реализации.
+
+В пакете представлены следующие реализации:
+
+- [pkg/token_generator_jwt](pkg/token_generator_jwt/) — генерация и валидация JWT-токенов для аутентификации.
+- [pkg/password_hasher_argon](pkg/password_hasher_argon/) — хэширование паролей с помощью Argon2.
+- [pkg/testing_pg](pkg/testing_pg/) — инструменты для тестирования с PostgreSQL.
+- [pkg/config_cleanenv](pkg/config_cleanenv/) — работа с конфигурацией через cleanenv.
+- [pkg/sqlx_pg](pkg/sqlx_pg/) — работа с PostgreSQL через sqlx.
+- [pkg/metrics_prometheus](pkg/metrics_prometheus/) — интеграция с Prometheus для сбора метрик.
+
 ### Логирование
 
 ## Запуск
