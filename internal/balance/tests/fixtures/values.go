@@ -53,6 +53,9 @@ var (
 	UserID_3_str string        = "3"
 	UserID_3     domain.UserID = 3
 	//
+	UserID_i64_invalid int64  = -1
+	UserID_str_invalid string = "-1"
+	//
 	OrderID_i64 int64          = 1
 	OrderID_str string         = "1"
 	OrderID     domain.OrderID = 1

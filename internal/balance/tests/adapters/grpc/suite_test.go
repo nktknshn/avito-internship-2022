@@ -6,6 +6,8 @@ import (
 
 	adaptersGrpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/stretchr/testify/suite"
@@ -67,4 +69,11 @@ func (s *GrpcTestSuite) TearDownTest() {
 
 func (s *GrpcTestSuite) setupAuth(token string, returnOut auth_validate_token.Out, returnErr error) {
 	s.app.SetupAuth(token, returnOut, returnErr)
+}
+
+func (s *GrpcTestSuite) setupAuthValid() {
+	s.setupAuth(fixtures.AuthToken, auth_validate_token.Out{
+		UserID: fixtures.AuthUserID,
+		Role:   domainAuth.AuthUserRoleAdmin,
+	}, nil)
 }

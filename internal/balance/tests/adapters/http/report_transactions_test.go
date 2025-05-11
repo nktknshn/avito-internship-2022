@@ -33,6 +33,25 @@ func (s *HttpTestSuite) TestReportTransactions() {
 		UpdatedAt:    fixtures.Time_1,
 	}
 
+	var transactionDeposit = report_transactions.OutTransactionDeposit{
+		ID:        domainTransaction.TransactionDepositID(fixtures.UUID_1),
+		Source:    fixtures.DepositSource,
+		Amount:    fixtures.AmountPositive100,
+		Status:    domainTransaction.TransactionDepositStatusConfirmed,
+		CreatedAt: fixtures.Time_1,
+		UpdatedAt: fixtures.Time_1,
+	}
+
+	var transactionTransfer = report_transactions.OutTransactionTransfer{
+		ID:        domainTransaction.TransactionTransferID(fixtures.UUID_1),
+		From:      fixtures.AccountID,
+		To:        fixtures.AccountID_2,
+		Amount:    fixtures.AmountPositive100,
+		Status:    domainTransaction.TransactionTransferStatusConfirmed,
+		CreatedAt: fixtures.Time_1,
+		UpdatedAt: fixtures.Time_1,
+	}
+
 	testCases := []testCase{
 		{
 			name:        "success",
@@ -43,6 +62,8 @@ func (s *HttpTestSuite) TestReportTransactions() {
 				HasMore: true,
 				Transactions: []report_transactions.OutTransaction{
 					&transactionSpend,
+					&transactionDeposit,
+					&transactionTransfer,
 				},
 			}),
 			expectCode: http.StatusOK,
@@ -58,6 +79,23 @@ func (s *HttpTestSuite) TestReportTransactions() {
 						"status":        domainTransaction.TransactionSpendStatusConfirmed.Value(),
 						"created_at":    fixtures.Time_1_str,
 						"updated_at":    fixtures.Time_1_str,
+					},
+					map[string]any{
+						"id":         fixtures.UUID_1_str,
+						"source":     fixtures.DepositSource,
+						"amount":     fixtures.Amount100_i64,
+						"status":     domainTransaction.TransactionDepositStatusConfirmed.Value(),
+						"created_at": fixtures.Time_1_str,
+						"updated_at": fixtures.Time_1_str,
+					},
+					map[string]any{
+						"id":         fixtures.UUID_1_str,
+						"from":       fixtures.AccountID_i64,
+						"to":         fixtures.AccountID_2_i64,
+						"amount":     fixtures.Amount100_i64,
+						"status":     domainTransaction.TransactionTransferStatusConfirmed.Value(),
+						"created_at": fixtures.Time_1_str,
+						"updated_at": fixtures.Time_1_str,
 					},
 				},
 				"cursor":   "cursor",
