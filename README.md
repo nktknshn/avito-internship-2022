@@ -35,7 +35,7 @@ https://github.com/avito-tech/internship_backend_2022
 - адаптеры
 - инфраструктура
 
-### Доменная логика
+### Cлой доменной логики (domain)
 
 * [/internal/balance/domain](/internal/balance/domain)
 
@@ -82,7 +82,36 @@ func (ac AccountBalance) Withdraw(a amount.AmountPositive) (AccountBalance, erro
 
 В доменной зоне также описаны интерфейсы репозиториев для каждой из сущностей: Account и Transactions.
 
-### Приложение
+#### Ошибки слоя
+
+Данный слой возвращает предзаданные ошибки отдельного типа DomainError
+
+```go 
+type DomainError struct {
+	message string
+}
+
+// Скрывает cause из Error(). Причина остается доступна через errors.Cause(err).
+// Обе ошибки (DomainError и cause) матчатся через errors.Is
+func (e DomainError) WithCause(cause error) error {
+	// ...
+}
+
+func IsDomainError(err error) bool {
+	var de DomainError
+	return errors.As(err, &de)
+}
+
+var (
+	ErrInvalidAmount         = domainError.New("invalid amount")
+	ErrInvalidPositiveAmount = domainError.New("invalid positive amount")
+	ErrInsufficientAmount    = domainError.New("insufficient amount")
+	ErrIntegerOverflow       = domainError.New("integer overflow")
+    // и тд
+)
+```
+
+### Слой приложения (application)
 
 * [/internal/balance/app](/internal/balance/app)
 * [/internal/balance/app_impl](/internal/balance/app_impl)
@@ -194,11 +223,15 @@ type Application struct {
 
 Также на уровне приложения определены права доступа ролей пользователей микросервиса к сценариям [internal/balance/app/roles/roles.go](internal/balance/app/roles/roles.go). Эти права проверяются в input-адаптерах после проверки аутентификационного токена.
 
+#### Ошибки слоя
+
+
+
 ### Адаптеры
 
 * [internal/balance/adapters](internal/balance/adapters)
 
-Слой делится на input и output адаптеры. Первые обрабатываются входящие к микросервису запросы, трансформируя их в In-типы сценариев, вызывают сценарии и формируют ответ, трансформируя результат или ошибку работы сценария в соотвествующий адаптеру результат. К ним относятся http, grpc и cli-адаптеры. Вторые в свою очередь являются прослойкой для исходящих из сценариев во внешний мир запросов. В данном микросервисе это имплементации репозиториев, выполняющие запросы к базе данных.
+Слой делится на input и output адаптеры. Первые обрабатываются входящие к микросервису запросы, трансформируя их в In-типы сценариев, вызывают сценарии и формируют ответ, трансформируя результат или ошибку работы сценария в соотвествующий адаптеру результат. К ним относятся http, grpc и cli-адаптеры. Output-адаптеры, в свою очередь, являются прослойкой для исходящих из сценариев во внешний мир запросов. В данном микросервисе это имплементации репозиториев, выполняющие запросы к базе данных.
 
 #### Репозитории
 
@@ -271,9 +304,30 @@ type HttpAdapter struct {
 
 Также этот адаптер экспортирует [роутинг](internal/balance/adapters/http/router/router.go), который прописывает переданному http-роутеру соответствие путь+метод -> handler. На данном этапе http-адаптер остается независимым от используемой реализации роутера (chi, mux, echo).
 
-При реализации адаптера отдельного use-case в http-хэндлер, я не удержался от того, чтобы использовать свою библиотеку [go-ergo-handler](https://github.com/nktknshn/go-ergo-handler), которая позволяет создание http-хэндлеров в [лаконичном декларативном и типобезопасном виде](internal/balance/adapters/http/handlers/report_transactions/report_transactions.go). Минус такого подхода (ручное конструирование хэндлеров) в том, что приходится поддерживать аннотации для генерации openapi-спефицикации в актуальном виде и ничто не предохраняет от вероятности забыть обновить аннотации. Лучшим подходом я считаю ручное написание спецификации, из которой уже генерируются хэндлеры. При таком подходе существует единый источник истиниы (Single source of truth) - спецификация.
+При реализации адаптера отдельного use-case в http-хэндлер, я не удержался от того, чтобы использовать свою библиотеку [go-ergo-handler](https://github.com/nktknshn/go-ergo-handler), которая позволяет создание http-хэндлеров в [лаконичном декларативном и типобезопасном виде](internal/balance/adapters/http/handlers/report_transactions/report_transactions.go). Минус такого подхода (ручное конструирование хэндлеров) в том, что приходится поддерживать аннотации для генерации openapi-спефицикации в актуальном виде, и ничто не предохраняет от вероятности забыть обновить аннотации. Лучшим подходом я считаю ручное написание спецификации, из которой уже генерируются хэндлеры. При таком подходе существует единый источник истиниы (Single source of truth) - спецификация.
 
+Отдельный http-хэнделер обычно использует две зависимости: use-case, который он адаптирует, и use-case, отвечающий за проверку токена аутентификации. В реализации данного микросервиса аутентификация и авторизация реализована не в виде общего для всех middleware, а как составная часть каждого хэндлера. 
 
+```go
+
+func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
+	var (
+        // добавлят мидлвейр, который проверит токен и роль в нем прописанную на 
+        // соответствие допустимым ролям для данного use-case
+		b, _    = handlers_builder.NewWithAuthForUseCase(auth, u.GetName())
+        // проверит payload
+		payload = ergo.PayloadAttach[requestBody](b)
+	)
+    // ...
+```
+
+С одной стороны повышает надежность (нельзя забыть прописать аутентификацию хэндлеру), повышает гибкость настройки аутентификации отдельного хэндлера (разграничение доступа по ролям пользователя), с другой стороны увеличивает связность кода, немного усложняя тестирование хэндлера и снижая реюзабельность его частей.
+
+Обработка ошибок
+
+* [internal/balance/adapters/http/handlers/handlers_builder/handler_error_func.go](internal/balance/adapters/http/handlers/handlers_builder/handler_error_func.go)
+
+Соблюдается такое правило: доменные (DomainError) ошибки и ошибки слоя use-case (UseCaseError) передаются как есть (с внутренним сообщением) пользователю микросервиса со статусом BadRequest, ошибки валидации данных запроса возвращаются со статусом BadRequest, прочие ошибки возвращаются со статусом InternalServerError и сообщением "internal server error", скрывая детали ошибки от пользователя. Некоторые доменные ошибки, например ErrAccountNotFound оборачиваются в соотвествующий статус-код, например 404.
 
 ### Обработка ошибок
 
