@@ -8,6 +8,7 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
+
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
@@ -92,11 +93,7 @@ func (r *AccountsRepository) GetByAccountID(ctx context.Context, accountID domai
 
 func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Account) (*domainAccount.Account, error) {
 
-	accDTO, err := toAccountDTO(account)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "AccountsRepository.Save.toAccountDTO")
-	}
+	accDTO := toAccountDTO(account)
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
@@ -105,7 +102,7 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 	}
 
 	var newDTO *accountDTO
-
+	var err error
 	if accDTO.Id == 0 {
 		newDTO, err = r.create(ctx, tr, accDTO)
 	} else {

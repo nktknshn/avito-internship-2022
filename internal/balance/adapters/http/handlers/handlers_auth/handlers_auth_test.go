@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	ergo "github.com/nktknshn/go-ergo-handler"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 )
 
 type AuthUseCaseMock struct {
@@ -27,7 +28,7 @@ func TestUseCaseToValidateToken_EmptyToken(t *testing.T) {
 		useCase: useCase,
 	}
 
-	out, ok, err := validator.ValidateToken(context.Background(), "")
+	out, ok, err := validator.ValidateToken(t.Context(), "")
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
@@ -41,9 +42,10 @@ func TestUseCaseToValidateToken_InvalidToken(t *testing.T) {
 		useCase: useCase,
 	}
 
-	useCase.On("Handle", mock.Anything, mock.Anything).Return(auth_validate_token.Out{}, auth_validate_token.ErrInvalidToken)
+	useCase.On("Handle", mock.Anything, mock.Anything).
+		Return(auth_validate_token.Out{}, auth_validate_token.ErrInvalidToken)
 
-	out, ok, err := validator.ValidateToken(context.Background(), "invalid_token")
+	out, ok, err := validator.ValidateToken(t.Context(), "invalid_token")
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
@@ -57,9 +59,10 @@ func TestUseCaseToValidateToken_TokenExpired(t *testing.T) {
 		useCase: useCase,
 	}
 
-	useCase.On("Handle", mock.Anything, mock.Anything).Return(auth_validate_token.Out{}, auth_validate_token.ErrTokenExpired)
+	useCase.On("Handle", mock.Anything, mock.Anything).
+		Return(auth_validate_token.Out{}, auth_validate_token.ErrTokenExpired)
 
-	out, ok, err := validator.ValidateToken(context.Background(), "invalid_token")
+	out, ok, err := validator.ValidateToken(t.Context(), "invalid_token")
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
@@ -73,9 +76,10 @@ func TestUseCaseToValidateToken_OtherError(t *testing.T) {
 		useCase: useCase,
 	}
 
-	useCase.On("Handle", mock.Anything, mock.Anything).Return(auth_validate_token.Out{}, errors.New("some internal error"))
+	useCase.On("Handle", mock.Anything, mock.Anything).
+		Return(auth_validate_token.Out{}, errors.New("some internal error"))
 
-	out, ok, err := validator.ValidateToken(context.Background(), "invalid_token")
+	out, ok, err := validator.ValidateToken(t.Context(), "invalid_token")
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
@@ -91,7 +95,7 @@ func TestUseCaseToValidateToken_Success(t *testing.T) {
 
 	useCase.On("Handle", mock.Anything, mock.Anything).Return(auth_validate_token.Out{}, nil)
 
-	out, ok, err := validator.ValidateToken(context.Background(), "valid_token")
+	out, ok, err := validator.ValidateToken(t.Context(), "valid_token")
 
 	assert.NotNil(t, out)
 	assert.True(t, ok)

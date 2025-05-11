@@ -7,15 +7,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/suite"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	ergo "github.com/nktknshn/go-ergo-handler"
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/suite"
 )
 
 type testCase struct {
@@ -97,7 +98,11 @@ func (s *HttpTestSuite) runTestCases(useCase func() *mock.Mock, handler func() a
 	}
 }
 
-func (s *HttpTestSuite) requestAuthPayload(h adaptersHttp.Handler, payload map[string]any, url string) (*http.Request, *httptest.ResponseRecorder) {
+func (s *HttpTestSuite) requestAuthPayload(
+	h adaptersHttp.Handler,
+	payload map[string]any,
+	url string,
+) (*http.Request, *httptest.ResponseRecorder) {
 	jsonPayload, _ := json.Marshal(payload)
 	req, _ := http.NewRequest("", url, bytes.NewBuffer(jsonPayload))
 	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)
@@ -106,6 +111,7 @@ func (s *HttpTestSuite) requestAuthPayload(h adaptersHttp.Handler, payload map[s
 	return req, resp
 }
 
+//nolint:unparam
 func (s *HttpTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
 	req, _ := http.NewRequest("", "", nil)
 	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)

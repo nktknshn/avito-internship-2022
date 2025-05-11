@@ -4,6 +4,8 @@ package mocked
 import (
 	"context"
 
+	"github.com/stretchr/testify/mock"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
@@ -19,7 +21,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
-	"github.com/stretchr/testify/mock"
 )
 
 type AppMocked struct {
@@ -178,7 +179,10 @@ type AuthValidateTokenUseCaseMock struct {
 	mock.Mock
 }
 
-func (m *AuthValidateTokenUseCaseMock) Handle(ctx context.Context, in auth_validate_token.In) (auth_validate_token.Out, error) {
+func (m *AuthValidateTokenUseCaseMock) Handle(
+	ctx context.Context,
+	in auth_validate_token.In,
+) (auth_validate_token.Out, error) {
 	args := m.Called(ctx, in)
 	return args.Get(0).(auth_validate_token.Out), args.Error(1)
 }
@@ -196,7 +200,10 @@ type ReportTransactionsUseCaseMock struct {
 	mock.Mock
 }
 
-func (m *ReportTransactionsUseCaseMock) Handle(ctx context.Context, in report_transactions.In) (report_transactions.Out, error) {
+func (m *ReportTransactionsUseCaseMock) Handle(
+	ctx context.Context,
+	in report_transactions.In,
+) (report_transactions.Out, error) {
 	args := m.Called(ctx, in)
 	return args.Get(0).(report_transactions.Out), args.Error(1)
 }
@@ -222,7 +229,10 @@ type ReportRevenueExportUseCaseMock struct {
 	mock.Mock
 }
 
-func (m *ReportRevenueExportUseCaseMock) Handle(ctx context.Context, in report_revenue_export.In) (report_revenue_export.Out, error) {
+func (m *ReportRevenueExportUseCaseMock) Handle(
+	ctx context.Context,
+	in report_revenue_export.In,
+) (report_revenue_export.Out, error) {
 	args := m.Called(ctx, in)
 	return args.Get(0).(report_revenue_export.Out), args.Error(1)
 }

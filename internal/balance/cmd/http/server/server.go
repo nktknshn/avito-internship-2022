@@ -11,14 +11,15 @@ import (
 	middleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httplog/v2"
+	ergo "github.com/nktknshn/go-ergo-handler"
+	ergoChi "github.com/nktknshn/go-ergo-handler/adapters/chi"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	balanceRouter "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/router"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/chi"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
-	ergo "github.com/nktknshn/go-ergo-handler"
-	ergoChi "github.com/nktknshn/go-ergo-handler/adapters/chi"
 )
 
 var (
@@ -30,7 +31,6 @@ type BalanceHttpServer struct {
 	rootRouter *chi.ChiRouter
 	cfg        *config.Config
 	app        *app_impl.Application
-	apiRouter  *chi.ChiRouter
 }
 
 func NewHttpServer(cfg *config.Config, app *app_impl.Application) *BalanceHttpServer {
@@ -175,7 +175,13 @@ func (s *BalanceHttpServer) runHTTPServer() {
 	var err error
 
 	if s.cfg.GetHTTP().GetTLS().GetEnabled() {
-		logger.Info("Starting server with TLS", "cert_file", s.cfg.GetHTTP().GetTLS().GetCertFile(), "key_file", s.cfg.GetHTTP().GetTLS().GetKeyFile())
+		logger.Info(
+			"Starting server with TLS",
+			"cert_file",
+			s.cfg.GetHTTP().GetTLS().GetCertFile(),
+			"key_file",
+			s.cfg.GetHTTP().GetTLS().GetKeyFile(),
+		)
 
 		err = s.server.ListenAndServeTLS(
 			s.cfg.GetHTTP().GetTLS().GetCertFile(),

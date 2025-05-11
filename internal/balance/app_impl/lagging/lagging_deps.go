@@ -11,7 +11,6 @@ import (
 )
 
 type LaggingDeps struct {
-	deps *app_impl.AppDeps
 }
 
 func NewLaggingDeps(ctx context.Context, cfg *config.Config) (*app_impl.AppDeps, func(), error) {

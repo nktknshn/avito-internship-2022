@@ -1,7 +1,6 @@
 package file_exporter_http
 
 import (
-	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -15,11 +14,7 @@ import (
 )
 
 func TestFileExporterHTTP_ExportFile(t *testing.T) {
-	dir, err := os.MkdirTemp("", "file_exporter_http_test")
-
-	require.NoError(t, err)
-
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	cfg := Config{
 		Folder: dir,
@@ -34,7 +29,7 @@ func TestFileExporterHTTP_ExportFile(t *testing.T) {
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
 
-	filePath, err := fe.ExportFile(context.Background(), "test.txt", strings.NewReader("test"))
+	filePath, err := fe.ExportFile(t.Context(), "test.txt", strings.NewReader("test"))
 	require.NoError(t, err)
 
 	resp, err := http.Get(ts.URL + "/" + filepath.Base(filePath))
@@ -49,9 +44,7 @@ func TestFileExporterHTTP_ExportFile(t *testing.T) {
 }
 
 func TestFileExporterHTTP_Cleanup(t *testing.T) {
-	dir, err := os.MkdirTemp("", "file_exporter_http_test")
-	require.NoError(t, err)
-	defer os.RemoveAll(dir)
+	dir := t.TempDir()
 
 	cfg := Config{
 		Folder: dir,
@@ -62,12 +55,12 @@ func TestFileExporterHTTP_Cleanup(t *testing.T) {
 	fe, err := New(cfg)
 	require.NoError(t, err)
 
-	filePath, err := fe.ExportFile(context.Background(), "test.txt", strings.NewReader("test"))
+	filePath, err := fe.ExportFile(t.Context(), "test.txt", strings.NewReader("test"))
 	require.NoError(t, err)
 
 	time.Sleep(time.Millisecond * 100)
 
-	filePath2, err := fe.ExportFile(context.Background(), "test.txt", strings.NewReader("test"))
+	filePath2, err := fe.ExportFile(t.Context(), "test.txt", strings.NewReader("test"))
 	require.NoError(t, err)
 
 	time.Sleep(time.Millisecond * 120)

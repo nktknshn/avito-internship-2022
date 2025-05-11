@@ -20,11 +20,12 @@ func fromAuthUserDTO(a *authUserDTO) (*domainAuth.AuthUser, error) {
 	return authUser, nil
 }
 
-func toAuthUserDTO(a *domainAuth.AuthUser) (*authUserDTO, error) {
+//nolint:unused
+func toAuthUserDTO(a *domainAuth.AuthUser) *authUserDTO {
 	return &authUserDTO{
 		ID:           a.ID.Value(),
 		Username:     a.Username.Value(),
 		PasswordHash: a.PasswordHash.Value(),
 		Role:         a.Role.Value(),
-	}, nil
+	}
 }

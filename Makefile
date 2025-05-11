@@ -37,3 +37,8 @@ lint:
 lint-nilaway:
 	./scripts/lint-nilaway.sh
 .PHONY: lint-nilaway
+
+lint-all:
+	./scripts/lint.sh
+	./scripts/lint-nilaway.sh
+.PHONY: lint-all

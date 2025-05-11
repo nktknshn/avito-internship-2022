@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
@@ -18,7 +19,7 @@ type transactionTransferDTO struct {
 	UpdatedAt     time.Time `db:"updated_at"`
 }
 
-func toTransactionTransferDTO(transaction *domainTransaction.TransactionTransfer) (*transactionTransferDTO, error) {
+func toTransactionTransferDTO(transaction *domainTransaction.TransactionTransfer) *transactionTransferDTO {
 	return &transactionTransferDTO{
 		ID:            transaction.ID.Value(),
 		FromAccountID: transaction.FromAccountID.Value(),
@@ -27,7 +28,7 @@ func toTransactionTransferDTO(transaction *domainTransaction.TransactionTransfer
 		Status:        transaction.Status.Value(),
 		CreatedAt:     transaction.CreatedAt,
 		UpdatedAt:     transaction.UpdatedAt,
-	}, nil
+	}
 }
 
 func fromTransactionTransferDTO(dto *transactionTransferDTO) (*domainTransaction.TransactionTransfer, error) {

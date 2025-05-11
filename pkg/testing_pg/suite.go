@@ -3,8 +3,9 @@ package testing_pg
 import (
 	"context"
 
-	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 	"github.com/pkg/errors"
+
+	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/suite"
@@ -58,7 +59,7 @@ func (s *TestSuitePg) ExecSqlMust(sql string) *ResultRows {
 func (s *TestSuitePg) ExecSqlExpectRowsLen(sql string, expectedRowsLen int) {
 	rows, err := s.ExecSql(sql)
 	s.Require().NoError(err)
-	s.Require().Equal(expectedRowsLen, len(rows.Rows))
+	s.Require().Len(rows.Rows, expectedRowsLen)
 }
 
 func (s *TestSuitePg) ExecSql(sql string) (*ResultRows, error) {

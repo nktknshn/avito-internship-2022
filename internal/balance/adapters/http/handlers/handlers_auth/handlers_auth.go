@@ -5,9 +5,10 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type authParserKeyType string
@@ -37,19 +38,6 @@ type UseCaseToValidateToken struct {
 
 func NewUseCaseToValidateToken(useCase AuthUseCase) *UseCaseToValidateToken {
 	return &UseCaseToValidateToken{useCase: useCase}
-}
-
-type tokenData struct {
-	UserID domainAuth.AuthUserID
-	Role   domainAuth.AuthUserRole
-}
-
-func (t *tokenData) GetRole() domainAuth.AuthUserRole {
-	return t.Role
-}
-
-func (t *tokenData) GetUserID() domainAuth.AuthUserID {
-	return t.UserID
 }
 
 func (u *UseCaseToValidateToken) ValidateToken(ctx context.Context, token string) (*TokenData, bool, error) {

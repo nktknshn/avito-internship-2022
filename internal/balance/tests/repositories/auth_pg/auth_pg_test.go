@@ -7,10 +7,11 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestAuthPg(t *testing.T) {
@@ -66,5 +67,5 @@ func (s *TestSuiteAuthPg) TestCreateAccount_DuplicateUsername() {
 	s.NoError(err)
 	err = s.repo.CreateUser(context.Background(), "test", "test", "test")
 	s.Error(err)
-	s.Require().True(errors.Is(err, domainAuth.ErrDuplicateUsername))
+	s.Require().ErrorIs(err, domainAuth.ErrDuplicateUsername)
 }

@@ -1,3 +1,4 @@
+//nolint:testpackage
 package decorator
 
 import (
@@ -5,9 +6,10 @@ import (
 	"errors"
 	"testing"
 
-	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+
+	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 )
 
 type useCase0 struct{}
@@ -48,7 +50,7 @@ func TestDecorator0Recover(t *testing.T) {
 	}
 
 	require.NotPanics(t, func() {
-		err := dec.Handle(context.Background(), 1)
+		err := dec.Handle(t.Context(), 1)
 		require.ErrorIs(t, err, errRecovered)
 	})
 
@@ -64,7 +66,7 @@ func TestDecorator1Recover(t *testing.T) {
 		recoverHandler: h.Handle,
 	}
 	require.NotPanics(t, func() {
-		res, err := dec.Handle(context.Background(), 1)
+		res, err := dec.Handle(t.Context(), 1)
 		require.ErrorIs(t, err, errRecovered)
 		require.Equal(t, 0, res)
 	})
@@ -75,7 +77,7 @@ func TestDecorator1Recover(t *testing.T) {
 func TestError(t *testing.T) {
 	err := commonErrors.NewErrPanic("panic error")
 	require.Equal(t, "panic: panic error", err.Error())
-	require.Nil(t, err.Unwrap())
+	require.NoError(t, err.Unwrap())
 }
 
 func TestErrorWrap(t *testing.T) {

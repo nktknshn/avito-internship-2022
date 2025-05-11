@@ -6,9 +6,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func NamedSelectMapScan(ctx context.Context, conn *sqlx.DB, dest *[]map[string]any, query string, arg interface{}) error {
-	const action = "PostgresAdapter NamedSelectMapScan "
-	const method = "NamedSelectMapScan"
+func NamedSelectMapScan(
+	ctx context.Context,
+	conn *sqlx.DB,
+	dest *[]map[string]any,
+	query string,
+	arg interface{},
+) error {
 
 	queryStr, params, err := conn.BindNamed(query, arg)
 

@@ -19,11 +19,6 @@ type ReportRevenueExportUseCase struct {
 	exporter   file_exporter.FileExporter
 }
 
-type reportRevenueExportUseCase interface {
-	Handle(ctx context.Context, in In) (Out, error)
-	GetName() string
-}
-
 func New(exporter file_exporter.FileExporter, repository report_revenue.ReportRevenueRepository) *ReportRevenueExportUseCase {
 	if exporter == nil {
 		panic("exporter is nil")

@@ -5,12 +5,17 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
+
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
-	"github.com/pkg/errors"
 )
 
-func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Context, userID domain.UserID, orderID domain.OrderID) ([]*domainTransaction.TransactionSpend, error) {
+func (r *TransactionsRepository) GetTransactionSpendByOrderID(
+	ctx context.Context,
+	userID domain.UserID,
+	orderID domain.OrderID,
+) ([]*domainTransaction.TransactionSpend, error) {
 	sq := `
 		SELECT 
 			id, 
@@ -52,19 +57,20 @@ func (r *TransactionsRepository) GetTransactionSpendByOrderID(ctx context.Contex
 	return result, nil
 }
 
-func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, transaction *domainTransaction.TransactionSpend) (*domainTransaction.TransactionSpend, error) {
+func (r *TransactionsRepository) SaveTransactionSpend(
+	ctx context.Context,
+	transaction *domainTransaction.TransactionSpend,
+) (*domainTransaction.TransactionSpend, error) {
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)
 
 	if tr == nil {
 		return nil, errors.New("TransactionsRepository.SaveTransactionSpend: tr is nil")
 	}
 
-	transactionDTO, err := toTransactionSpendDTO(transaction)
-	if err != nil {
-		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionSpend.toTransactionSpendDTO")
-	}
+	transactionDTO := toTransactionSpendDTO(transaction)
 
 	var newDTO *transactionSpendDTO
+	var err error
 
 	if transactionDTO.ID == uuid.Nil {
 		newDTO, err = r.createTransactionSpend(ctx, tr, transactionDTO)
@@ -84,7 +90,11 @@ func (r *TransactionsRepository) SaveTransactionSpend(ctx context.Context, trans
 	return res, nil
 }
 
-func (r *TransactionsRepository) createTransactionSpend(ctx context.Context, tr trmsqlx.Tr, transactionDTO *transactionSpendDTO) (*transactionSpendDTO, error) {
+func (r *TransactionsRepository) createTransactionSpend(
+	ctx context.Context,
+	tr trmsqlx.Tr,
+	transactionDTO *transactionSpendDTO,
+) (*transactionSpendDTO, error) {
 	sq := `
 		INSERT INTO transactions_spend 
 			(account_id, user_id, order_id, product_id, product_title, status, amount, created_at, updated_at) 
@@ -108,7 +118,11 @@ func (r *TransactionsRepository) createTransactionSpend(ctx context.Context, tr 
 	return &newDTO, nil
 }
 
-func (r *TransactionsRepository) updateTransactionSpend(ctx context.Context, tr trmsqlx.Tr, transactionDTO *transactionSpendDTO) (*transactionSpendDTO, error) {
+func (r *TransactionsRepository) updateTransactionSpend(
+	ctx context.Context,
+	tr trmsqlx.Tr,
+	transactionDTO *transactionSpendDTO,
+) (*transactionSpendDTO, error) {
 	sq := `
 		UPDATE transactions_spend 
 		SET 

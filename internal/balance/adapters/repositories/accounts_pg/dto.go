@@ -25,11 +25,11 @@ func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
 	return acc, nil
 }
 
-func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
+func toAccountDTO(a *domainAccount.Account) *accountDTO {
 	return &accountDTO{
 		Id:               a.ID.Value(),
 		UserId:           a.UserID.Value(),
 		BalanceAvailable: a.Balance.GetAvailable().Value(),
 		BalanceReserved:  a.Balance.GetReserved().Value(),
-	}, nil
+	}
 }

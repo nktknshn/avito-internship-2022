@@ -26,9 +26,13 @@ func (s *Suite) reportTransactionGetAll(q report_transactions.GetTransactionsQue
 }
 
 func (s *Suite) TestReportTransactions_Error_InvalidCursor() {
-	_, err := s.transactionsRepo.GetTransactionsByUserID(s.Context(), fixtures.UserID, report_transactions.GetTransactionsQuery{
-		Cursor: "1",
-	})
+	_, err := s.transactionsRepo.GetTransactionsByUserID(
+		s.Context(),
+		fixtures.UserID,
+		report_transactions.GetTransactionsQuery{
+			Cursor: "1",
+		},
+	)
 	s.Require().ErrorIs(err, report_transactions.ErrCursorInvalid)
 
 }
@@ -89,7 +93,6 @@ func (s *Suite) TestReportTransactions_Sorting_Amount() {
 		sortingDirection report_transactions.SortingDirection
 		limit            int
 		expected         []*transactionWrapper
-		err              error
 	}
 
 	testCases := []testCase{

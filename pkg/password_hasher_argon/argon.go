@@ -44,7 +44,17 @@ func (hp hashedPassword) FormatString() string {
 }
 
 func (hp hashedPassword) String() string {
-	return fmt.Sprintf("version: %d, memory: %d, timeCost: %d, parallelism: %d, saltLength: %d, keyLength: %d, salt: %s, hash: %s", hp.version, hp.memory, hp.timeCost, hp.parallelism, hp.saltLength, hp.keyLength, hp.salt, hp.hash)
+	return fmt.Sprintf(
+		"version: %d, memory: %d, timeCost: %d, parallelism: %d, saltLength: %d, keyLength: %d, salt: %s, hash: %s",
+		hp.version,
+		hp.memory,
+		hp.timeCost,
+		hp.parallelism,
+		hp.saltLength,
+		hp.keyLength,
+		hp.salt,
+		hp.hash,
+	)
 }
 
 func (hp hashedPassword) FormatStringBase64() string {
@@ -88,7 +98,7 @@ func hashPasswordDefault(password string, salt []byte) (*hashedPassword, error) 
 	}, nil
 }
 
-func hashPassword(password string, params hashParams) (*hashedPassword, error) {
+func hashPassword(password string, params hashParams) *hashedPassword {
 	hash := argon2.IDKey(
 		[]byte(password),
 		params.salt,
@@ -108,7 +118,7 @@ func hashPassword(password string, params hashParams) (*hashedPassword, error) {
 			saltLength:  params.saltLength,
 		},
 		hash: hash,
-	}, nil
+	}
 }
 
 // hashPasswordToBase64 хеширует пароль и возвращает его в виде строки, готовой для сохранения в базе данных.
@@ -120,13 +130,10 @@ func hashPasswordToBase64(password string) (string, error) {
 	return hash.FormatStringBase64(), nil
 }
 
-func verifyPasswordHashed(password string, hash *hashedPassword) (bool, error) {
-	computedHash, err := hashPassword(password, hash.hashParams)
-	if err != nil {
-		return false, err
-	}
+func verifyPasswordHashed(password string, hash *hashedPassword) bool {
+	computedHash := hashPassword(password, hash.hashParams)
 
-	return subtle.ConstantTimeCompare(computedHash.hash, hash.hash) == 1, nil
+	return subtle.ConstantTimeCompare(computedHash.hash, hash.hash) == 1
 }
 
 func verifyPasswordFormatString(password string, formatString string) (bool, error) {
@@ -136,7 +143,7 @@ func verifyPasswordFormatString(password string, formatString string) (bool, err
 		return false, err
 	}
 
-	return verifyPasswordHashed(password, hp)
+	return verifyPasswordHashed(password, hp), nil
 }
 
 // verifyPassword проверяет, соответствует ли указанный пароль сохраненному хешу.

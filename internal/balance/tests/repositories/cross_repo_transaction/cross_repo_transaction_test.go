@@ -8,6 +8,8 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
@@ -15,7 +17,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestCrossRepoTransaction(t *testing.T) {
@@ -73,9 +74,9 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 
 	rows, err := s.ExecSql("select * from transactions_spend")
 	s.Require().NoError(err)
-	s.Require().Equal(0, len(rows.Rows))
+	s.Require().Empty(rows.Rows)
 
 	rows, err = s.ExecSql("select * from accounts")
 	s.Require().NoError(err)
-	s.Require().Equal(0, len(rows.Rows))
+	s.Require().Empty(rows.Rows)
 }

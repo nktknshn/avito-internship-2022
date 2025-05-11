@@ -3,11 +3,15 @@ package transactions_pg
 import (
 	"context"
 
-	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/pkg/errors"
+
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
-func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, transaction *domainTransaction.TransactionDeposit) (*domainTransaction.TransactionDeposit, error) {
+func (r *TransactionsRepository) SaveTransactionDeposit(
+	ctx context.Context,
+	transaction *domainTransaction.TransactionDeposit,
+) (*domainTransaction.TransactionDeposit, error) {
 	sq := `
 		INSERT INTO transactions_deposit 
 			(account_id, user_id, deposit_source, status, amount, created_at, updated_at) 
@@ -22,10 +26,7 @@ func (r *TransactionsRepository) SaveTransactionDeposit(ctx context.Context, tra
 		return nil, errors.New("TransactionsRepository.SaveTransactionDeposit: tr is nil")
 	}
 
-	transactionDTO, err := toTransactionDepositDTO(transaction)
-	if err != nil {
-		return nil, errors.Wrap(err, "TransactionsRepository.SaveTransactionDeposit.toTransactionDepositDTO")
-	}
+	transactionDTO := toTransactionDepositDTO(transaction)
 
 	sq, args, err := tr.BindNamed(sq, transactionDTO)
 	if err != nil {
