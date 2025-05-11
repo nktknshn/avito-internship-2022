@@ -1,8 +1,11 @@
 # Avito Internship Task 1
 
 Реализация тестового задания на позицию стажера-бэкендера В авито
-
 https://github.com/avito-tech/internship_backend_2022
+
+[TOC]
+
+## О реализации
 
 - реализованы все требования
 - слоистая архитектура
@@ -19,6 +22,14 @@ https://github.com/avito-tech/internship_backend_2022
 
 Что лучше было бы сделать иначе:
 - openapi спецификация генерируется при помощи swaggo из аннотаций. Лучше было бы генерировать сервер и клиент из спецификации, а не наоборот.
+
+## Использование
+
+```bash
+make cover
+
+make cover-html
+```
 
 ## Архитектура
 
@@ -290,6 +301,21 @@ func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
 
 Три типа транзакций представлены тремя отдельными таблицами. Для получения списка транзакции отдельного счета используется UNION ALL запрос В CTE ([transactions_pg/report_transactions.go](internal/balance/adapters/repositories/transactions_pg/report_transactions.go)), результат которого сортируется и паджинируется посредством составного курсора (amount+id или updated_at+id). Hash-индексы по user_id, account_id позволяет эффективным образом выбрать транзакции отдельного счета.
 
+##### Timezone
+
+Подразумевается, что используется часовой пояс UTC, как в postgres, так и в микросервисе. Тем не менее, микросервис может быть запущен с любым часовым поясом. Схема таблиц postgres использует тип TIMESTAMPTZ для хранения времени. Также на уровне инфраструктуры соединению с postgres прописано расширение ([pkg/sqlx_pg/timezone.go](pkg/sqlx_pg/timezone.go)), которое автоматически устанавливает возвращаемое драйвером время в UTC. Таким образом, сохраняемое в базу локальное время сохраняется и возвращается из базы в UTC, при этом сохраняемое время == полученное из базы время. Смотри тест [internal/balance/tests/postgres/postgres_test.go](internal/balance/tests/postgres/postgres_test.go). 
+
+> Хотя сохраняемое и полученное из базы время будут проходить тест через Equal, так как golang учитывает часовые пояса двух времен при сравнении, нельзя сравнивать отдельные элементы времени, например, час или день, так как они не будут совпадать.
+> ```go
+> func (s *Suite) TestEqaultDates() {
+>	t0 := time.Date(2025, 12, 31, 0, 0, 0, 0, time.Local)
+>	t1 := t0.UTC()
+>
+>	require.True(s.T(), t0.Equal(t1))
+>	require.NotEqual(s.T(), t0.Day(), t1.Day())
+>}
+>````
+
 ##### Ошибки репозиториев
 
 Репозитории должны возвращать ошибки домена, когда это прописано в контракте интерфейса репозитория. Например, трансформируя sql.ErrNoRows в ErrAccountNotFound, когда запись об аккаунте не найдена в БД. Также репозитории могут возвращать ошибки из слоя application, когда реализуют интерфейс, описанный в этом слое. Например, `ErrSortingCursorInvalid`, когда репозиторию передан курсор, который он не может распарсить.
@@ -379,7 +405,7 @@ func (g GrpcAdapter) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 }
 ```
 
-Данный интерцептор извлекает заголовок `authorization` из метаданных запроса и проверяет его через use-case `g.app.AuthValidateToken`. Если токен валиден, то из его данных извлекается роль пользователя, которому был выдан токен, которая проверяется по словарю grpc-метод->список ролей, который возвращается функцией `methodToRoles()`. Дополнительно в функции [init при помощи рефлексии проверяется](internal/balance/adapters/grpc/roles.go), что все методы GRPC-адаптеры имеют соответствие в списке ролей, сигнализируя о забытых прописанных методу ролях при запуске микросервиса, а не во время обработки запроса.
+Данный интерцептор извлекает заголовок `authorization` из метаданных запроса и проверяет его через use-case `g.app.AuthValidateToken`. Если токен валиден, то из его данных извлекается роль пользователя, которому был выдан токен, которая проверяется по словарю grpc-метод->список ролей, который возвращается функцией `methodToRoles()`. Дополнительно в функции [init при помощи рефлексии проверяется](internal/balance/adapters/grpc/roles.go), что все методы GRPC-адаптера имеют соответствие в списке ролей, сигнализируя о забытых прописанных методу ролях при запуске микросервиса, а не во время обработки запроса.
 
 #### Обработка ошибок
 
@@ -416,7 +442,7 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 - [internal/common/token_generator](internal/common/token_generator) интерфейсы генератора и валидатора токена
 - [internal/common/password_hasher](internal/common/password_hasher) интерфейс хэшера и валидатора хэша паролей
 - [internal/common/decorator](internal/common/decorator) декораторы use-case
-- [internal/common/logger](internal/common/logger) интерфейс логгера
+- [internal/common/logging](internal/common/logging) интерфейс логгера
 - [internal/common/metrics](internal/common/metrics) интерфейс метрик
 
 
@@ -425,7 +451,7 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 * [internal/balance/cmd](internal/balance/cmd)
 * [internal/balance/app_impl](internal/balance/app_impl)
 
-В данном слое читается конфиг, инициализируются все имплементации зависимостей, создается соединение с базой, инстанциируется реализация слоя application, c которой инициализируются адаптеры.
+В данном слое читается конфиг, инициализируются все имплементации зависимостей, создается соединение с базой, инстанциируется реализация слоя application, из которой инициализируются адаптеры.
 
 #### pkg
 
@@ -444,15 +470,17 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 
 ### Логирование
 
-## Запуск
+### Тестирование
 
-### Тесты
+* [internal/balance/tests](internal/balance/tests)
 
-```bash
-make cover
+Большинство тестов содержатся отдельно от тестируемого кода внутри пакета [internal/balance/tests](internal/balance/tests). 
 
-make cover-html
-```
+Репозитории и use-case тестируются в комплекте с базой данных посредством dockertest. Для тестирование с докером реализовано [расширение библиотеки testify/suite](pkg/testing_pg/suite.go), которое позволяет легко развернуть тестовую среду.
+
+Адаптеры тестируются с моками юзкейсов.
+
+Доменная логика тестируется юнит-тестами в том же пакете, где прописана.
 
 ## Использованные инструменты
 

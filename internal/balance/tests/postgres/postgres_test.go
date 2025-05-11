@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,6 +21,14 @@ type Suite struct {
 
 func (s *Suite) TearDownTest() {
 	s.ExecSqlMust(`DROP TABLE IF EXISTS test_time;`)
+}
+
+func (s *Suite) TestEqaultDates() {
+	t0 := time.Date(2025, 12, 31, 0, 0, 0, 0, time.Local)
+	t1 := t0.UTC()
+
+	require.True(s.T(), t0.Equal(t1))
+	require.NotEqual(s.T(), t0.Day(), t1.Day())
 }
 
 func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
