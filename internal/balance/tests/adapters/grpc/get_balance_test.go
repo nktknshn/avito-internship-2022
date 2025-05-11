@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type testCaseDeposit struct {
+type testCaseGetBalance struct {
 	desc      string
 	request   *balance.GetBalanceRequest
 	out       get_balance.Out
@@ -20,7 +20,7 @@ type testCaseDeposit struct {
 }
 
 func (s *GrpcTestSuite) TestGetBalance() {
-	testCases := []testCaseDeposit{
+	testCases := []testCaseGetBalance{
 		{
 			desc:    "success",
 			request: &balance.GetBalanceRequest{UserId: fixtures.UserID_i64},
