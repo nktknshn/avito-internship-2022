@@ -32,6 +32,7 @@ func Attach(router commonHttp.RouteAttacher, handlers *adaptersHttp.HttpAdapter)
 		Handler: handlers.AuthSignIn.GetHandler(),
 	})
 
+	// XXX: не во всех роутерах поддерживается синтаксис {user_id:[0-9]+}
 	router.Attach(Route{
 		Path:    "/v1/balance/{user_id:[0-9]+}",
 		Methods: []string{http.MethodGet},
