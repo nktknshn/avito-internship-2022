@@ -18,10 +18,11 @@ var (
 	AuthUserRole_str                               = "admin"
 	AuthUserRole           domainAuth.AuthUserRole = domainAuth.AuthUserRoleAdmin
 	//
-	UsernameAdmin_str                                     = "admin"
-	UsernameAdmin         domainAuth.AuthUserUsername     = domainAuth.AuthUserUsername(UsernameAdmin_str)
-	PasswordAdmin_str                                     = "password123"
-	PasswordAdmin         domainAuth.AuthUserPassword     = domainAuth.AuthUserPassword(PasswordAdmin_str)
+	UsernameAdmin_str                             = "admin"
+	UsernameAdmin     domainAuth.AuthUserUsername = domainAuth.AuthUserUsername(UsernameAdmin_str)
+	PasswordAdmin_str                             = "password123"
+	PasswordAdmin     domainAuth.AuthUserPassword = domainAuth.AuthUserPassword(PasswordAdmin_str)
+	//nolint:gosec // fixtures
 	PasswordHashAdmin_str                                 = "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTEscD00JFRHNVZkMFJVTkhWUFFqazJNR3B3YWckWHRUSG5xVVFlUmpjWFRWZ0NUSGZQeEFPbm9BYThaREpkOFIxdkhUTDVEcw=="
 	PasswordHashAdmin     domainAuth.AuthUserPasswordHash = domainAuth.AuthUserPasswordHash(PasswordHashAdmin_str)
 	//

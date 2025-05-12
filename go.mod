@@ -90,7 +90,3 @@ require (
 )
 
 replace github.com/nktknshn/go-ergo-handler => /home/user/Workspace/cv/go-ergo-handler
-
-replace github.com/swaggo/swag/v2 => github.com/nktknshn/swag/v2 v2.0.0-rc5
-
-replace github.com/swaggo/http-swagger/v2 => github.com/santouras/http-swagger/v2 v2.0.0-20240611234311-8446c8f1819e

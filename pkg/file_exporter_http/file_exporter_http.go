@@ -41,7 +41,7 @@ func New(cfg Config) (*FileExporterHTTP, error) {
 		return nil, errors.New("folder is required")
 	}
 
-	err := os.MkdirAll(cfg.Folder, 0755)
+	err := os.MkdirAll(cfg.Folder, 0700)
 	if err != nil {
 		return nil, err
 	}

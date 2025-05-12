@@ -1,3 +1,4 @@
+//nolint:gosec,mnd // тестовый код
 package lagging
 
 import (

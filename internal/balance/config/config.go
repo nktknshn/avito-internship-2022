@@ -7,14 +7,14 @@ import (
 )
 
 type Config struct {
-	HTTP     *ConfigHTTP     `yaml:"http" env-required:"true"`
-	Postgres *ConfigPostgres `yaml:"postgres" env-required:"true"`
-	JWT      *ConfigJWT      `yaml:"jwt" env-required:"true"`
-	GRPC     *ConfigGRPC     `yaml:"grpc" env-required:"true"`
-	Mode     string          `yaml:"mode" env-required:"true"`
+	HTTP     *ConfigHTTP     `yaml:"http"      env-required:"true"`
+	Postgres *ConfigPostgres `yaml:"postgres"  env-required:"true"`
+	JWT      *ConfigJWT      `yaml:"jwt"       env-required:"true"`
+	GRPC     *ConfigGRPC     `yaml:"grpc"      env-required:"true"`
+	Mode     string          `yaml:"mode"      env-required:"true"`
 	UseCases *ConfigUseCases `yaml:"use_cases" env-required:"true"`
-	Lagging  *ConfigLagging  `yaml:"lagging" env-required:"true"`
-	Jaeger   *ConfigJaeger   `yaml:"jaeger" env-required:"true"`
+	Lagging  *ConfigLagging  `yaml:"lagging"   env-required:"true"`
+	Jaeger   *ConfigJaeger   `yaml:"jaeger"    env-required:"true"`
 }
 
 func NewConfig() *Config {

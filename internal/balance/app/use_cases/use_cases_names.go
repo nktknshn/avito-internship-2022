@@ -1,3 +1,4 @@
+//nolint:gosec // G101: Potential hardcoded credentials
 package use_cases
 
 const (
