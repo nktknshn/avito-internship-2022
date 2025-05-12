@@ -21,7 +21,7 @@ func (cfg *config) GetAddr() string {
 	return cfg.Addr
 }
 
-func (cfg *config) GetUserName() string {
+func (cfg *config) GetUser() string {
 	return cfg.User
 }
 

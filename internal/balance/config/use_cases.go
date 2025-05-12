@@ -3,10 +3,10 @@ package config
 import "time"
 
 type ConfigUseCases struct {
-	ReportRevenueExport *ConfigReportRevenueExport `yaml:"report_revenue_export" env-required:"true"`
+	ReportRevenueExport ConfigReportRevenueExport `yaml:"report_revenue_export" env-required:"true"`
 }
 
-func (c *ConfigUseCases) GetReportRevenueExport() *ConfigReportRevenueExport {
+func (c ConfigUseCases) GetReportRevenueExport() ConfigReportRevenueExport {
 	return c.ReportRevenueExport
 }
 
@@ -17,18 +17,18 @@ type ConfigReportRevenueExport struct {
 	Zip    bool          `yaml:"zip"    env-required:"true" env:"REPORT_REVENUE_EXPORT_ZIP"`
 }
 
-func (c *ConfigReportRevenueExport) GetFolder() string {
+func (c ConfigReportRevenueExport) GetFolder() string {
 	return c.Folder
 }
 
-func (c *ConfigReportRevenueExport) GetTTL() time.Duration {
+func (c ConfigReportRevenueExport) GetTTL() time.Duration {
 	return c.TTL
 }
 
-func (c *ConfigReportRevenueExport) GetURL() string {
+func (c ConfigReportRevenueExport) GetURL() string {
 	return c.URL
 }
 
-func (c *ConfigReportRevenueExport) GetZip() bool {
+func (c ConfigReportRevenueExport) GetZip() bool {
 	return c.Zip
 }

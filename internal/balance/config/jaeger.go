@@ -6,22 +6,14 @@ type ConfigJaeger struct {
 	LogSpans    bool   `yaml:"log_spans"    env-required:"true" env:"JAEGER_LOG_SPANS"`
 }
 
-func NewConfigJaeger() *ConfigJaeger {
-	return &ConfigJaeger{}
-}
-
-func (c *Config) GetJaeger() *ConfigJaeger {
-	return c.Jaeger
-}
-
-func (c *ConfigJaeger) GetHost() string {
+func (c ConfigJaeger) GetHost() string {
 	return c.Host
 }
 
-func (c *ConfigJaeger) GetServiceName() string {
+func (c ConfigJaeger) GetServiceName() string {
 	return c.ServiceName
 }
 
-func (c *ConfigJaeger) GetLogSpans() bool {
+func (c ConfigJaeger) GetLogSpans() bool {
 	return c.LogSpans
 }

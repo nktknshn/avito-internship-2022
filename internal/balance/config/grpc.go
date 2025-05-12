@@ -7,16 +7,12 @@ type ConfigGRPC struct {
 	Keepalive Keepalive `yaml:"keepalive" env-required:"true"`
 }
 
-func NewConfigGRPC() *ConfigGRPC {
-	return &ConfigGRPC{}
-}
-
-func (c *ConfigGRPC) GetAddr() string {
+func (c ConfigGRPC) GetAddr() string {
 	return c.Addr
 }
 
-func (c *ConfigGRPC) GetKeepalive() *Keepalive {
-	return &c.Keepalive
+func (c ConfigGRPC) GetKeepalive() Keepalive {
+	return c.Keepalive
 }
 
 type Keepalive struct {
@@ -27,22 +23,22 @@ type Keepalive struct {
 	MaxConnectionAgeGrace time.Duration `yaml:"max_connection_age_grace" env-required:"true" env:"GRPC_KEEPALIVE_MAX_CONNECTION_AGE_GRACE"`
 }
 
-func (c *Keepalive) GetTime() time.Duration {
+func (c Keepalive) GetTime() time.Duration {
 	return c.Time
 }
 
-func (c *Keepalive) GetTimeout() time.Duration {
+func (c Keepalive) GetTimeout() time.Duration {
 	return c.Timeout
 }
 
-func (c *Keepalive) GetMaxConnectionIdle() time.Duration {
+func (c Keepalive) GetMaxConnectionIdle() time.Duration {
 	return c.MaxConnectionIdle
 }
 
-func (c *Keepalive) GetMaxConnectionAge() time.Duration {
+func (c Keepalive) GetMaxConnectionAge() time.Duration {
 	return c.MaxConnectionAge
 }
 
-func (c *Keepalive) GetMaxConnectionAgeGrace() time.Duration {
+func (c Keepalive) GetMaxConnectionAgeGrace() time.Duration {
 	return c.MaxConnectionAgeGrace
 }

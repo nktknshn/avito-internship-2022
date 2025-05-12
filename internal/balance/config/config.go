@@ -7,46 +7,50 @@ import (
 )
 
 type Config struct {
-	HTTP     *ConfigHTTP     `yaml:"http"      env-required:"true"`
-	Postgres *ConfigPostgres `yaml:"postgres"  env-required:"true"`
-	JWT      *ConfigJWT      `yaml:"jwt"       env-required:"true"`
-	GRPC     *ConfigGRPC     `yaml:"grpc"      env-required:"true"`
-	Mode     string          `yaml:"mode"      env-required:"true"`
-	UseCases *ConfigUseCases `yaml:"use_cases" env-required:"true"`
-	Lagging  *ConfigLagging  `yaml:"lagging"   env-required:"true"`
-	Jaeger   *ConfigJaeger   `yaml:"jaeger"    env-required:"true"`
+	HTTP     ConfigHTTP     `yaml:"http"`
+	Postgres ConfigPostgres `yaml:"postgres"`
+	JWT      ConfigJWT      `yaml:"jwt"`
+	GRPC     ConfigGRPC     `yaml:"grpc"`
+	Mode     string         `yaml:"mode"`
+	UseCases ConfigUseCases `yaml:"use_cases"`
+	Lagging  ConfigLagging  `yaml:"lagging"`
+	Jaeger   ConfigJaeger   `yaml:"jaeger"`
 }
 
 func NewConfig() *Config {
 	return &Config{}
 }
 
-func (c *Config) GetPostgres() *ConfigPostgres {
+func (c Config) GetPostgres() ConfigPostgres {
 	return c.Postgres
 }
 
-func (c *Config) GetJWT() *ConfigJWT {
+func (c Config) GetJWT() ConfigJWT {
 	return c.JWT
 }
 
-func (c *Config) GetHTTP() *ConfigHTTP {
+func (c Config) GetHTTP() ConfigHTTP {
 	return c.HTTP
 }
 
-func (c *Config) GetGRPC() *ConfigGRPC {
+func (c Config) GetGRPC() ConfigGRPC {
 	return c.GRPC
 }
 
-func (c *Config) GetMode() string {
+func (c Config) GetMode() string {
 	return c.Mode
 }
 
-func (c *Config) GetUseCases() *ConfigUseCases {
+func (c Config) GetUseCases() ConfigUseCases {
 	return c.UseCases
 }
 
-func (c *Config) GetLagging() *ConfigLagging {
+func (c Config) GetLagging() ConfigLagging {
 	return c.Lagging
+}
+
+func (c Config) GetJaeger() ConfigJaeger {
+	return c.Jaeger
 }
 
 func LoadConfigFromFile(path string) (*Config, error) {

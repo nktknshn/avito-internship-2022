@@ -7,14 +7,10 @@ type ConfigJWT struct {
 	TTL    time.Duration `yaml:"ttl"    env-required:"true" env:"JWT_TTL"`
 }
 
-func NewConfigJWT() *ConfigJWT {
-	return &ConfigJWT{}
-}
-
-func (c *ConfigJWT) GetSecret() string {
+func (c ConfigJWT) GetSecret() string {
 	return c.Secret
 }
 
-func (c *ConfigJWT) GetTTL() time.Duration {
+func (c ConfigJWT) GetTTL() time.Duration {
 	return c.TTL
 }

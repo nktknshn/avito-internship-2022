@@ -47,7 +47,7 @@ func (s *E2ETestSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	cfg.Postgres.Addr = "localhost:" + port
-	cfg.Postgres.UserName = "postgres"
+	cfg.Postgres.User = "postgres"
 	cfg.Postgres.Database = "postgres"
 	cfg.Postgres.Schema = "public"
 	cfg.Postgres.Password = s.DT.GetDockerConfig().DockerPassword

@@ -13,7 +13,7 @@ import (
 
 type PostgresCfg interface {
 	GetAddr() string
-	GetUserName() string
+	GetUser() string
 	GetPassword() string
 	GetDatabase() string
 	GetSchema() string
@@ -25,7 +25,7 @@ type PostgresCfg interface {
 
 func Connect(ctx context.Context, cfg PostgresCfg) (*sqlx.DB, error) {
 
-	url := "postgres://" + cfg.GetUserName() + ":" +
+	url := "postgres://" + cfg.GetUser() + ":" +
 		cfg.GetPassword() + "@" +
 		cfg.GetAddr() + "/" +
 		cfg.GetDatabase()
