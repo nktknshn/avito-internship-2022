@@ -11,13 +11,13 @@ type LoggerSlog struct {
 
 func NewSlog() *LoggerSlog {
 	return &LoggerSlog{
-		logger: slog.New(slog.NewJSONHandler(os.Stdout, nil)),
+		logger: slog.New(slog.NewJSONHandler(os.Stderr, nil)),
 	}
 }
 
 // InitLogger инициализирует логгер
 func (l *LoggerSlog) InitLogger(_ ...interface{}) {
-	l.logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
+	l.logger = slog.New(slog.NewTextHandler(os.Stderr, nil))
 }
 
 func (l *LoggerSlog) Debug(msg string, args ...interface{}) {

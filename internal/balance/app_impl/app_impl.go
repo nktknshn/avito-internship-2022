@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_list_users"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
@@ -74,6 +75,7 @@ func NewApplicationFromDeps(_ context.Context, deps *AppDeps) (*Application, err
 		reportTransactions  = report_transactions.New(deps.Repositories.TransactionsRepository)
 		reportRevenue       = report_revenue.New(deps.Repositories.TransactionsRepository)
 		reportRevenueExport = report_revenue_export.New(deps.FileExporter, deps.Repositories.TransactionsRepository)
+		authListUsers       = auth_list_users.New(deps.Repositories.AuthRepository)
 	)
 
 	exporterCleanup := func(ctx context.Context) {
@@ -96,6 +98,7 @@ func NewApplicationFromDeps(_ context.Context, deps *AppDeps) (*Application, err
 			ReportTransactions:  decorator.Decorate1(reportTransactions, deps.MetricsClient, deps.Logger),
 			ReportRevenue:       decorator.Decorate1(reportRevenue, deps.MetricsClient, deps.Logger),
 			ReportRevenueExport: decorator.Decorate1(reportRevenueExport, deps.MetricsClient, deps.Logger),
+			AuthListUsers:       decorator.Decorate1(authListUsers, deps.MetricsClient, deps.Logger),
 		},
 		metricsHandler:         deps.MetricsClient.GetHandler(),
 		logger:                 deps.Logger,

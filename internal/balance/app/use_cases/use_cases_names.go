@@ -9,6 +9,7 @@ const (
 	NameTransfer            = "Transfer"
 	NameAuthSignin          = "AuthSignIn"
 	NameAuthSignup          = "AuthSignUp"
+	NameAuthListUsers       = "AuthListUsers"
 	NameAuthValidateToken   = "AuthValidateToken" //nolint:gosec // G101: Potential hardcoded credentials
 	NameReportTransactions  = "ReportTransactions"
 	NameReportRevenue       = "ReportRevenue"

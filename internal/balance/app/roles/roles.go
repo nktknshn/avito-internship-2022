@@ -17,6 +17,7 @@ var useCaseRoles = map[string][]auth.AuthUserRole{
 	use_cases.NameReportRevenue:       {auth.AuthUserRoleReport, auth.AuthUserRoleAdmin},
 	use_cases.NameReportRevenueExport: {auth.AuthUserRoleReport, auth.AuthUserRoleAdmin},
 	use_cases.NameAuthSignin:          {},
+	use_cases.NameAuthListUsers:       {auth.AuthUserRoleAdmin},
 }
 
 func GetUseCaseAuthUserRoles(useCase string) ([]auth.AuthUserRole, bool) {

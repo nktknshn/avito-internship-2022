@@ -88,4 +88,33 @@ func (r *AuthRepository) GetUserByUsername(ctx context.Context, username domainA
 	return user, nil
 }
 
-var _ domainAuth.AuthRepository = &AuthRepository{}
+func (r *AuthRepository) ListUsers(ctx context.Context) ([]*domainAuth.AuthUser, error) {
+	sq := `SELECT id, username, password_hash, role FROM auth_users`
+
+	var dtos []authUserDTO
+
+	tr := r.getter.DefaultTrOrDB(ctx, r.db)
+
+	if tr == nil {
+		return nil, errors.New("tr is nil")
+	}
+
+	err := tr.SelectContext(ctx, &dtos, tr.Rebind(sq))
+
+	if err != nil {
+		return nil, errors.Wrap(err, "AuthRepository.ListUsers.SelectContext")
+	}
+
+	authUsers := make([]*domainAuth.AuthUser, len(dtos))
+
+	for i, user := range dtos {
+		authUsers[i], err = fromAuthUserDTO(&user)
+		if err != nil {
+			return nil, errors.Wrap(err, "AuthRepository.ListUsers.fromAuthUserDTO")
+		}
+	}
+
+	return authUsers, nil
+}
+
+var _ domainAuth.AuthRepository = (*AuthRepository)(nil)

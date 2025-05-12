@@ -259,7 +259,7 @@ type Application struct {
 Репозитории реализуют интерфейсы, объявленные в слое доменной логики. 
 
 ```go
-var _ domainAccount.AccountRepository = &AccountsRepository{}
+var _ domainAccount.AccountRepository = (*AccountsRepository)(nil)
 ```
 
 В их зависимостях соединение с базой данных, обернутое в библиотеку sqlx для упрощения сериализации объектов на запись и чтение из БД, и геттер текущей sqlx-транзакции библиотеки go-transaction-manager для кросс-репозиторных транзакций. Доменные сущности сериализуются в базу и обратно через DTO структуры, использование которых позволяет оградить доменную область от деталей репозиториев. Трансформация из DTO в сущности проводится посредством конструкторов из доменного слоя, что позволяет провести валидацию соотвествия доменной логике данных из базы данных.
@@ -285,13 +285,13 @@ func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
 	return acc, nil
 }
 
-func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
+func toAccountDTO(a *domainAccount.Account) *accountDTO {
 	return &accountDTO{
 		Id:               a.ID.Value(),
 		UserId:           a.UserID.Value(),
 		BalanceAvailable: a.Balance.GetAvailable().Value(),
 		BalanceReserved:  a.Balance.GetReserved().Value(),
-	}, nil
+	}
 }
 ```
 

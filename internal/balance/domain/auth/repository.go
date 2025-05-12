@@ -14,4 +14,5 @@ var (
 type AuthRepository interface {
 	GetUserByUsername(ctx context.Context, username AuthUserUsername) (*AuthUser, error)
 	CreateUser(ctx context.Context, username AuthUserUsername, passwordHash AuthUserPasswordHash, role AuthUserRole) error
+	ListUsers(ctx context.Context) ([]*AuthUser, error)
 }

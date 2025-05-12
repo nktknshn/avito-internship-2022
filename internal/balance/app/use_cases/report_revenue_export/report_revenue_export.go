@@ -19,7 +19,10 @@ type ReportRevenueExportUseCase struct {
 	exporter   file_exporter.FileExporter
 }
 
-func New(exporter file_exporter.FileExporter, repository report_revenue.ReportRevenueRepository) *ReportRevenueExportUseCase {
+func New(
+	exporter file_exporter.FileExporter,
+	repository report_revenue.ReportRevenueRepository,
+) *ReportRevenueExportUseCase {
 	if exporter == nil {
 		panic("exporter is nil")
 	}

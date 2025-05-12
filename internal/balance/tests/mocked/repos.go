@@ -111,6 +111,14 @@ func (m *AuthRepositoryMock) CreateUser(
 	return args.Error(0)
 }
 
-var _ domainAuth.AuthRepository = &AuthRepositoryMock{}
-var _ domainAccount.AccountRepository = &AccountRepositoryMock{}
-var _ domainTransaction.TransactionRepository = &TransactionRepositoryMock{}
+func (m *AuthRepositoryMock) ListUsers(ctx context.Context) ([]*domainAuth.AuthUser, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*domainAuth.AuthUser), args.Error(1)
+}
+
+var _ domainAuth.AuthRepository = (*AuthRepositoryMock)(nil)
+var _ domainAccount.AccountRepository = (*AccountRepositoryMock)(nil)
+var _ domainTransaction.TransactionRepository = (*TransactionRepositoryMock)(nil)

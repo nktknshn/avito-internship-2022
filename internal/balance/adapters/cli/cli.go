@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_list_users"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
 )
@@ -38,4 +39,13 @@ func (a *CliAdapter) SignIn(ctx context.Context, username string, password strin
 		return "", err
 	}
 	return out.Token.String(), nil
+}
+
+func (a *CliAdapter) ListUsers(ctx context.Context) ([]auth_list_users.OutUser, error) {
+	in := auth_list_users.In{}
+	out, err := a.app.AuthListUsers.Handle(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return out.Users, nil
 }
