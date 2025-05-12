@@ -1,3 +1,4 @@
+//nolint:nonamedreturns // используем в defer
 package decorator
 
 import (

@@ -25,7 +25,7 @@ func (r Route) GetHandler() http.Handler {
 	return r.Handler
 }
 
-func Attach(router commonHttp.RouteAttacher, handlers *adaptersHttp.HttpAdapter) {
+func Attach(router commonHttp.RouteAttacher, handlers *adaptersHttp.HTTPAdapter) {
 	router.Attach(Route{
 		Path:    "/v1/signin",
 		Methods: []string{http.MethodPost},

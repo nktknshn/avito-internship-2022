@@ -25,7 +25,7 @@ func TestE2ETestSuite(t *testing.T) {
 
 type E2ETestSuite struct {
 	testing_pg.TestSuitePg
-	server  *server.BalanceHttpServer
+	server  *server.BalanceHTTPServer
 	cleanup func()
 }
 
@@ -56,7 +56,7 @@ func (s *E2ETestSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	s.cleanup = cleanup
-	s.server = server.NewHttpServer(cfg, app)
+	s.server = server.NewHTTPServer(cfg, app)
 	s.Require().NoError(s.server.Init(context.Background()))
 
 }

@@ -1,3 +1,4 @@
+//nolint:nonamedreturns // используем в defer
 package decorator
 
 import (
@@ -21,7 +22,7 @@ type recoverHandler struct {
 	logger logging.Logger
 }
 
-func (h recoverHandler) Handle(ctx context.Context, err error) (errRecovered error) {
+func (h recoverHandler) Handle(_ context.Context, err error) (errRecovered error) {
 	h.logger.Error("panic recovered", "error", err)
 	return err
 }

@@ -20,7 +20,7 @@ type Handler interface {
 	GetHandler() http.Handler
 }
 
-type HttpAdapter struct {
+type HTTPAdapter struct {
 	GetBalance          Handler
 	Deposit             Handler
 	Reserve             Handler
@@ -33,7 +33,7 @@ type HttpAdapter struct {
 	AuthSignIn          Handler
 }
 
-func NewHttpAdapter(app *app.Application) *HttpAdapter {
+func NewHTTPAdapter(app *app.Application) *HTTPAdapter {
 
 	handlerGetBalance := get_balance.New(app.AuthValidateToken, app.GetBalance)
 	handlerDeposit := deposit.New(app.AuthValidateToken, app.Deposit)
@@ -46,7 +46,7 @@ func NewHttpAdapter(app *app.Application) *HttpAdapter {
 	handlerReportRevenue := report_revenue.New(app.AuthValidateToken, app.ReportRevenue)
 	handlerReportRevenueExport := report_revenue_export.New(app.AuthValidateToken, app.ReportRevenueExport)
 
-	return &HttpAdapter{
+	return &HTTPAdapter{
 		GetBalance:          handlerGetBalance,
 		Deposit:             handlerDeposit,
 		Reserve:             handlerReserve,

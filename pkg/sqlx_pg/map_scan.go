@@ -28,8 +28,8 @@ func NamedSelectMapScan(
 
 	defer rows.Close()
 
-	if err := rows.Err(); err != nil {
-		return err
+	if rowsErr := rows.Err(); rowsErr != nil {
+		return rowsErr
 	}
 
 	for rows.Next() {

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 )
 
@@ -54,21 +55,21 @@ func unmarshalCursor(cursor report_transactions.Cursor) (*cursorUnion, error) {
 	}
 
 	if bytes.Contains(cursorBytes, []byte("amount")) {
-		var cursorAmount cursorAmount
-		err = json.Unmarshal(cursorBytes, &cursorAmount)
+		var curs cursorAmount
+		err = json.Unmarshal(cursorBytes, &curs)
 		if err != nil {
 			return nil, err
 		}
-		return &cursorUnion{Amount: &cursorAmount}, nil
+		return &cursorUnion{Amount: &curs}, nil
 	}
 
 	if bytes.Contains(cursorBytes, []byte("updated_at")) {
-		var cursorUpdatedAt cursorUpdatedAt
-		err = json.Unmarshal(cursorBytes, &cursorUpdatedAt)
+		var curs cursorUpdatedAt
+		err = json.Unmarshal(cursorBytes, &curs)
 		if err != nil {
 			return nil, err
 		}
-		return &cursorUnion{UpdatedAt: &cursorUpdatedAt}, nil
+		return &cursorUnion{UpdatedAt: &curs}, nil
 	}
 
 	return nil, errors.New("invalid cursor")

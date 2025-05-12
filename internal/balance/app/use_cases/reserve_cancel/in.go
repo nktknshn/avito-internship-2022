@@ -6,7 +6,7 @@ import (
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 )
 
-// Принимает id пользователя, ИД услуги, ИД заказа, сумму.
+// In принимает id пользователя, ИД услуги, ИД заказа, сумму.
 type In struct {
 	UserID    domain.UserID
 	OrderID   domain.OrderID

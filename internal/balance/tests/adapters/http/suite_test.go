@@ -33,26 +33,26 @@ type testCase struct {
 }
 
 func TestHttpTestSuite(t *testing.T) {
-	suite.Run(t, new(HttpTestSuite))
+	suite.Run(t, new(HTTPTestSuite))
 }
 
-type HttpTestSuite struct {
+type HTTPTestSuite struct {
 	testing_pg.TestSuitePg
 	app         *mocked.AppMocked
-	httpAdapter *adaptersHttp.HttpAdapter
+	httpAdapter *adaptersHttp.HTTPAdapter
 }
 
-func (s *HttpTestSuite) SetupTest() {
+func (s *HTTPTestSuite) SetupTest() {
 	s.app = mocked.NewMockedApp()
-	s.httpAdapter = adaptersHttp.NewHttpAdapter(&s.app.Application)
+	s.httpAdapter = adaptersHttp.NewHTTPAdapter(&s.app.Application)
 	s.setRouteParams(map[string]string{})
 }
 
-func (s *HttpTestSuite) SetupSubTest() {
+func (s *HTTPTestSuite) SetupSubTest() {
 	s.SetupTest()
 }
 
-func (s *HttpTestSuite) runTestCases(useCase func() *mock.Mock, handler func() adaptersHttp.Handler, testCases []testCase) {
+func (s *HTTPTestSuite) runTestCases(useCase func() *mock.Mock, handler func() adaptersHttp.Handler, testCases []testCase) {
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
 
@@ -98,7 +98,7 @@ func (s *HttpTestSuite) runTestCases(useCase func() *mock.Mock, handler func() a
 	}
 }
 
-func (s *HttpTestSuite) requestAuthPayload(
+func (s *HTTPTestSuite) requestAuthPayload(
 	h adaptersHttp.Handler,
 	payload map[string]any,
 	url string,
@@ -111,8 +111,8 @@ func (s *HttpTestSuite) requestAuthPayload(
 	return req, resp
 }
 
-//nolint:unparam
-func (s *HttpTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
+//nolint:unparam // может понадобится
+func (s *HTTPTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
 	req, _ := http.NewRequest("", "", nil)
 	req.Header.Set("Authorization", "Bearer "+fixtures.AuthToken)
 	resp := httptest.NewRecorder()
@@ -120,14 +120,14 @@ func (s *HttpTestSuite) requestAuth(h adaptersHttp.Handler) (*http.Request, *htt
 	return req, resp
 }
 
-func (s *HttpTestSuite) request(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
+func (s *HTTPTestSuite) request(h adaptersHttp.Handler) (*http.Request, *httptest.ResponseRecorder) {
 	req, _ := http.NewRequest("", "", nil)
 	resp := httptest.NewRecorder()
 	h.GetHandler().ServeHTTP(resp, req)
 	return req, resp
 }
 
-func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any, url string) (*http.Request, *httptest.ResponseRecorder) {
+func (s *HTTPTestSuite) requestPayload(h adaptersHttp.Handler, payload any, url string) (*http.Request, *httptest.ResponseRecorder) {
 	jsonPayload, _ := json.Marshal(payload)
 	req, _ := http.NewRequest("", url, bytes.NewBuffer(jsonPayload))
 	resp := httptest.NewRecorder()
@@ -135,13 +135,13 @@ func (s *HttpTestSuite) requestPayload(h adaptersHttp.Handler, payload any, url 
 	return req, resp
 }
 
-func (s *HttpTestSuite) setRouteParams(params map[string]string) {
+func (s *HTTPTestSuite) setRouteParams(params map[string]string) {
 	// TODO: исправить на конструктор для NewHttpAdapter
 	ergo.SetVarsGetter(NewMuxVarsGetterMock(params))
 }
 
 // setupAuthAdmin авторизация вернет роль администратора
-func (s *HttpTestSuite) setupAuthAdmin() {
+func (s *HTTPTestSuite) setupAuthAdmin() {
 	s.app.SetupAuth(fixtures.AuthToken, auth_validate_token.Out{
 		UserID: fixtures.AuthUserID,
 		Role:   domainAuth.AuthUserRoleAdmin,
@@ -149,7 +149,7 @@ func (s *HttpTestSuite) setupAuthAdmin() {
 }
 
 // setupAuthRole авторизация вернет указанную роль
-func (s *HttpTestSuite) setupAuthRole(role domainAuth.AuthUserRole) {
+func (s *HTTPTestSuite) setupAuthRole(role domainAuth.AuthUserRole) {
 	s.app.SetupAuth(fixtures.AuthToken, auth_validate_token.Out{
 		UserID: fixtures.AuthUserID,
 		Role:   role,

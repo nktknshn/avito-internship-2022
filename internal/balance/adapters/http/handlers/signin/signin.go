@@ -5,11 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type HandlerSignIn struct {
@@ -68,7 +69,7 @@ func makeHandlerSignIn(u usecase) http.Handler {
 		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
 		in, err := pl.GetIn()
 

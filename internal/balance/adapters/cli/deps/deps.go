@@ -32,7 +32,7 @@ func GetApplication(ctx context.Context) (*app_impl.Application, error) {
 	return _app, nil
 }
 
-func GetConfig(ctx context.Context) (*config.Config, error) {
+func GetConfig(_ context.Context) (*config.Config, error) {
 	if _config != nil {
 		return _config, nil
 	}

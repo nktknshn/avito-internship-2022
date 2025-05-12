@@ -13,9 +13,11 @@ type ResultRows struct {
 	Rows    []map[string]any
 }
 
+const padding = 2
+
 func (r *ResultRows) TabbedString(pickHeaders ...string) string {
 	var buf bytes.Buffer
-	w := tabwriter.NewWriter(&buf, 0, 0, 2, ' ', 0)
+	w := tabwriter.NewWriter(&buf, 0, 0, padding, ' ', 0)
 
 	for i, header := range r.Headers {
 		if len(pickHeaders) > 0 && !slices.Contains(pickHeaders, header) {
@@ -53,6 +55,8 @@ func (r *ResultRows) TabbedString(pickHeaders ...string) string {
 		fmt.Fprintln(w)
 	}
 
-	w.Flush()
+	if err := w.Flush(); err != nil {
+		panic(err)
+	}
 	return buf.String()
 }

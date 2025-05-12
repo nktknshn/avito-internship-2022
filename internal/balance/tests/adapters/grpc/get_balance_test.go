@@ -3,12 +3,13 @@ package grpc_test
 import (
 	"errors"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
+	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 )
 
 type testCaseGetBalance struct {
@@ -64,8 +65,8 @@ func (s *GrpcTestSuite) TestGetBalance() {
 				s.Require().Equal(tc.errorCode, status.Code(err))
 			} else {
 				s.Require().NoError(err)
-				s.Require().Equal(tc.out.Available.Value(), resp.Available)
-				s.Require().Equal(tc.out.Reserved.Value(), resp.Reserved)
+				s.Require().Equal(tc.out.Available.Value(), resp.GetAvailable())
+				s.Require().Equal(tc.out.Reserved.Value(), resp.GetReserved())
 			}
 		})
 	}

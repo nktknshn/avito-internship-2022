@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 	"github.com/ory/dockertest"
 	"github.com/ory/dockertest/docker"
+
+	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 )
 
 type DatabaseTestDockerConfig struct {
@@ -41,6 +42,7 @@ type DockerDatabase struct {
 	pool          *dockertest.Pool
 }
 
+//nolint:mnd // дефолтный конфиг
 var defaultDockerDatabaseConfig = DatabaseTestDockerConfig{
 	Repository:     "postgres",
 	Tag:            "latest",
@@ -140,6 +142,11 @@ func (dt *DockerDatabase) RunPostgresDocker(ctx context.Context) error {
 	return nil
 }
 
+const (
+	maxOpenConnections = 100
+	maxIdleConnections = 10
+)
+
 func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*sqlx.DB, error) {
 
 	cfg := &config{
@@ -148,8 +155,8 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 		Password:              dt.dockerConfig.DockerPassword,
 		Database:              "postgres",
 		Schema:                "public",
-		MaxIdleConnections:    10,
-		MaxOpenConnections:    100,
+		MaxIdleConnections:    maxOpenConnections,
+		MaxOpenConnections:    maxIdleConnections,
 		ConnectionMaxLifetime: time.Hour,
 		UpMigrations:          true,
 		ReturnUTC:             true,
@@ -177,7 +184,7 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 	}
 
 	if cfg.UpMigrations && migrationsDir != "" {
-		if _, err := os.Stat(migrationsDir); err != nil {
+		if _, statErr := os.Stat(migrationsDir); statErr != nil {
 			return nil, errors.New("migrations directory does not exist or not accessible")
 		}
 		err = sqlx_pg.Migrate(ctx, conn.DB, migrationsDir)

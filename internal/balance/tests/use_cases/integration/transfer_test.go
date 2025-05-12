@@ -128,7 +128,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_DoubleTransaction() {
 	wg := sync.WaitGroup{}
 	lock := make(chan struct{})
 	errorCount := atomic.Int32{}
-	for i := 0; i < workers; i++ {
+	for range workers {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

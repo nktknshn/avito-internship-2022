@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestAuthSignin() {
+func (s *HTTPTestSuite) TestAuthSignin() {
 	testCases := []testCase{
 		{
 			name: "success",

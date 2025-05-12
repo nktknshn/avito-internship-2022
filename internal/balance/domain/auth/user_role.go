@@ -23,8 +23,8 @@ const (
 	AuthUserRoleNobody  AuthUserRole = "nobody"
 )
 
-func (a AuthUserRole) Validate() error {
-	switch a {
+func (r AuthUserRole) Validate() error {
+	switch r {
 	case AuthUserRoleAdmin, AuthUserRoleAccount, AuthUserRoleReport, AuthUserRoleNobody:
 		return nil
 	}

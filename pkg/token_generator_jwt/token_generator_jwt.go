@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
 )
 
@@ -38,7 +39,7 @@ func NewTokenGeneratorJWT[T any](signKey []byte, tokenTTL time.Duration) *TokenG
 	}
 }
 
-func (t *TokenGeneratorJWT[T]) GenerateToken(ctx context.Context, claims T) (string, error) {
+func (t *TokenGeneratorJWT[T]) GenerateToken(_ context.Context, claims T) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, TokenClaims[T]{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(t.tokenTTL)),
@@ -66,9 +67,9 @@ func NewTokenValidatorJWT[T any](signKey []byte) *TokenValidatorJWT[T] {
 	}
 }
 
-func (t *TokenValidatorJWT[T]) ValidateToken(ctx context.Context, token string) (*T, error) {
+func (t *TokenValidatorJWT[T]) ValidateToken(_ context.Context, token string) (*T, error) {
 
-	parsedToken, err := jwt.ParseWithClaims(token, &TokenClaims[T]{}, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &TokenClaims[T]{}, func(_ *jwt.Token) (interface{}, error) {
 		return t.signKey, nil
 	})
 

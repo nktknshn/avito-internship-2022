@@ -4,23 +4,24 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue_export"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestReportRevenue() {
-	var validUrl = "?year=2021&month=1"
+func (s *HTTPTestSuite) TestReportRevenue() {
+	var validURL = "?year=2021&month=1"
 
 	testCases := []testCase{
 		{
 			name:       "success",
 			auth:       true,
-			url:        validUrl,
+			url:        validURL,
 			expectCode: http.StatusOK,
 			useCaseReturn: returnSuccess2(report_revenue.Out{
 				Records: []report_revenue.OutRecord{
@@ -82,7 +83,7 @@ func (s *HttpTestSuite) TestReportRevenue() {
 		{
 			name:       "user is not allowed",
 			auth:       true,
-			url:        validUrl,
+			url:        validURL,
 			expectCode: http.StatusForbidden,
 			expectErr:  handlers_auth.ErrUserNotAllowed.Error(),
 			authRole:   domainAuth.AuthUserRoleNobody,
@@ -90,7 +91,7 @@ func (s *HttpTestSuite) TestReportRevenue() {
 		{
 			name:          "use case error",
 			auth:          true,
-			url:           validUrl,
+			url:           validURL,
 			expectCode:    http.StatusInternalServerError,
 			useCaseReturn: returnError2[report_revenue.Out](errors.New("some error")),
 			expectErr:     "internal server error",
@@ -104,14 +105,14 @@ func (s *HttpTestSuite) TestReportRevenue() {
 	}, testCases)
 }
 
-func (s *HttpTestSuite) TestReportRevenueExport() {
-	var validUrl = "?year=2021&month=1"
+func (s *HTTPTestSuite) TestReportRevenueExport() {
+	var validURL = "?year=2021&month=1"
 
 	testCases := []testCase{
 		{
 			name:       "success",
 			auth:       true,
-			url:        validUrl,
+			url:        validURL,
 			expectCode: http.StatusOK,
 			useCaseReturn: returnSuccess2(report_revenue_export.Out{
 				URL: "/download/report.csv",
@@ -151,7 +152,7 @@ func (s *HttpTestSuite) TestReportRevenueExport() {
 		{
 			name:       "user is not allowed",
 			auth:       true,
-			url:        validUrl,
+			url:        validURL,
 			expectCode: http.StatusForbidden,
 			expectErr:  handlers_auth.ErrUserNotAllowed.Error(),
 			authRole:   domainAuth.AuthUserRoleNobody,
@@ -159,7 +160,7 @@ func (s *HttpTestSuite) TestReportRevenueExport() {
 		{
 			name:          "use case error",
 			auth:          true,
-			url:           validUrl,
+			url:           validURL,
 			expectCode:    http.StatusInternalServerError,
 			useCaseReturn: returnError2[report_revenue_export.Out](errors.New("some error")),
 			expectErr:     "internal server error",

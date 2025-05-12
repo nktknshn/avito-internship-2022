@@ -24,12 +24,12 @@ type TestSuiteAuthPg struct {
 	repo *auth_pg.AuthRepository
 }
 
-func (suite *TestSuiteAuthPg) SetupTest() {
-	suite.repo = auth_pg.New(suite.Conn, trmsqlx.DefaultCtxGetter)
+func (s *TestSuiteAuthPg) SetupTest() {
+	s.repo = auth_pg.New(s.Conn, trmsqlx.DefaultCtxGetter)
 }
 
-func (suite *TestSuiteAuthPg) TearDownTest() {
-	suite.ExecSQL("delete from auth_users")
+func (s *TestSuiteAuthPg) TearDownTest() {
+	s.ExecSQL("delete from auth_users")
 }
 
 func (s *TestSuiteAuthPg) TestGetUserByUsername_Success() {

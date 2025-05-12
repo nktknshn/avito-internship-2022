@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestTransfer() {
+func (s *HTTPTestSuite) TestTransfer() {
 
 	var validPayload = map[string]any{
 		"from_user_id": fixtures.UserID_i64,

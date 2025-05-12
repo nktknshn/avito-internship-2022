@@ -6,31 +6,32 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
 	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 var (
 	errInternal = errors.New("internal server error")
 )
 
-func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+func handlerErrorFunc(_ context.Context, w http.ResponseWriter, _ *http.Request, err error) {
 
 	var errorBody any
 	var status int
 
 	var internalServerError ergo.InternalServerError
-	var errorWithHttpStatus ergo.ErrorWithHttpStatus
+	var errorWithHTTPStatus ergo.ErrorWithHttpStatus
 
 	if errors.As(err, &internalServerError) {
 		// InternalServerError подразумевает, что ошибка не будет показана клиенту
 		status = http.StatusInternalServerError
 		errorBody = makeErrorBody(errInternal)
-	} else if errors.As(err, &errorWithHttpStatus) {
+	} else if errors.As(err, &errorWithHTTPStatus) {
 		// если ошибка обернута в хендлере с http статусом, то используем этот статус
-		status = errorWithHttpStatus.HttpStatusCode
-		errorBody = makeErrorBody(errorWithHttpStatus.Err)
+		status = errorWithHTTPStatus.HttpStatusCode
+		errorBody = makeErrorBody(errorWithHTTPStatus.Err)
 	} else if domainError.IsDomainError(err) {
 		// если ошибка домена, то используем http статус 400
 		errorBody = makeErrorBody(err)
@@ -53,7 +54,9 @@ func handlerErrorFunc(ctx context.Context, w http.ResponseWriter, r *http.Reques
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	_, err = w.Write(bs)
+
+	// TODO: check error
+	w.Write(bs)
 }
 
 // обработчик на дефолтном поведении бибилиотеки ergo

@@ -1,4 +1,3 @@
-//nolint:testpackage
 package decorator
 
 import (
@@ -14,7 +13,7 @@ import (
 
 type useCase0 struct{}
 
-func (u *useCase0) Handle(ctx context.Context, in int) error {
+func (u *useCase0) Handle(_ context.Context, _ int) error {
 	panic("panic error")
 }
 func (u *useCase0) GetName() string {
@@ -23,7 +22,7 @@ func (u *useCase0) GetName() string {
 
 type useCase1 struct{}
 
-func (u *useCase1) Handle(ctx context.Context, in int) (int, error) {
+func (u *useCase1) Handle(_ context.Context, _ int) (int, error) {
 	panic("panic error")
 }
 
@@ -35,7 +34,7 @@ type mockRecoverHandler struct {
 	mock.Mock
 }
 
-func (m *mockRecoverHandler) Handle(ctx context.Context, err error) (errRecovered error) {
+func (m *mockRecoverHandler) Handle(ctx context.Context, err error) error {
 	args := m.Called(ctx, err)
 	return args.Error(0)
 }

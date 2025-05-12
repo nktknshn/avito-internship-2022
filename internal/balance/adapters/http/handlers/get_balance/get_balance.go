@@ -7,13 +7,14 @@ import (
 
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
-type getBalanceHandler struct {
+type GetBalanceHandler struct {
 	auth    handlers_auth.AuthUseCase
 	useCase useCase
 }
@@ -38,7 +39,7 @@ type useCase interface {
 // @Failure      403  {object}  handlers_builder.Error
 // @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/balance/{user_id} [get]
-func New(auth handlers_auth.AuthUseCase, useCase useCase) *getBalanceHandler {
+func New(auth handlers_auth.AuthUseCase, useCase useCase) *GetBalanceHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -47,10 +48,10 @@ func New(auth handlers_auth.AuthUseCase, useCase useCase) *getBalanceHandler {
 		panic("useCase is nil")
 	}
 
-	return &getBalanceHandler{auth, useCase}
+	return &GetBalanceHandler{auth, useCase}
 }
 
-func (h *getBalanceHandler) GetHandler() http.Handler {
+func (h *GetBalanceHandler) GetHandler() http.Handler {
 	return makeGetBalanceHandler(h.auth, h.useCase)
 }
 
@@ -65,7 +66,7 @@ func makeGetBalanceHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handl
 		paramUserID = ergo.RouterParamInt64("user_id").Attach(b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		in, err := get_balance.NewInFromValues(paramUserID.Get(r))
 		if err != nil {
 			return nil, ergo.NewError(http.StatusBadRequest, err)

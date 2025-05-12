@@ -1,6 +1,6 @@
 package amount
 
-// Кол-во копеек больше 0
+// AmountPositive представляет положительное количество копеек больше 0
 type AmountPositive struct {
 	amount int64
 }

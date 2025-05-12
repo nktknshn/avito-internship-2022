@@ -3,6 +3,8 @@ package http_test
 import (
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
@@ -10,16 +12,15 @@ import (
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestReportTransactions() {
+func (s *HTTPTestSuite) TestReportTransactions() {
 
 	var validRouteParams = map[string]string{
 		"user_id": fixtures.UserID_str,
 	}
 
-	var validUrl = "?limit=10&sorting=updated_at&sorting_direction=desc"
+	var validURL = "?limit=10&sorting=updated_at&sorting_direction=desc"
 
 	var transactionSpend = report_transactions.OutTransactionSpend{
 		ID:           domainTransaction.TransactionSpendID(fixtures.UUID_1),
@@ -55,7 +56,7 @@ func (s *HttpTestSuite) TestReportTransactions() {
 	testCases := []testCase{
 		{
 			name:        "success",
-			url:         validUrl,
+			url:         validURL,
 			routeParams: validRouteParams,
 			useCaseReturn: returnSuccess2(report_transactions.Out{
 				Cursor:  "cursor",
@@ -106,7 +107,7 @@ func (s *HttpTestSuite) TestReportTransactions() {
 		{
 			name:          "not found",
 			auth:          true,
-			url:           validUrl,
+			url:           validURL,
 			routeParams:   validRouteParams,
 			useCaseReturn: returnError2[report_transactions.Out](domainAccount.ErrAccountNotFound),
 			expectCode:    http.StatusNotFound,

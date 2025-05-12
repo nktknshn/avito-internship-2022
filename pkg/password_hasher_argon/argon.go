@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 
 	"golang.org/x/crypto/argon2"
@@ -171,6 +172,7 @@ func parseArgon2FormatString(formatString string) (*hashedPassword, error) {
 
 	parts := strings.Split(saltAndHash, "$")
 
+	//nolint: mnd // ...
 	if len(parts) != 2 {
 		return nil, errors.New("invalid salt and hash")
 	}
@@ -190,8 +192,16 @@ func parseArgon2FormatString(formatString string) (*hashedPassword, error) {
 
 	hp.salt = salt
 	hp.hash = hash
-	hp.keyLength = uint32(len(hash))
-	hp.saltLength = uint32(len(salt))
+
+	hashLen := len(hash)
+	saltLen := len(salt)
+
+	if hashLen > math.MaxUint32 || saltLen > math.MaxUint32 {
+		return nil, errors.New("hash or salt length exceeds maximum allowed size")
+	}
+
+	hp.keyLength = uint32(hashLen)
+	hp.saltLength = uint32(saltLen)
 
 	return &hp, nil
 }

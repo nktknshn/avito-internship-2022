@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestReserveConfirm() {
+func (s *HTTPTestSuite) TestReserveConfirm() {
 	var validPayload = map[string]any{
 		"user_id":    fixtures.UserID_i64,
 		"product_id": fixtures.ProductID_i64,

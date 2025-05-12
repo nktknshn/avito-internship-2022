@@ -422,18 +422,31 @@ linters:
     rules:
       - source: 'TODO'
         linters: [ godot ]
+      - text: 'declaration of "err" shadows declaration'
+        linters: [ govet ]
+      - text: 'comment on exported function'
+        linters: [ revive, staticcheck ]
+        path: 'internal/balance/adapters/http/handlers/'
+      - text: 'type name will be used as \S+ by other packages, and that stutters;'
+        linters: [ revive ]
       - text: 'should have a package comment'
         linters: [ revive ]
-      - text: 'use an underscore in package name'
+      - text: 'don''t use an underscore in package name'
+        linters: [ revive ]
+      - text: 'don''t use ALL_CAPS in Go names'
+        linters: [ revive ]
+      - text: 'don''t use underscores in Go names'
+        linters: [ revive, staticcheck ]
+      - text: 'exported \S+ \S+ should have comment( \(or a comment on this block\))? or be unexported'
         linters: [ revive ]
       - text: 'should not use underscores in package names'
+        linters: [ staticcheck ]
+      - text: 'should not use underscores in Go names'
         linters: [ staticcheck ]
       - text: 'don''t use underscores in Go names'
         linters: [ staticcheck ]
       - text: 'package should be \S+ instead of \S+'
         linters: [ testpackage ]
-      - text: 'exported \S+ \S+ should have comment( \(or a comment on this block\))? or be unexported'
-        linters: [ revive ]
       - text: 'package comment should be of the form ".+"'
         source: '// ?(nolint|TODO)'
         linters: [ revive ]

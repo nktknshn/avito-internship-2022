@@ -2,12 +2,13 @@ package transactions_pg
 
 import (
 	"context"
-	"fmt"
+	"strconv"
+
+	"github.com/pkg/errors"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	"github.com/nktknshn/avito-internship-2022/internal/common/select_query_builder"
-	"github.com/pkg/errors"
 )
 
 var cteQuery = `combined_transactions AS (
@@ -141,7 +142,11 @@ func reportTransactionsSetCursor(
 	return nil
 }
 
-func reportTransactionsSetSorting(qb *select_query_builder.SelectQueryBuilder, sorting report_transactions.Sorting, sortingDirection report_transactions.SortingDirection) {
+func reportTransactionsSetSorting(
+	qb *select_query_builder.SelectQueryBuilder,
+	sorting report_transactions.Sorting,
+	sortingDirection report_transactions.SortingDirection,
+) {
 
 	if sortingDirection.IsAsc() {
 		qb.Order = "t.updated_at ASC, t.id ASC"
@@ -173,7 +178,11 @@ var (
 	defaultSortingDirection = report_transactions.SortingDirectionDesc
 )
 
-func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, userID domain.UserID, query report_transactions.GetTransactionsQuery) (report_transactions.ReportTransactionsPage, error) {
+func (r *TransactionsRepository) GetTransactionsByUserID(
+	ctx context.Context,
+	userID domain.UserID,
+	query report_transactions.GetTransactionsQuery,
+) (report_transactions.ReportTransactionsPage, error) {
 
 	qb := select_query_builder.New()
 
@@ -187,7 +196,8 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 	queryLimit := query.Limit.Value()
 
 	if queryLimit > 0 {
-		qb.Limit = fmt.Sprintf("%d", queryLimit+1)
+		// qb.Limit = fmt.Sprintf("%d", queryLimit+1)
+		qb.Limit = strconv.FormatUint(queryLimit+1, 10)
 		queryArgs["limit"] = queryLimit + 1
 	}
 
@@ -227,7 +237,10 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 	err = tr.SelectContext(ctx, &transactions, sql, args...)
 
 	if err != nil {
-		return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.SelectContext")
+		return report_transactions.ReportTransactionsPage{}, errors.Wrap(
+			err,
+			"TransactionsRepository.GetTransactionsByUserID.SelectContext",
+		)
 	}
 
 	if len(transactions) == 0 {
@@ -253,7 +266,10 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 	for i, transaction := range transactions {
 		model, err := fromReportTransactionDTO(&transaction)
 		if err != nil {
-			return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.fromReportTransactionDTO")
+			return report_transactions.ReportTransactionsPage{}, errors.Wrap(
+				err,
+				"TransactionsRepository.GetTransactionsByUserID.fromReportTransactionDTO",
+			)
 		}
 		result.Transactions[i] = model
 
@@ -270,7 +286,10 @@ func (r *TransactionsRepository) GetTransactionsByUserID(ctx context.Context, us
 				},
 			})
 			if err != nil {
-				return report_transactions.ReportTransactionsPage{}, errors.Wrap(err, "TransactionsRepository.GetTransactionsByUserID.marshalCursor")
+				return report_transactions.ReportTransactionsPage{}, errors.Wrap(
+					err,
+					"TransactionsRepository.GetTransactionsByUserID.marshalCursor",
+				)
 			}
 			result.Cursor = nextCursor
 		}

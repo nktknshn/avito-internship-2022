@@ -20,7 +20,7 @@ func fromAuthUserDTO(a *authUserDTO) (*domainAuth.AuthUser, error) {
 	return authUser, nil
 }
 
-//nolint:unused
+//nolint:unused // может пригодиться
 func toAuthUserDTO(a *domainAuth.AuthUser) *authUserDTO {
 	return &authUserDTO{
 		ID:           a.ID.Value(),

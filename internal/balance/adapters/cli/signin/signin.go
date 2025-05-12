@@ -3,9 +3,10 @@ package signin
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/deps"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/root"
-	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -15,7 +16,8 @@ func init() {
 var cmdSignIn = &cobra.Command{
 	Use:   "signin",
 	Short: "Sign in",
-	Args:  cobra.ExactArgs(2),
+	//nolint:mnd // ...
+	Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
 		cliAdapter, err := deps.GetCliAdapter(ctx)

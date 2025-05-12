@@ -5,11 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type TransferHandler struct {
@@ -55,8 +56,8 @@ func (h *TransferHandler) GetHandler() http.Handler {
 
 type requestBody struct {
 	FromUserID int64 `json:"from_user_id" example:"1"`
-	ToUserID   int64 `json:"to_user_id" example:"2"`
-	Amount     int64 `json:"amount" example:"100"`
+	ToUserID   int64 `json:"to_user_id"   example:"2"`
+	Amount     int64 `json:"amount"       example:"100"`
 }
 
 func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
@@ -65,7 +66,7 @@ func makeTransferHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler
 		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
 
 		in, err := transfer.NewInFromValues(

@@ -54,11 +54,11 @@ func TestAmount_Sub(t *testing.T) {
 	amount1 := must.Must(domainAmount.New(10))
 	amount2 := must.Must(domainAmount.NewPositive(20))
 
-	amount, err := amount1.Sub(amount2)
+	_, err := amount1.Sub(amount2)
 	require.ErrorIs(t, err, domainAmount.ErrInsufficientAmount)
 
 	amount1 = must.Must(domainAmount.New(30))
-	amount, err = amount1.Sub(amount2)
+	amount, err := amount1.Sub(amount2)
 	require.NoError(t, err)
 	require.Equal(t, int64(10), amount.Value())
 }

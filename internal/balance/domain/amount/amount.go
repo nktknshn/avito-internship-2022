@@ -6,7 +6,7 @@ import (
 	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
-// Неотрициательное кол-во копеек
+// Amount представляет неотрицательное количество копеек
 type Amount struct {
 	amount int64
 }

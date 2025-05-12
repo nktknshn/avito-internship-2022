@@ -8,7 +8,7 @@ type MuxVarsGetterMock struct {
 	vars map[string]string
 }
 
-func (m *MuxVarsGetterMock) GetVar(r *http.Request, key string) (string, bool) {
+func (m *MuxVarsGetterMock) GetVar(_ *http.Request, key string) (string, bool) {
 	return m.vars[key], m.vars[key] != ""
 }
 

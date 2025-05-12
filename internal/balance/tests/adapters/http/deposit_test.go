@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestDeposit() {
+func (s *HTTPTestSuite) TestDeposit() {
 
 	var validPayload = map[string]any{
 		"user_id": fixtures.UserID_i64,

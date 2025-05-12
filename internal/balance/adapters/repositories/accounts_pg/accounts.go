@@ -103,7 +103,7 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 
 	var newDTO *accountDTO
 	var err error
-	if accDTO.Id == 0 {
+	if accDTO.ID == 0 {
 		newDTO, err = r.create(ctx, tr, accDTO)
 	} else {
 		newDTO, err = r.update(ctx, tr, accDTO)

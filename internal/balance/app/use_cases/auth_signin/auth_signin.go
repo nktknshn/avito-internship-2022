@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/password_hasher"
@@ -53,8 +54,8 @@ func New(
 	}
 }
 
-// Проверить пользователя по имени и паролю
-// Сгенерировать и вернуть токен
+// Handle проверяет пользователя по имени и паролю.
+// Генерирует и возвращает токен
 func (u *AuthSigninUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	user, err := u.authRepo.GetUserByUsername(ctx, in.username)
 

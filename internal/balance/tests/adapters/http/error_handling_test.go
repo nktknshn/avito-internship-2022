@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) Test_DomainError() {
+func (s *HTTPTestSuite) Test_DomainError() {
 	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
@@ -22,7 +22,7 @@ func (s *HttpTestSuite) Test_DomainError() {
 	s.Require().Equal(ejsonStr(domainAccount.ErrAccountNotFound.Error()), resp.Body.String())
 }
 
-func (s *HttpTestSuite) Test_InternalError() {
+func (s *HTTPTestSuite) Test_InternalError() {
 	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("internal server error that should not be exposed to the client"))
@@ -34,7 +34,7 @@ func (s *HttpTestSuite) Test_InternalError() {
 	s.Require().Equal(ejsonStr("internal server error"), resp.Body.String())
 }
 
-func (s *HttpTestSuite) Test_ParserError() {
+func (s *HTTPTestSuite) Test_ParserError() {
 	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("parser error"))

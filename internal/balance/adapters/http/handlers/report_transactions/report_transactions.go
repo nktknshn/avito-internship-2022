@@ -5,14 +5,15 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
-type reportTransactionsHandler struct {
+type ReportTransactionsHandler struct {
 	auth    handlers_auth.AuthUseCase
 	useCase useCase
 }
@@ -40,7 +41,7 @@ type useCase interface {
 // @Failure      403  {object}  handlers_builder.Error
 // @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/report/transactions/{user_id} [get]
-func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportTransactionsHandler {
+func New(auth handlers_auth.AuthUseCase, useCase useCase) *ReportTransactionsHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -49,10 +50,10 @@ func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportTransactionsHan
 		panic("useCase is nil")
 	}
 
-	return &reportTransactionsHandler{auth, useCase}
+	return &ReportTransactionsHandler{auth, useCase}
 }
 
-func (h *reportTransactionsHandler) GetHandler() http.Handler {
+func (h *ReportTransactionsHandler) GetHandler() http.Handler {
 	return makeReportTransactionsHandler(h.auth, h.useCase)
 }
 
@@ -62,7 +63,7 @@ func (s sortingType) String() string {
 	return string(s)
 }
 
-func (s sortingType) Parse(ctx context.Context, v string) (sortingType, error) {
+func (s sortingType) Parse(_ context.Context, v string) (sortingType, error) {
 	if v == sortingUpdatedAt.String() ||
 		v == sortingAmount.String() {
 		return sortingType(v), nil
@@ -77,7 +78,7 @@ const (
 
 type sortingDirection string
 
-func (s sortingDirection) Parse(ctx context.Context, v string) (sortingDirection, error) {
+func (s sortingDirection) Parse(_ context.Context, v string) (sortingDirection, error) {
 	if v == sortingDirectionAsc.String() ||
 		v == sortingDirectionDesc.String() {
 		return sortingDirection(v), nil
@@ -104,7 +105,7 @@ func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) ht
 		paramSortingDirection = ergo.QueryParamWithParserMaybe[sortingDirection]("sorting_direction").Attach(b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		in, err := report_transactions.NewInFromValues(
 			paramUserID.Get(r),
 			paramCursor.GetDefault(r, ""),

@@ -1,9 +1,10 @@
 package signup
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/deps"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/root"
-	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -13,7 +14,8 @@ func init() {
 var cmdSignUp = &cobra.Command{
 	Use:   "signup",
 	Short: "Sign up",
-	Args:  cobra.ExactArgs(3),
+	//nolint:mnd // ...
+	Args: cobra.ExactArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
 		cliAdapter, err := deps.GetCliAdapter(ctx)

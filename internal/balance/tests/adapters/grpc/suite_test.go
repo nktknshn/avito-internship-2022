@@ -52,9 +52,9 @@ func (s *GrpcTestSuite) SetupTest() {
 	s.listen = listen
 
 	go func() {
-		err := s.grpcServer.Serve(s.listen)
-		if err != nil {
-			panic(err)
+		serveErr := s.grpcServer.Serve(s.listen)
+		if serveErr != nil {
+			panic(serveErr)
 		}
 	}()
 

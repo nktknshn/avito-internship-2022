@@ -6,16 +6,16 @@ import (
 )
 
 type accountDTO struct {
-	Id               int64 `db:"id"`
-	UserId           int64 `db:"user_id"`
+	ID               int64 `db:"id"`
+	UserID           int64 `db:"user_id"`
 	BalanceAvailable int64 `db:"balance_available"`
 	BalanceReserved  int64 `db:"balance_reserved"`
 }
 
 func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
 	acc, err := domainAccount.NewAccountFromValues(
-		a.Id,
-		a.UserId,
+		a.ID,
+		a.UserID,
 		a.BalanceAvailable,
 		a.BalanceReserved,
 	)
@@ -27,8 +27,8 @@ func fromAccountDTO(a *accountDTO) (*domainAccount.Account, error) {
 
 func toAccountDTO(a *domainAccount.Account) *accountDTO {
 	return &accountDTO{
-		Id:               a.ID.Value(),
-		UserId:           a.UserID.Value(),
+		ID:               a.ID.Value(),
+		UserID:           a.UserID.Value(),
 		BalanceAvailable: a.Balance.GetAvailable().Value(),
 		BalanceReserved:  a.Balance.GetReserved().Value(),
 	}

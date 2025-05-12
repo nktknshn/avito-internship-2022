@@ -43,7 +43,7 @@ func (s *Suite) TestSave_Create_Success() {
 	)
 	s.Require().NoError(err)
 
-	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	_, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
 }
@@ -82,7 +82,7 @@ func (s *Suite) TestSave_NotFound() {
 
 	s.Require().NoError(err)
 
-	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	_, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().Error(err)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
@@ -96,7 +96,7 @@ func (s *Suite) TestGetByUserID_Success() {
 	)
 	s.Require().NoError(err)
 
-	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	_, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
 	acc, err = s.accountsRepo.GetByUserID(context.Background(), 1)

@@ -13,7 +13,7 @@ func (m *TrmManagerMock) Do(ctx context.Context, fn func(ctx context.Context) er
 	return fn(ctx)
 }
 
-func (m *TrmManagerMock) DoWithSettings(ctx context.Context, settings trm.Settings, fn func(ctx context.Context) error) error {
+func (m *TrmManagerMock) DoWithSettings(ctx context.Context, _ trm.Settings, fn func(ctx context.Context) error) error {
 	return fn(ctx)
 }
 

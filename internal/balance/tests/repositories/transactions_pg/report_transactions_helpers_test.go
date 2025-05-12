@@ -1,13 +1,14 @@
 package transactions_pg_test
 
 import (
-	"bytes"
 	"fmt"
 	"math/rand"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
@@ -227,19 +228,19 @@ func transactionsEqual(a []*transactionWrapper, b []report_transactions.Transact
 	return true
 }
 
-func rInt64(min, max int64) int64 {
-	return min + rand.Int63n(max-min+1)
+func rInt64(minV, maxV int64) int64 {
+	return minV + rand.Int63n(maxV-minV+1)
 }
 
-func rTime(min, max time.Time) time.Time {
-	return min.Add(time.Duration(rand.Int63n(max.Unix()-min.Unix()+1)) * time.Second)
+func rTime(minT, maxT time.Time) time.Time {
+	return minT.Add(time.Duration(rand.Int63n(maxT.Unix()-minT.Unix()+1)) * time.Second)
 }
 
 func sortAmountAsc(trs []*transactionWrapper) {
 	slices.SortFunc(trs, func(a, b *transactionWrapper) int {
-		return bytes.Compare(
-			[]byte(a.getID().String()),
-			[]byte(b.getID().String()),
+		return strings.Compare(
+			a.getID().String(),
+			b.getID().String(),
 		)
 	})
 	slices.SortStableFunc(trs, func(a, b *transactionWrapper) int {
@@ -254,9 +255,9 @@ func sortAmountDesc(trs []*transactionWrapper) {
 
 func sortUpdatedAtAsc(trs []*transactionWrapper) {
 	slices.SortFunc(trs, func(a, b *transactionWrapper) int {
-		return bytes.Compare(
-			[]byte(a.getID().String()),
-			[]byte(b.getID().String()),
+		return strings.Compare(
+			a.getID().String(),
+			b.getID().String(),
 		)
 	})
 	slices.SortStableFunc(trs, func(a, b *transactionWrapper) int {

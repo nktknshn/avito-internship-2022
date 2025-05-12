@@ -112,11 +112,11 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 	// fmt.Println(rows.TabbedString())
 
 	for month := range 12 {
-		report, err := s.transactionsRepo.GetReportRevenueByMonth(context.Background(), report_revenue.ReportRevenueQuery{
+		report, reportErr := s.transactionsRepo.GetReportRevenueByMonth(context.Background(), report_revenue.ReportRevenueQuery{
 			Year:  2024,
 			Month: report_revenue.Month(month + 1),
 		})
-		s.Require().NoError(err)
+		s.Require().NoError(reportErr)
 
 		records := calculateRevenue(trs, 2024, month+1)
 

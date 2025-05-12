@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestGetBalance() {
+func (s *HTTPTestSuite) TestGetBalance() {
 
 	var routeParams = map[string]string{"user_id": fixtures.UserID_str}
 

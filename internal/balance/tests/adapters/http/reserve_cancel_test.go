@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func (s *HttpTestSuite) TestReserveCancel() {
+func (s *HTTPTestSuite) TestReserveCancel() {
 	var validPayload = map[string]any{
 		"user_id":    fixtures.UserID_i64,
 		"product_id": fixtures.ProductID_i64,

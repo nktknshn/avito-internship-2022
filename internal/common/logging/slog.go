@@ -15,8 +15,8 @@ func NewSlog() *LoggerSlog {
 	}
 }
 
-// InitLogger
-func (l *LoggerSlog) InitLogger(args ...interface{}) {
+// InitLogger инициализирует логгер
+func (l *LoggerSlog) InitLogger(_ ...interface{}) {
 	l.logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
 }
 

@@ -6,15 +6,17 @@ import (
 	"net"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+
 	adaptersGrpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 )
 
 type BalanceGrpcServer struct {
@@ -55,7 +57,7 @@ func (s *BalanceGrpcServer) GetLogger() logging.Logger {
 	return s.app.GetLogger()
 }
 
-func (s *BalanceGrpcServer) Init(ctx context.Context) error {
+func (s *BalanceGrpcServer) Init(_ context.Context) error {
 
 	grpcAdapter := adaptersGrpc.New(s.app.GetApp())
 
@@ -86,7 +88,7 @@ func (s *BalanceGrpcServer) Init(ctx context.Context) error {
 	return nil
 }
 
-func (s *BalanceGrpcServer) Run(ctx context.Context) error {
+func (s *BalanceGrpcServer) Run(_ context.Context) error {
 
 	if s.app == nil {
 		return errors.New("Init() must be called before Run()")
@@ -108,7 +110,7 @@ func (s *BalanceGrpcServer) Run(ctx context.Context) error {
 	return nil
 }
 
-func (s *BalanceGrpcServer) Shutdown(ctx context.Context) error {
+func (s *BalanceGrpcServer) Shutdown(_ context.Context) error {
 	s.grpcServer.GracefulStop()
 	return nil
 }

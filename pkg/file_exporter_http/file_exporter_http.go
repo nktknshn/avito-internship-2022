@@ -31,7 +31,7 @@ type FileExporterHTTP struct {
 	stop chan struct{}
 }
 
-// Создает новый экспортер файлов,
+// New создает новый экспортер файлов,
 // который записывает файл в локальную файловую систему
 // и предоставляет HTTP-хэндлер для скачивания файла
 // очищает файлы по истечении TTL
@@ -121,14 +121,14 @@ func (f *FileExporterHTTP) Cleanup() error {
 		return err
 	}
 	for _, file := range files {
-		s, err := os.Stat(file)
-		if err != nil {
-			return err
+		s, statErr := os.Stat(file)
+		if statErr != nil {
+			return statErr
 		}
 		if s.ModTime().Before(time.Now().Add(-f.cfg.TTL)) {
-			err := os.Remove(file)
-			if err != nil {
-				return err
+			removeErr := os.Remove(file)
+			if removeErr != nil {
+				return removeErr
 			}
 		}
 	}

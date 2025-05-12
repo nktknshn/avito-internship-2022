@@ -10,7 +10,6 @@ type ReportTransactionsPage struct {
 	HasMore      bool
 }
 
-// Limit
 type Limit uint64
 
 func (l Limit) Value() uint64 {
@@ -28,7 +27,7 @@ const (
 	ReportTransactionsLimitDefault Limit = 100
 )
 
-// Реализуется в репозитории
+// Cursor реализуется в репозитории
 type Cursor string
 
 func (c Cursor) Value() string {
@@ -41,6 +40,7 @@ func NewCursor(cursor string) (Cursor, error) {
 	return Cursor(cursor), nil
 }
 
+// Transaction может быть одним из следующих типов:
 // domainTransaction.TransactionDeposit
 // domainTransaction.TransactionSpend
 // domainTransaction.TransactionTransfer

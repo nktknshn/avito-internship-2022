@@ -4,13 +4,14 @@ import (
 	"context"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue_export"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
-type reportRevenueExportHandler struct {
+type ReportRevenueExportHandler struct {
 	auth    handlers_auth.AuthUseCase
 	useCase useCase
 }
@@ -35,7 +36,7 @@ type useCase interface {
 // @Failure      403  {object}  handlers_builder.Error
 // @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/report/revenue/export [get]
-func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueExportHandler {
+func New(auth handlers_auth.AuthUseCase, useCase useCase) *ReportRevenueExportHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -44,10 +45,10 @@ func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueExportHa
 		panic("useCase is nil")
 	}
 
-	return &reportRevenueExportHandler{auth, useCase}
+	return &ReportRevenueExportHandler{auth, useCase}
 }
 
-func (h *reportRevenueExportHandler) GetHandler() http.Handler {
+func (h *ReportRevenueExportHandler) GetHandler() http.Handler {
 	return makeReportRevenueExportHandler(h.auth, h.useCase)
 }
 
@@ -63,7 +64,7 @@ func makeReportRevenueExportHandler(auth handlers_auth.AuthUseCase, u useCase) h
 		paramMonth = ergo.QueryParamInt("month").Attach(b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		in, err := report_revenue_export.NewInFromValues(
 			paramYear.Get(r),
 			paramMonth.Get(r),

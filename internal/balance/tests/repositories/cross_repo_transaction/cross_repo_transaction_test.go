@@ -53,7 +53,7 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 	err = trm.Do(s.Context(), func(ctx context.Context) error {
 		acc, err = s.accountsRepo.Save(ctx, acc)
 		s.Require().NoError(err)
-		ts, err := domainTransaction.NewTransactionSpendFromValues(
+		ts, trErr := domainTransaction.NewTransactionSpendFromValues(
 			uuid.Nil,
 			acc.ID.Value(),
 			fixtures.UserID_i64,
@@ -64,9 +64,9 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 			domainTransaction.TransactionSpendStatusReserved.Value(),
 			time.Now(), time.Now(),
 		)
-		s.Require().NoError(err)
-		_, err = s.transactionsRepo.SaveTransactionSpend(ctx, ts)
-		s.Require().NoError(err)
+		s.Require().NoError(trErr)
+		_, saveErr := s.transactionsRepo.SaveTransactionSpend(ctx, ts)
+		s.Require().NoError(saveErr)
 		return errors.New("test error")
 	})
 

@@ -5,11 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 type HandlerReserve struct {
@@ -53,11 +54,11 @@ func (h *HandlerReserve) GetHandler() http.Handler {
 }
 
 type requestBody struct {
-	UserID       int64  `json:"user_id" example:"1"`
-	ProductID    int64  `json:"product_id" example:"1"`
+	UserID       int64  `json:"user_id"       example:"1"`
+	ProductID    int64  `json:"product_id"    example:"1"`
 	ProductTitle string `json:"product_title" example:"delivery"`
-	OrderID      int64  `json:"order_id" example:"1"`
-	Amount       int64  `json:"amount" example:"100"`
+	OrderID      int64  `json:"order_id"      example:"1"`
+	Amount       int64  `json:"amount"        example:"100"`
 }
 
 func makeHandlerReserve(auth handlers_auth.AuthUseCase, u useCase) http.Handler {
@@ -66,7 +67,7 @@ func makeHandlerReserve(auth handlers_auth.AuthUseCase, u useCase) http.Handler 
 		payload = ergo.PayloadAttach[requestBody](b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		pl := payload.Get(r)
 
 		in, err := reserve.NewInFromValues(

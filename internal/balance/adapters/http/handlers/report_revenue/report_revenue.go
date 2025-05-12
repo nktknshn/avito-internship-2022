@@ -4,13 +4,14 @@ import (
 	"context"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
-type reportRevenueHandler struct {
+type ReportRevenueHandler struct {
 	auth    handlers_auth.AuthUseCase
 	useCase useCase
 }
@@ -35,7 +36,7 @@ type useCase interface {
 // @Failure      403  {object}  handlers_builder.Error
 // @Failure      500  {object}  handlers_builder.Error
 // @Router       /api/v1/report/revenue [get]
-func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueHandler {
+func New(auth handlers_auth.AuthUseCase, useCase useCase) *ReportRevenueHandler {
 	if auth == nil {
 		panic("auth is nil")
 	}
@@ -44,15 +45,15 @@ func New(auth handlers_auth.AuthUseCase, useCase useCase) *reportRevenueHandler 
 		panic("useCase is nil")
 	}
 
-	return &reportRevenueHandler{auth, useCase}
+	return &ReportRevenueHandler{auth, useCase}
 }
 
-func (h *reportRevenueHandler) GetHandler() http.Handler {
+func (h *ReportRevenueHandler) GetHandler() http.Handler {
 	return makeReportRevenueHandler(h.auth, h.useCase)
 }
 
 type responseRecord struct {
-	ProductID    int64  `json:"product_id" example:"1"`
+	ProductID    int64  `json:"product_id"    example:"1"`
 	ProductTitle string `json:"product_title" example:"delivery"`
 	TotalRevenue int64  `json:"total_revenue" example:"100"`
 }
@@ -84,7 +85,7 @@ func makeReportRevenueHandler(auth handlers_auth.AuthUseCase, u useCase) http.Ha
 		paramMonth = ergo.QueryParamInt("month").Attach(b)
 	)
 
-	return b.BuildHandlerWrapped(func(w http.ResponseWriter, r *http.Request) (any, error) {
+	return b.BuildHandlerWrapped(func(_ http.ResponseWriter, r *http.Request) (any, error) {
 		in, err := report_revenue.NewInFromValues(
 			paramYear.Get(r),
 			paramMonth.Get(r),

@@ -23,17 +23,18 @@ import (
 )
 
 var (
-	maxHeaderBytes = 1 << 20
+	maxHeaderBytes  = 1 << 20
+	shutdownTimeout = time.Second * 10
 )
 
-type BalanceHttpServer struct {
+type BalanceHTTPServer struct {
 	server     *http.Server
 	rootRouter *chi.ChiRouter
 	cfg        *config.Config
 	app        *app_impl.Application
 }
 
-func NewHttpServer(cfg *config.Config, app *app_impl.Application) *BalanceHttpServer {
+func NewHTTPServer(cfg *config.Config, app *app_impl.Application) *BalanceHTTPServer {
 
 	if cfg == nil {
 		panic("cfg is nil")
@@ -43,33 +44,33 @@ func NewHttpServer(cfg *config.Config, app *app_impl.Application) *BalanceHttpSe
 		panic("app is nil")
 	}
 
-	return &BalanceHttpServer{
+	return &BalanceHTTPServer{
 		cfg: cfg,
 		app: app,
 	}
 }
 
-func (s *BalanceHttpServer) GetServer() *http.Server {
+func (s *BalanceHTTPServer) GetServer() *http.Server {
 	return s.server
 }
 
-func (s *BalanceHttpServer) GetHandler() http.Handler {
+func (s *BalanceHTTPServer) GetHandler() http.Handler {
 	return s.rootRouter.GetHandler()
 }
 
-func (s *BalanceHttpServer) GetConfig() *config.Config {
+func (s *BalanceHTTPServer) GetConfig() *config.Config {
 	return s.cfg
 }
 
-func (s *BalanceHttpServer) GetApp() *app_impl.Application {
+func (s *BalanceHTTPServer) GetApp() *app_impl.Application {
 	return s.app
 }
 
-func (s *BalanceHttpServer) GetLogger() logging.Logger {
+func (s *BalanceHTTPServer) GetLogger() logging.Logger {
 	return s.app.GetLogger()
 }
 
-func (s *BalanceHttpServer) Init(ctx context.Context) error {
+func (s *BalanceHTTPServer) Init(_ context.Context) error {
 
 	logger := s.app.GetLogger()
 
@@ -79,11 +80,12 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 	s.rootRouter = rootRouter
 
 	mwCors := cors.New(cors.Options{
-		AllowedOrigins:   s.cfg.GetHTTP().GetCors().GetAllowedOrigins(),
+		AllowedOrigins:   s.cfg.GetHTTP().GetCORS().GetAllowedOrigins(),
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		AllowCredentials: true,
-		MaxAge:           300,
+		//nolint:mnd // TODO: config
+		MaxAge: 300,
 	})
 
 	httpLogger := httplog.NewLogger("balance-microservice", httplog.Options{
@@ -102,6 +104,7 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 			"/ping",
 			"/metrics",
 		},
+		//nolint:mnd // TODO: config
 		QuietDownPeriod: 10 * time.Second,
 		// SourceFieldName: "source",
 	})
@@ -117,7 +120,7 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 
 	balanceRouter.Attach(
 		apiRouter,
-		adaptersHttp.NewHttpAdapter(s.app.GetApp()),
+		adaptersHttp.NewHTTPAdapter(s.app.GetApp()),
 	)
 
 	if s.cfg.GetHTTP().GetSwagger().GetEnabled() {
@@ -126,7 +129,7 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 		rootRouter.GetChi().Mount(swaggerPath, swaggerHandler(s.cfg))
 	}
 
-	apiPrefix := path.Clean(s.cfg.GetHTTP().GetApiPrefix())
+	apiPrefix := path.Clean(s.cfg.GetHTTP().GetAPIPrefix())
 
 	rootRouter.GetChi().Mount(apiPrefix, apiRouter.GetHandler())
 
@@ -158,7 +161,7 @@ func (s *BalanceHttpServer) Init(ctx context.Context) error {
 	return nil
 }
 
-func (s *BalanceHttpServer) Run(ctx context.Context) error {
+func (s *BalanceHTTPServer) Run(ctx context.Context) error {
 
 	if s.app == nil {
 		return errors.New("Init() must be called before Run()")
@@ -169,7 +172,7 @@ func (s *BalanceHttpServer) Run(ctx context.Context) error {
 	return nil
 }
 
-func (s *BalanceHttpServer) runHTTPServer() {
+func (s *BalanceHTTPServer) runHTTPServer() {
 	logger := s.app.GetLogger()
 
 	var err error
@@ -197,13 +200,13 @@ func (s *BalanceHttpServer) runHTTPServer() {
 
 }
 
-func (s *BalanceHttpServer) Shutdown(ctx context.Context) error {
+func (s *BalanceHTTPServer) Shutdown(ctx context.Context) error {
 
 	logger := s.app.GetLogger()
 
 	logger.Info("Shutting down server")
 
-	shutdownCtx, shutdown := context.WithTimeout(ctx, time.Second*10)
+	shutdownCtx, shutdown := context.WithTimeout(ctx, shutdownTimeout)
 	defer shutdown()
 
 	err := s.server.Shutdown(shutdownCtx)
@@ -216,8 +219,8 @@ func (s *BalanceHttpServer) Shutdown(ctx context.Context) error {
 	return nil
 }
 
-func setTLS(server *http.Server, cfg *config.ConfigTLS) {
-	// TODO
+func setTLS(_ *http.Server, _ *config.ConfigTLS) {
+	// TODO: implement
 	// server.TLSConfig = &tls.Config{
 	// 	Certificates: []tls.Certificate{cfg.GetCertificates()},
 	// }

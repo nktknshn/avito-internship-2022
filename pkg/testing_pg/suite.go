@@ -22,32 +22,32 @@ type TestSuitePg struct {
 	NeedsPostgres bool
 }
 
-func (suite *TestSuitePg) SetPostgresMigrationsDir(dir string) {
-	suite.NeedsPostgres = true
-	suite.MigrationsDir = dir
+func (s *TestSuitePg) SetPostgresMigrationsDir(dir string) {
+	s.NeedsPostgres = true
+	s.MigrationsDir = dir
 }
 
 // GetPostgresAdapter returns the adapter
-func (suite *TestSuitePg) GetPostgresAdapter() *sqlx.DB {
-	return suite.Conn
+func (s *TestSuitePg) GetPostgresAdapter() *sqlx.DB {
+	return s.Conn
 }
 
 // GetDT returns the docker database
-func (suite *TestSuitePg) GetDT() *DockerDatabase {
-	return suite.DT
+func (s *TestSuitePg) GetDT() *DockerDatabase {
+	return s.DT
 }
 
-func (suite *TestSuitePg) Context() context.Context {
-	return suite.T().Context()
+func (s *TestSuitePg) Context() context.Context {
+	return s.T().Context()
 }
 
-// Logf(format string, args ...any)
-func (suite *TestSuitePg) Logf(format string, args ...any) {
-	suite.T().Logf(format, args...)
+// Logf logs a formatted message
+func (s *TestSuitePg) Logf(format string, args ...any) {
+	s.T().Logf(format, args...)
 }
 
-func (suite *TestSuitePg) Log(args ...any) {
-	suite.T().Log(args...)
+func (s *TestSuitePg) Log(args ...any) {
+	s.T().Log(args...)
 }
 
 func (s *TestSuitePg) ExecSQLMust(sql string) *ResultRows {
@@ -86,58 +86,58 @@ func (s *TestSuitePg) ExecSQL(sql string) (*ResultRows, error) {
 	}, nil
 }
 
-func (suite *TestSuitePg) SetupSuite() {
-	suite.T().Log("Setting up docker")
+func (s *TestSuitePg) SetupSuite() {
+	s.T().Log("Setting up docker")
 
-	if suite.NeedsPostgres {
-		suite.SetupPostgres()
+	if s.NeedsPostgres {
+		s.SetupPostgres()
 	}
 
 }
 
-func (suite *TestSuitePg) SetupPostgres() {
-	suite.T().Log("Setting up postgres")
+func (s *TestSuitePg) SetupPostgres() {
+	s.T().Log("Setting up postgres")
 
-	ctx := suite.Context()
+	ctx := s.Context()
 
 	db := NewDockerDatabase(defaultDockerDatabaseConfig)
 
 	if err := db.RunPostgresDocker(ctx); err != nil {
-		suite.T().Fatal(errors.Wrap(err, "failed to run postgres docker"))
+		s.T().Fatal(errors.Wrap(err, "failed to run postgres docker"))
 	}
 
 	port, err := db.GetRunningPort()
 
 	if err != nil {
-		suite.T().Fatal(errors.Wrap(err, "failed to get running port"))
+		s.T().Fatal(errors.Wrap(err, "failed to get running port"))
 	}
 
-	suite.T().Logf("Running port: %s", port)
+	s.T().Logf("Running port: %s", port)
 
 	if err != nil {
-		suite.T().Fatal(errors.Wrap(err, "failed to get running port"))
+		s.T().Fatal(errors.Wrap(err, "failed to get running port"))
 	}
 
-	adapter, err := db.Connect(ctx, suite.MigrationsDir)
+	adapter, err := db.Connect(ctx, s.MigrationsDir)
 	if err != nil {
-		suite.T().Fatal(errors.Wrap(err, "failed to connect to docker database"))
+		s.T().Fatal(errors.Wrap(err, "failed to connect to docker database"))
 	}
 
-	suite.DT = db
-	suite.Conn = adapter
+	s.DT = db
+	s.Conn = adapter
 
 }
 
-func (suite *TestSuitePg) TearDownSuite() {
-	suite.T().Log("Stopping docker")
+func (s *TestSuitePg) TearDownSuite() {
+	s.T().Log("Stopping docker")
 
-	if suite.DT != nil {
-		if err := suite.DT.StopPostgresDocker(); err != nil {
-			suite.FailNow(err.Error())
+	if s.DT != nil {
+		if err := s.DT.StopPostgresDocker(); err != nil {
+			s.FailNow(err.Error())
 		}
 	}
 }
 
-func (suite *TestSuitePg) TearDownTest() {
-	suite.T().Log("Cleaning database")
+func (s *TestSuitePg) TearDownTest() {
+	s.T().Log("Cleaning database")
 }

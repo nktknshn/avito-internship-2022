@@ -14,6 +14,7 @@ import (
 
 var (
 	// Use cases
+
 	InValidateToken = must.Must(auth_validate_token.NewInFromValues(AuthToken))
 	InGetBalance    = must.Must(get_balance.NewInFromValues(UserID_i64))
 	InDeposit100    = must.Must(deposit.NewInFromValues(
@@ -52,7 +53,9 @@ var (
 		ProductID_i64,
 		Amount50_i64,
 	))
+
 	// Auth
+
 	InAuthSignup = must.Must(auth_signup.NewInFromValues(
 		UsernameAdmin_str,
 		PasswordAdmin_str,

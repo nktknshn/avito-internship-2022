@@ -1,3 +1,4 @@
+//nolint:revive // стандартный способ подключить подкоманды cobra к корневой
 package all
 
 import (

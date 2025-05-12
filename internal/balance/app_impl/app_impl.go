@@ -54,10 +54,10 @@ func (a *Application) GetRevenueExporterCleanup() func(ctx context.Context) {
 
 func (a *Application) RunRevenueExporterCleanup(ctx context.Context) {
 	a.logger.Info("Running revenue exporter cleanup goroutine")
-
+	go a.revenueExporterCleanup(ctx)
 }
 
-func NewApplicationFromDeps(ctx context.Context, deps *AppDeps) (*Application, error) {
+func NewApplicationFromDeps(_ context.Context, deps *AppDeps) (*Application, error) {
 
 	// balance
 	var (

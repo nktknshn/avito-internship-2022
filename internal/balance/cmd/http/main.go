@@ -55,7 +55,7 @@ func main() {
 		log.Fatalf("NewApplicationFromDeps: %v", err)
 	}
 
-	server := server.NewHttpServer(cfg, app)
+	server := server.NewHTTPServer(cfg, app)
 
 	if err := server.Init(ctx); err != nil {
 		log.Fatalf("Init: %v", err)
