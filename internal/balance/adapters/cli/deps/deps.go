@@ -2,7 +2,6 @@ package deps
 
 import (
 	"context"
-	"os"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/cli/root"
@@ -37,7 +36,6 @@ func GetConfig(_ context.Context) (*config.Config, error) {
 		return _config, nil
 	}
 	cfgPath := root.GetConfigPath()
-	os.Setenv("POSTGRES_USER", "balance123")
 	cfg, err := config.LoadConfigFromFile(cfgPath)
 	if err != nil {
 		return nil, err
