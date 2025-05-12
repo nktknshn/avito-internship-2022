@@ -27,11 +27,12 @@ services:
       - ./config/balance:/config/balance
       - ./.go-pkg:/go/pkg
       - ./.go-cache:/go-cache
+      - /home/user/Workspace/cv/go-ergo-handler:/home/user/Workspace/cv/go-ergo-handler
     working_dir: /balance
     ports:
-      - "$BALANCE_HTTP_PORT:8080"
-    env_file:
-      - .env
+      - 5050:8080
+    # env_file:
+    #   - .env
     environment:
       GOCACHE: /go-cache
       GOPATH: /go/pkg
@@ -49,9 +50,9 @@ services:
     # profiles: [donotstart]
     image: postgres
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
+      - POSTGRES_USER=balance
+      - POSTGRES_PASSWORD=balance
       - TZ=UTC
       - PGTZ=UTC
     volumes:
@@ -62,9 +63,9 @@ services:
   pgadmin4:
     # profiles: [donotstart]
     image: dpage/pgadmin4
-    env_file:
-      - .env
     environment:
+      PGADMIN_DEFAULT_EMAIL: adminz@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
       PGADMIN_LISTEN_PORT: 8080
     restart: unless-stopped
     ports:
@@ -89,24 +90,18 @@ services:
     volumes:
       - ./deployment/grafana:/etc/grafana/provisioning/datasources
       - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
     ports:
       - 3000:3000
-    env_file:
-      - .env
 
   loki:
-    image: grafana/loki:3.3.2
-    command: -config.file=/etc/loki/local-config.yaml
-    volumes:
-      - ./deployment/loki:/etc/loki
+      image: grafana/loki:3.3.2
+      command: -config.file=/etc/loki/local-config.yaml
+      volumes:
+        - ./deployment/loki:/etc/loki
 
-    # mem_limit: 4g
-    # cpus: 4.0
-    # ulimits:
-    #   nofile:
-    #     soft: 65536
-    #     hard: 65536
-        
   promtail:
     image: grafana/promtail:3.3.2
     command: -config.file=/etc/promtail/docker-config.yaml

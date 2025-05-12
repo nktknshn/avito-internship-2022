@@ -305,7 +305,7 @@ func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
 
 Микросервис возвращает время в UTC. При запуске проверяется, что часовой пояс Postgres установлен в UTC. Схема таблиц postgres использует тип TIMESTAMPTZ для хранения времени. Также на уровне инфраструктуры соединению с postgres прописано расширение ([pkg/sqlx_pg/timezone.go](pkg/sqlx_pg/timezone.go)), которое автоматически устанавливает возвращаемое драйвером время в UTC. Таким образом, сохраняемое в базу локальное время сохраняется и возвращается из базы в UTC, при этом сохраняемое время == полученное из базы время. Смотри тест [internal/balance/tests/postgres/postgres_test.go](internal/balance/tests/postgres/postgres_test.go). 
 
-> Хотя сохраняемое и полученное из базы время будут проходить тест через Equal, так как golang учитывает часовые пояса двух времен при сравнении, нельзя сравнивать отдельные элементы времени, например, час или день, так как они не будут совпадать.
+<!-- > Хотя сохраняемое и полученное из базы время будут проходить тест через Equal, так как golang учитывает часовые пояса двух времен при сравнении, нельзя сравнивать отдельные элементы времени, например, час или день, так как они не будут совпадать.
 > ```go
 > func (s *Suite) TestEqaultDates() {
 >	t0 := time.Date(2025, 12, 31, 0, 0, 0, 0, time.Local)
@@ -314,7 +314,7 @@ func toAccountDTO(a *domainAccount.Account) (*accountDTO, error) {
 >	require.True(s.T(), t0.Equal(t1))
 >	require.NotEqual(s.T(), t0.Day(), t1.Day())
 >}
->````
+>```` -->
 
 ##### Ошибки репозиториев
 
@@ -491,12 +491,15 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 - [cobra](https://github.com/spf13/cobra) для cli инструмента
 - [swaggo](https://github.com/swaggo/swag) генерация openapi спецификации из аннотаций
 - [openapitools/openapi-generator](https://github.com/openapitools/openapi-generator) генерация http-клиента для утилиты бенчмарка
+- [go-ergo-handler](https://github.com/nktknshn/go-ergo-handler) для создания http-хэндлеров
 - [testify](https://github.com/stretchr/testify) для тестирования
+- [golangci-lint](https://github.com/golangci/golangci-lint) для линтинга
+- [nilaway](https://github.com/go-uber/nilaway) линтер для отслеживания nil-значений
 - [dockertest](https://github.com/ory/dockertest) интеграционные тесты с базой данных
 - [reflex](https://github.com/cespare/reflex) для перекомпиляции приложения при изменении кода
-- [go-ergo-handler](https://github.com/nktknshn/go-ergo-handler) для создания http-хэндлеров
 - [docker](https://www.docker.com/) Docker
 - [prometheus](https://prometheus.io/) для сбора метрик
 <!-- - [opentracing](https://opentracing.io/) для трассировки -->
 - [grafana](https://grafana.com/) для визуализации метрик и логов
 - [loki](https://grafana.com/oss/loki/) для сбора логов
+- [promtail](https://grafana.com/oss/loki/) для сбора логов

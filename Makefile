@@ -2,6 +2,10 @@ test:
 	go test ./...
 .PHONY: test
 
+test-race:
+	./scripts/test-race.sh
+.PHONY: test-race
+
 test-verbose:
 	go test -v ./...
 .PHONY: test-verbose
