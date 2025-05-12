@@ -36,7 +36,8 @@ services:
       GOCACHE: /go-cache
       GOPATH: /go/pkg
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     labels: { logging: "promtail" }
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]
@@ -58,7 +59,12 @@ services:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
-  
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
   pgadmin4:
     # profiles: [donotstart]
     image: dpage/pgadmin4

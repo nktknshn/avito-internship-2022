@@ -8,6 +8,7 @@ import (
 
 var username = "admin"
 var password = "admin1234"
+
 var host = "localhost"
 
 func getConfig(host string) *openapi.Configuration {

@@ -12,7 +12,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_list_users"
 )
 
-var flagPrintHeader bool = true
+var flagPrintHeader = true
 
 func init() {
 	root.RootCmd.AddCommand(cmdListUsers)

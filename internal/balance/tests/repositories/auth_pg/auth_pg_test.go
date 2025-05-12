@@ -71,7 +71,7 @@ func (s *TestSuiteAuthPg) TestCreateUser_DuplicateUsername() {
 func (s *TestSuiteAuthPg) TestListUsers_Empty() {
 	users, err := s.repo.ListUsers(s.Context())
 	s.Require().NoError(err)
-	s.Require().Len(users, 0)
+	s.Require().Empty(users)
 }
 
 func (s *TestSuiteAuthPg) TestListUsers_Success() {

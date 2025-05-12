@@ -46,7 +46,7 @@ func New(authRepo authRepo) *AuthListUsersUseCase {
 	}
 }
 
-func (u *AuthListUsersUseCase) Handle(ctx context.Context, in In) (Out, error) {
+func (u *AuthListUsersUseCase) Handle(ctx context.Context, _ In) (Out, error) {
 	users, err := u.authRepo.ListUsers(ctx)
 
 	if err != nil {
