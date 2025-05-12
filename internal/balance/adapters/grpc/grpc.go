@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app"
@@ -62,7 +62,7 @@ func (g GrpcAdapter) GetBalance(ctx context.Context, request *balance.GetBalance
 	return &balance.GetBalanceResponse{Available: out.Available.Value(), Reserved: out.Reserved.Value()}, nil
 }
 
-func (g GrpcAdapter) Deposit(ctx context.Context, request *balance.DepositRequest) (*empty.Empty, error) {
+func (g GrpcAdapter) Deposit(ctx context.Context, request *balance.DepositRequest) (*emptypb.Empty, error) {
 
 	in, err := deposit.NewInFromValues(request.GetUserId(), request.GetAmount(), request.GetSource())
 	if err != nil {
@@ -74,10 +74,10 @@ func (g GrpcAdapter) Deposit(ctx context.Context, request *balance.DepositReques
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (g GrpcAdapter) Reserve(ctx context.Context, request *balance.ReserveRequest) (*empty.Empty, error) {
+func (g GrpcAdapter) Reserve(ctx context.Context, request *balance.ReserveRequest) (*emptypb.Empty, error) {
 
 	in, err := reserve.NewInFromValues(
 		request.GetUserId(),
@@ -95,10 +95,10 @@ func (g GrpcAdapter) Reserve(ctx context.Context, request *balance.ReserveReques
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (g GrpcAdapter) ReserveCancel(ctx context.Context, request *balance.ReserveCancelRequest) (*empty.Empty, error) {
+func (g GrpcAdapter) ReserveCancel(ctx context.Context, request *balance.ReserveCancelRequest) (*emptypb.Empty, error) {
 
 	in, err := reserve_cancel.NewInFromValues(request.GetUserId(), request.GetOrderId(), request.GetProductId(), request.GetAmount())
 	if err != nil {
@@ -110,10 +110,10 @@ func (g GrpcAdapter) ReserveCancel(ctx context.Context, request *balance.Reserve
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (g GrpcAdapter) ReserveConfirm(ctx context.Context, request *balance.ReserveConfirmRequest) (*empty.Empty, error) {
+func (g GrpcAdapter) ReserveConfirm(ctx context.Context, request *balance.ReserveConfirmRequest) (*emptypb.Empty, error) {
 
 	in, err := reserve_confirm.NewInFromValues(request.GetUserId(), request.GetOrderId(), request.GetProductId(), request.GetAmount())
 	if err != nil {
@@ -125,10 +125,10 @@ func (g GrpcAdapter) ReserveConfirm(ctx context.Context, request *balance.Reserv
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (g GrpcAdapter) Transfer(ctx context.Context, request *balance.TransferRequest) (*empty.Empty, error) {
+func (g GrpcAdapter) Transfer(ctx context.Context, request *balance.TransferRequest) (*emptypb.Empty, error) {
 
 	in, err := transfer.NewInFromValues(request.GetFrom(), request.GetTo(), request.GetAmount())
 	if err != nil {
@@ -140,7 +140,7 @@ func (g GrpcAdapter) Transfer(ctx context.Context, request *balance.TransferRequ
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &empty.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (g GrpcAdapter) ReportTransactions(

@@ -21,7 +21,7 @@ func (d *Decorator0Metrics[T]) Handle(ctx context.Context, in T) (err error) {
 		if err != nil {
 			status = metrics.StatusError
 		}
-		if commonErrors.IsErrPanic(err) {
+		if commonErrors.IsPanicError(err) {
 			status = metrics.StatusPanic
 		}
 		d.metrics.IncHits(status, d.base.GetName())

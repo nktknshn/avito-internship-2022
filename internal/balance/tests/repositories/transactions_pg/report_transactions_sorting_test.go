@@ -30,7 +30,10 @@ func (s *Suite) TestReportTransactions_Error_InvalidCursor() {
 		s.Context(),
 		fixtures.UserID,
 		report_transactions.GetTransactionsQuery{
-			Cursor: "1",
+			Cursor:           "1",
+			Limit:            0,
+			Sorting:          "",
+			SortingDirection: "",
 		},
 	)
 	s.Require().ErrorIs(err, report_transactions.ErrCursorInvalid)

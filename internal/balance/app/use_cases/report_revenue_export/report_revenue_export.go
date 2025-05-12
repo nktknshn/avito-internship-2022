@@ -45,7 +45,10 @@ func (u *ReportRevenueExportUseCase) Handle(ctx context.Context, in In) (Out, er
 		return Out{}, err
 	}
 
-	csvData := u.convertToCSV(report)
+	csvData, err := u.convertToCSV(report)
+	if err != nil {
+		return Out{}, err
+	}
 
 	now := time.Now()
 	fileName := fmt.Sprintf("revenue_report_%s.csv", now.Format("2006-01-02_15-04-05"))
@@ -61,20 +64,26 @@ func (u *ReportRevenueExportUseCase) Handle(ctx context.Context, in In) (Out, er
 	}, nil
 }
 
-func (u *ReportRevenueExportUseCase) convertToCSV(report report_revenue.ReportRevenueResponse) string {
+func (u *ReportRevenueExportUseCase) convertToCSV(report report_revenue.ReportRevenueResponse) (string, error) {
 	csvData := &bytes.Buffer{}
 	csvWriter := csv.NewWriter(csvData)
 	csvWriter.Comma = ';'
-	csvWriter.Write([]string{"product_id", "product_title", "total_revenue"})
+	err := csvWriter.Write([]string{"product_id", "product_title", "total_revenue"})
+	if err != nil {
+		return "", err
+	}
 	for _, record := range report.Records {
-		csvWriter.Write([]string{
+		err := csvWriter.Write([]string{
 			strconv.FormatInt(record.ProductID.Value(), 10),
 			record.ProductTitle.Value(),
 			strconv.FormatInt(record.TotalRevenue, 10),
 		})
+		if err != nil {
+			return "", err
+		}
 	}
 	csvWriter.Flush()
-	return csvData.String()
+	return csvData.String(), nil
 }
 
 func (u *ReportRevenueExportUseCase) GetName() string {

@@ -38,7 +38,9 @@ func (s *Suite) TearDownTest() {
 
 func (s *Suite) getAccount1() *domainAccount.Account {
 	acc, err := s.accountsRepo.Save(context.Background(), &domainAccount.Account{
-		UserID: fixtures.UserID,
+		ID:      0,
+		Balance: domainAccount.NewAccountBalanceZero(),
+		UserID:  fixtures.UserID,
 	})
 	s.Require().NoError(err)
 	s.Require().NotNil(acc)
@@ -47,7 +49,9 @@ func (s *Suite) getAccount1() *domainAccount.Account {
 
 func (s *Suite) getAccount2() *domainAccount.Account {
 	acc, err := s.accountsRepo.Save(context.Background(), &domainAccount.Account{
-		UserID: fixtures.UserID_2,
+		ID:      0,
+		Balance: domainAccount.NewAccountBalanceZero(),
+		UserID:  fixtures.UserID_2,
 	})
 	s.Require().NoError(err)
 	s.Require().NotNil(acc)

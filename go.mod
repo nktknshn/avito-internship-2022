@@ -15,7 +15,8 @@ require (
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/nktknshn/go-ergo-handler v0.3.0
+	github.com/nktknshn/go-ergo-handler v0.4.0
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/ory/dockertest v3.3.5+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/pressly/goose/v3 v3.24.2
@@ -25,6 +26,7 @@ require (
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.4
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.38.0
 	google.golang.org/grpc v1.71.0
@@ -65,7 +67,6 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
 	github.com/opencontainers/runc v1.2.6 // indirect
-	github.com/opentracing/opentracing-go v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.62.0 // indirect
@@ -75,7 +76,6 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
-	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
@@ -89,4 +89,4 @@ require (
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
 
-replace github.com/nktknshn/go-ergo-handler => /home/user/Workspace/cv/go-ergo-handler
+// replace github.com/nktknshn/go-ergo-handler => /home/user/Workspace/cv/go-ergo-handler

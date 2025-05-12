@@ -11,11 +11,13 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
 
+var outEmpty get_balance.Out
+
 func (s *HTTPTestSuite) Test_DomainError() {
 	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).
-		Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
+		Return(outEmpty, domainAccount.ErrAccountNotFound)
 
 	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
@@ -28,7 +30,7 @@ func (s *HTTPTestSuite) Test_InternalError() {
 	s.setupAuthAdmin()
 
 	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).
-		Return(get_balance.Out{}, errors.New("internal server error that should not be exposed to the client"))
+		Return(outEmpty, errors.New("internal server error that should not be exposed to the client"))
 
 	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
@@ -40,7 +42,7 @@ func (s *HTTPTestSuite) Test_InternalError() {
 func (s *HTTPTestSuite) Test_ParserError() {
 	s.setupAuthAdmin()
 
-	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("parser error"))
+	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(outEmpty, errors.New("parser error"))
 
 	s.setRouteParams(map[string]string{"user_id": "invalid_user_id"})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)

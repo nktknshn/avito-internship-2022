@@ -11,12 +11,12 @@ import (
 
 func TestIsErrPanic(t *testing.T) {
 	err := commonErrors.NewErrPanic("panic error")
-	require.True(t, commonErrors.IsErrPanic(err))
+	require.True(t, commonErrors.IsPanicError(err))
 
 	err2 := commonErrors.NewErrPanic(errors.New("error"))
-	require.True(t, commonErrors.IsErrPanic(err2))
+	require.True(t, commonErrors.IsPanicError(err2))
 
 	err3 := errors.New("error")
-	require.False(t, commonErrors.IsErrPanic(err3))
+	require.False(t, commonErrors.IsPanicError(err3))
 
 }

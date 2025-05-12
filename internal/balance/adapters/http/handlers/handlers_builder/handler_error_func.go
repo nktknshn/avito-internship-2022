@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	ergo "github.com/nktknshn/go-ergo-handler"
@@ -52,5 +53,9 @@ func handlerErrorFunc(_ context.Context, w http.ResponseWriter, _ *http.Request,
 	}
 
 	// TODO: check error
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		//nolint:sloglint // позже придумать, как сделать. Может через контекст?
+		slog.Error("error writing response", "error", err)
+	}
 }

@@ -30,17 +30,17 @@ func (u *useCase1) GetName() string {
 	return "useCase1"
 }
 
-type mockRecoverHandler struct {
+type RecoverHandlerMock struct {
 	mock.Mock
 }
 
-func (m *mockRecoverHandler) Handle(ctx context.Context, err error) error {
+func (m *RecoverHandlerMock) Handle(ctx context.Context, err error) error {
 	args := m.Called(ctx, err)
 	return args.Error(0)
 }
 
 func TestDecorator0Recover(t *testing.T) {
-	h := &mockRecoverHandler{}
+	h := &RecoverHandlerMock{}
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator0Recover[int]{
@@ -57,7 +57,7 @@ func TestDecorator0Recover(t *testing.T) {
 }
 
 func TestDecorator1Recover(t *testing.T) {
-	h := &mockRecoverHandler{}
+	h := &RecoverHandlerMock{}
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator1Recover[int, int]{

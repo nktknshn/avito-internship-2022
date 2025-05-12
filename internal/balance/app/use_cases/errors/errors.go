@@ -2,6 +2,7 @@ package errors
 
 import "errors"
 
+//nolint:errname // errname
 type useCaseErrorWithCause struct {
 	useCaseError UseCaseError
 	cause        error

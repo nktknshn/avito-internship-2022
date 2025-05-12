@@ -3,7 +3,7 @@ package lagging
 
 import (
 	"context"
-	"math/rand"
+	"math/rand/v2"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
@@ -48,7 +48,7 @@ func (r *laggingAccountsRepository) GetByUserID(ctx context.Context, userID doma
 	// 	time.Sleep(60 * time.Second)
 	// }
 
-	if rand.Intn(11) > 9 {
+	if rand.IntN(11) > 9 {
 		panic("lagging")
 	}
 
@@ -60,7 +60,7 @@ func (r *laggingAccountsRepository) GetByAccountID(ctx context.Context, accountI
 	// 	time.Sleep(60 * time.Second)
 	// }
 
-	if rand.Intn(11) > 9 {
+	if rand.IntN(11) > 9 {
 		panic("lagging")
 	}
 
@@ -72,7 +72,7 @@ func (r *laggingAccountsRepository) Save(ctx context.Context, account *domainAcc
 	// 	time.Sleep(60 * time.Second)
 	// }
 
-	if rand.Intn(11) > 9 {
+	if rand.IntN(11) > 9 {
 		panic("lagging")
 	}
 

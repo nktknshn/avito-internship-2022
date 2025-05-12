@@ -18,5 +18,9 @@ func handlerResultFunc(_ context.Context, w http.ResponseWriter, _ *http.Request
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		//nolint:sloglint // позже придумать, как сделать. Может через контекст?
+		slog.Error("error writing response", "error", err)
+	}
 }

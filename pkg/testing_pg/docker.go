@@ -4,7 +4,7 @@ package testing_pg
 import (
 	"context"
 	"errors"
-	"log"
+	"log/slog"
 	"os"
 	"time"
 
@@ -169,7 +169,7 @@ func (dt *DockerDatabase) Connect(ctx context.Context, migrationsDir string) (*s
 		var err error
 		conn, err = sqlx_pg.Connect(ctx, cfg)
 		if err != nil {
-			log.Printf("postgres.NewPostgresAdapter(ctx, cfg): %v", err)
+			slog.Error("postgres.NewPostgresAdapter(ctx, cfg)", "error", err)
 			return err
 		}
 

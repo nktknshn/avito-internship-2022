@@ -118,7 +118,7 @@ linters:
     - usetesting # reports uses of functions with replacement inside the testing package
     - wastedassign # finds wasted assignment statements
     # - whitespace # detects leading and trailing whitespace
-    - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
+    # - exhaustruct # [highly recommend to enable] checks if all structure fields are initialized
     # - wrapcheck # checks that errors returned from external packages are wrapped
 
     ## you may want to enable
@@ -255,7 +255,9 @@ linters:
         - ^golang.org/x/tools/go/analysis.Analyzer$
         - ^google.golang.org/protobuf/.+Options$
         - ^gopkg.in/yaml.v3.Node$
-        - ^github.com/nktknshn/avito-internship-2022/internal/balance/tests.+
+        # tests
+        - ^github.com/nktknshn/avito-internship-2022/internal/balance/tests
+        - Mock$
 
     funcorder:
       # Checks if the exported methods of a structure are placed before the non-exported ones.
@@ -442,12 +444,6 @@ linters:
         linters: [ revive, staticcheck ]
       - text: 'exported \S+ \S+ should have comment( \(or a comment on this block\))? or be unexported'
         linters: [ revive ]
-      - text: 'should not use underscores in package names'
-        linters: [ staticcheck ]
-      - text: 'should not use underscores in Go names'
-        linters: [ staticcheck ]
-      - text: 'don''t use underscores in Go names'
-        linters: [ staticcheck ]
       - text: 'package should be \S+ instead of \S+'
         linters: [ testpackage ]
       - text: 'package comment should be of the form ".+"'

@@ -53,6 +53,9 @@ func main() {
 
 	serv.GetLogger().Info("GRPC server stopped")
 
-	serv.Shutdown(ctx)
+	err = serv.Shutdown(ctx)
+	if err != nil {
+		serv.GetLogger().Error("Error shutting down GRPC server", "error", err)
+	}
 
 }

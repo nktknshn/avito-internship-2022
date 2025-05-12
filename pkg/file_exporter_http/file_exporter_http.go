@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path"
@@ -146,7 +147,10 @@ func (f *FileExporterHTTP) CleanupWorker(ctx context.Context) {
 				return
 			case <-time.After(f.cfg.TTL):
 				// logger.Info("Running file exporter cleanup")
-				f.Cleanup()
+				err := f.Cleanup()
+				if err != nil {
+					slog.Error("error cleaning up files", "error", err)
+				}
 			}
 		}
 	}()

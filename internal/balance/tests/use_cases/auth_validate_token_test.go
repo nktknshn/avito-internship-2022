@@ -31,7 +31,10 @@ func (s *AuthSuiteTest) TestAuthValidateToken_Success() {
 func (s *AuthSuiteTest) TestAuthValidateToken_InvalidClaims() {
 	in := must.Must(auth_validate_token.NewInFromValues("123"))
 
-	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(&domainAuth.AuthUserTokenClaims{}, nil)
+	s.mockedTokenVal.On("ValidateToken", mock.Anything, mock.Anything).Return(&domainAuth.AuthUserTokenClaims{
+		AuthUserID:   0,
+		AuthUserRole: "",
+	}, nil)
 
 	out, err := s.mockedValidate.Handle(context.Background(), in)
 

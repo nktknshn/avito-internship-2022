@@ -5,19 +5,19 @@ import (
 	"fmt"
 )
 
-type ErrPanic struct {
+type PanicError struct {
 	Arg any
 	err error
 }
 
-func NewErrPanic(arg any) *ErrPanic {
+func NewErrPanic(arg any) *PanicError {
 	if e, ok := arg.(error); ok {
-		return &ErrPanic{Arg: arg, err: e}
+		return &PanicError{Arg: arg, err: e}
 	}
-	return &ErrPanic{Arg: arg, err: nil}
+	return &PanicError{Arg: arg, err: nil}
 }
 
-func (p *ErrPanic) Error() string {
+func (p *PanicError) Error() string {
 	switch e := p.Arg.(type) {
 	case error:
 		return fmt.Sprintf("panic: %v", e.Error())
@@ -26,11 +26,11 @@ func (p *ErrPanic) Error() string {
 	}
 }
 
-func (p *ErrPanic) Unwrap() error {
+func (p *PanicError) Unwrap() error {
 	return p.err
 }
 
-func IsErrPanic(err error) bool {
-	var p *ErrPanic
+func IsPanicError(err error) bool {
+	var p *PanicError
 	return errors.As(err, &p)
 }

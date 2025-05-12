@@ -33,7 +33,9 @@ func TestUseCaseToValidateToken_EmptyToken(t *testing.T) {
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
-	errWithStatus := err.(ergo.ErrorWithHttpStatus)
+
+	var errWithStatus ergo.ErrorWithHttpStatus
+	require.ErrorAs(t, err, &errWithStatus)
 	assert.Equal(t, http.StatusBadRequest, errWithStatus.HttpStatusCode)
 }
 
@@ -50,7 +52,9 @@ func TestUseCaseToValidateToken_InvalidToken(t *testing.T) {
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
-	errWithStatus := err.(ergo.ErrorWithHttpStatus)
+
+	var errWithStatus ergo.ErrorWithHttpStatus
+	require.ErrorAs(t, err, &errWithStatus)
 	assert.Equal(t, http.StatusBadRequest, errWithStatus.HttpStatusCode)
 }
 
@@ -67,7 +71,9 @@ func TestUseCaseToValidateToken_TokenExpired(t *testing.T) {
 
 	assert.Nil(t, out)
 	assert.False(t, ok)
-	errWithStatus := err.(ergo.ErrorWithHttpStatus)
+
+	var errWithStatus ergo.ErrorWithHttpStatus
+	require.ErrorAs(t, err, &errWithStatus)
 	assert.Equal(t, http.StatusUnauthorized, errWithStatus.HttpStatusCode)
 }
 

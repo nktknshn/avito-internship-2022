@@ -4,6 +4,7 @@ import (
 	"errors"
 )
 
+//nolint:errname // errname
 type domainErrorWithCause struct {
 	domainError DomainError
 	cause       error

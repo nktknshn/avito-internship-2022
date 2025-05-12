@@ -1,4 +1,4 @@
-//nolint:nilaway // false positive
+//nolint:nilaway,errcheck // моки
 package mocked
 
 import (

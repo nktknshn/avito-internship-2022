@@ -5,10 +5,10 @@ import (
 )
 
 func CleanTables(s *testing_pg.TestSuitePg) {
-	s.ExecSQL("DELETE FROM transactions_transfer")
-	s.ExecSQL("DELETE FROM transactions_spend")
-	s.ExecSQL("DELETE FROM transactions_deposit")
-	s.ExecSQL("DELETE FROM accounts")
-	s.ExecSQL("DELETE FROM auth_users")
-	s.ExecSQL("DELETE FROM auth_blacklist")
+	s.ExecSQLMust("DELETE FROM transactions_transfer")
+	s.ExecSQLMust("DELETE FROM transactions_spend")
+	s.ExecSQLMust("DELETE FROM transactions_deposit")
+	s.ExecSQLMust("DELETE FROM accounts")
+	s.ExecSQLMust("DELETE FROM auth_users")
+	s.ExecSQLMust("DELETE FROM auth_blacklist")
 }

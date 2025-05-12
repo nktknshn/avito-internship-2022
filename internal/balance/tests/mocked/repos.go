@@ -1,4 +1,4 @@
-//nolint:nilaway // используем в defer
+//nolint:nilaway,errcheck // моки
 package mocked
 
 import (
