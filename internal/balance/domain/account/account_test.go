@@ -3,10 +3,11 @@ package account_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAccount_Transfer_Success(t *testing.T) {
@@ -17,10 +18,10 @@ func TestAccount_Transfer_Success(t *testing.T) {
 	err := acc1.Transfer(acc2, amount)
 	require.NoError(t, err)
 
-	require.Equal(t, acc1.Balance.GetAvailable().Value(), int64(0))
-	require.Equal(t, acc1.Balance.GetReserved().Value(), int64(0))
-	require.Equal(t, acc2.Balance.GetAvailable().Value(), int64(10))
-	require.Equal(t, acc2.Balance.GetReserved().Value(), int64(0))
+	require.Equal(t, int64(0), acc1.Balance.GetAvailable().Value())
+	require.Equal(t, int64(0), acc1.Balance.GetReserved().Value())
+	require.Equal(t, int64(10), acc2.Balance.GetAvailable().Value())
+	require.Equal(t, int64(0), acc2.Balance.GetReserved().Value())
 }
 
 func TestAccount_Transfer_SameAccount(t *testing.T) {

@@ -2,7 +2,6 @@ package auth_pg
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
@@ -30,7 +29,7 @@ func (suite *TestSuiteAuthPg) SetupTest() {
 }
 
 func (suite *TestSuiteAuthPg) TearDownTest() {
-	suite.ExecSql("delete from auth_users")
+	suite.ExecSQL("delete from auth_users")
 }
 
 func (s *TestSuiteAuthPg) TestGetUserByUsername_Success() {
@@ -38,34 +37,34 @@ func (s *TestSuiteAuthPg) TestGetUserByUsername_Success() {
 	s.repo.CreateUser(context.Background(), "username", "password", domainAuth.AuthUserRoleAdmin)
 
 	user, err := s.repo.GetUserByUsername(context.Background(), "username")
-	s.NoError(err)
-	s.Equal(domainAuth.AuthUserUsername("username"), user.Username)
-	s.Equal(domainAuth.AuthUserPasswordHash("password"), user.PasswordHash)
-	s.Equal(domainAuth.AuthUserRoleAdmin, user.Role)
+	s.Require().NoError(err)
+	s.Require().Equal(domainAuth.AuthUserUsername("username"), user.Username)
+	s.Require().Equal(domainAuth.AuthUserPasswordHash("password"), user.PasswordHash)
+	s.Require().Equal(domainAuth.AuthUserRoleAdmin, user.Role)
 }
 
 func (s *TestSuiteAuthPg) TestGetUserByUsername_NotFound() {
 	user, err := s.repo.GetUserByUsername(context.Background(), "test")
-	s.Error(err)
-	s.Nil(user)
-	s.Require().True(errors.Is(err, domainAuth.ErrAuthUserNotFound))
+	s.Require().Error(err)
+	s.Require().Nil(user)
+	s.Require().ErrorIs(err, domainAuth.ErrAuthUserNotFound)
 }
 
 func (s *TestSuiteAuthPg) TestCreateAccount_Success() {
 	err := s.repo.CreateUser(context.Background(), "username", "password", "role")
-	s.NoError(err)
-	rows, err := s.ExecSql("select * from auth_users")
-	s.NoError(err)
-	s.Equal(1, len(rows.Rows))
-	s.Equal("username", rows.Rows[0]["username"])
-	s.Equal("password", rows.Rows[0]["password_hash"])
-	s.Equal("role", rows.Rows[0]["role"])
+	s.Require().NoError(err)
+	rows, err := s.ExecSQL("select * from auth_users")
+	s.Require().NoError(err)
+	s.Require().Len(rows.Rows, 1)
+	s.Require().Equal("username", rows.Rows[0]["username"])
+	s.Require().Equal("password", rows.Rows[0]["password_hash"])
+	s.Require().Equal("role", rows.Rows[0]["role"])
 }
 
 func (s *TestSuiteAuthPg) TestCreateAccount_DuplicateUsername() {
 	err := s.repo.CreateUser(context.Background(), "test", "test", "test")
-	s.NoError(err)
+	s.Require().NoError(err)
 	err = s.repo.CreateUser(context.Background(), "test", "test", "test")
-	s.Error(err)
+	s.Require().Error(err)
 	s.Require().ErrorIs(err, domainAuth.ErrDuplicateUsername)
 }

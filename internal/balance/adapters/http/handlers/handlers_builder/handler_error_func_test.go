@@ -18,7 +18,7 @@ func TestHandlerErrorFunc_InternalServerError(t *testing.T) {
 	handlerErrorFunc(t.Context(), rec, nil, ergo.NewInternalServerError(errors.New("test")))
 
 	require.Equal(t, http.StatusInternalServerError, rec.Code)
-	require.Equal(t, `{"error":"internal server error"}`, rec.Body.String())
+	require.JSONEq(t, `{"error":"internal server error"}`, rec.Body.String())
 }
 
 func TestHandlerErrorFunc_WrappedError(t *testing.T) {
@@ -26,7 +26,7 @@ func TestHandlerErrorFunc_WrappedError(t *testing.T) {
 	handlerErrorFunc(t.Context(), rec, nil, ergo.NewError(http.StatusInternalServerError, errors.New("test")))
 
 	require.Equal(t, http.StatusInternalServerError, rec.Code)
-	require.Equal(t, `{"error":"test"}`, rec.Body.String())
+	require.JSONEq(t, `{"error":"test"}`, rec.Body.String())
 }
 
 func TestHandlerErrorFunc_DomainError(t *testing.T) {
@@ -35,7 +35,7 @@ func TestHandlerErrorFunc_DomainError(t *testing.T) {
 	handlerErrorFunc(t.Context(), rec, nil, err)
 
 	require.Equal(t, http.StatusBadRequest, rec.Code)
-	require.Equal(t, `{"error":"domain error"}`, rec.Body.String())
+	require.JSONEq(t, `{"error":"domain error"}`, rec.Body.String())
 }
 
 func TestHandlerErrorFunc_UseCaseError(t *testing.T) {
@@ -44,5 +44,5 @@ func TestHandlerErrorFunc_UseCaseError(t *testing.T) {
 	handlerErrorFunc(t.Context(), rec, nil, err)
 
 	require.Equal(t, http.StatusBadRequest, rec.Code)
-	require.Equal(t, `{"error":"use case error"}`, rec.Body.String())
+	require.JSONEq(t, `{"error":"use case error"}`, rec.Body.String())
 }

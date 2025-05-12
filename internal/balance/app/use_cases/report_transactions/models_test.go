@@ -7,5 +7,5 @@ import (
 )
 
 func TestCursorEmpty(t *testing.T) {
-	assert.True(t, CursorEmpty == "")
+	assert.Empty(t, CursorEmpty)
 }

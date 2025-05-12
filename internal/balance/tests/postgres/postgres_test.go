@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 )
 
 func TestPostgres(t *testing.T) {
@@ -20,20 +20,20 @@ type Suite struct {
 }
 
 func (s *Suite) TearDownTest() {
-	s.ExecSqlMust(`DROP TABLE IF EXISTS test_time;`)
+	s.ExecSQLMust(`DROP TABLE IF EXISTS test_time;`)
 }
 
 func (s *Suite) TestEqaultDates() {
 	t0 := time.Date(2025, 12, 31, 0, 0, 0, 0, time.Local)
 	t1 := t0.UTC()
 
-	require.True(s.T(), t0.Equal(t1))
-	require.NotEqual(s.T(), t0.Day(), t1.Day())
+	s.Require().True(t0.Equal(t1))
+	s.Require().NotEqual(t0.Day(), t1.Day())
 }
 
 func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
 	// Если время сохраняется в TIMESTAMPTZ, то оно сохраняется в UTC, конвертируя часовой пояс.
-	_, err := s.ExecSql(`
+	_, err := s.ExecSQL(`
 		CREATE TABLE test_time_tz (
 			created_at TIMESTAMPTZ NOT NULL
 		);
@@ -51,11 +51,11 @@ func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
 	})
 	s.Require().NoError(err)
 
-	rows, err := s.ExecSql(`
+	rows, err := s.ExecSQL(`
 		SELECT * FROM test_time_tz;
 	`)
 	s.Require().NoError(err)
-	s.Require().Equal(1, len(rows.Rows))
+	s.Require().Len(rows.Rows, 1)
 
 	t := rows.Rows[0]["created_at"].(time.Time)
 
@@ -66,7 +66,7 @@ func (s *Suite) TestTimeSaveAndGet_TIMESTAMPTZ() {
 
 func (s *Suite) TestTimeSaveAndGet_TIMESTAMP() {
 	// Если время сохраняется в TIMESTAMP, то оно сохраняется в часовом поясе в UTC, а таймзона отбрасывается.
-	_, err := s.ExecSql(`
+	_, err := s.ExecSQL(`
 		CREATE TABLE test_time (
 			created_at TIMESTAMP NOT NULL
 		);
@@ -84,11 +84,11 @@ func (s *Suite) TestTimeSaveAndGet_TIMESTAMP() {
 	})
 	s.Require().NoError(err)
 
-	rows, err := s.ExecSql(`
+	rows, err := s.ExecSQL(`
 		SELECT * FROM test_time;
 	`)
 	s.Require().NoError(err)
-	s.Require().Equal(1, len(rows.Rows))
+	s.Require().Len(rows.Rows, 1)
 
 	t := rows.Rows[0]["created_at"].(time.Time)
 

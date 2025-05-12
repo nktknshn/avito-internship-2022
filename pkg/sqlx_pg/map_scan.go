@@ -11,7 +11,7 @@ func NamedSelectMapScan(
 	conn *sqlx.DB,
 	dest *[]map[string]any,
 	query string,
-	arg interface{},
+	arg any,
 ) error {
 
 	queryStr, params, err := conn.BindNamed(query, arg)
@@ -23,6 +23,12 @@ func NamedSelectMapScan(
 	rows, err := conn.QueryxContext(ctx, queryStr, params...)
 
 	if err != nil {
+		return err
+	}
+
+	defer rows.Close()
+
+	if err := rows.Err(); err != nil {
 		return err
 	}
 

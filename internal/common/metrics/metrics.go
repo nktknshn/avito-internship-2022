@@ -19,6 +19,6 @@ type Metrics interface {
 
 type Noop struct{}
 
-func (m *Noop) IncHits(status Status, method string) {}
+func (m *Noop) IncHits(_ Status, _ string) {}
 
-func (m *Noop) ObserveResponseTime(status Status, method string, observeTime float64) {}
+func (m *Noop) ObserveResponseTime(_ Status, _ string, _ float64) {}

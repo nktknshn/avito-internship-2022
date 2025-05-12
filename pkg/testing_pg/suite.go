@@ -50,19 +50,19 @@ func (suite *TestSuitePg) Log(args ...any) {
 	suite.T().Log(args...)
 }
 
-func (s *TestSuitePg) ExecSqlMust(sql string) *ResultRows {
-	rows, err := s.ExecSql(sql)
+func (s *TestSuitePg) ExecSQLMust(sql string) *ResultRows {
+	rows, err := s.ExecSQL(sql)
 	s.Require().NoError(err)
 	return rows
 }
 
-func (s *TestSuitePg) ExecSqlExpectRowsLen(sql string, expectedRowsLen int) {
-	rows, err := s.ExecSql(sql)
+func (s *TestSuitePg) ExecSQLExpectRowsLen(sql string, expectedRowsLen int) {
+	rows, err := s.ExecSQL(sql)
 	s.Require().NoError(err)
 	s.Require().Len(rows.Rows, expectedRowsLen)
 }
 
-func (s *TestSuitePg) ExecSql(sql string) (*ResultRows, error) {
+func (s *TestSuitePg) ExecSQL(sql string) (*ResultRows, error) {
 	rows := []map[string]any{}
 
 	err := sqlx_pg.NamedSelectMapScan(s.Context(), s.Conn, &rows, sql, map[string]any{})

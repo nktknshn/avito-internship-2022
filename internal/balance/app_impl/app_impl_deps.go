@@ -7,6 +7,12 @@ import (
 	"github.com/avito-tech/go-transaction-manager/sql"
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/avito-tech/go-transaction-manager/trm/manager"
+	"github.com/opentracing/opentracing-go"
+	jaeger "github.com/uber/jaeger-client-go"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+	jaegerlog "github.com/uber/jaeger-client-go/log"
+	jaegermetrics "github.com/uber/jaeger-lib/metrics"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
@@ -26,11 +32,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/pkg/password_hasher_argon"
 	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 	"github.com/nktknshn/avito-internship-2022/pkg/token_generator_jwt"
-	"github.com/opentracing/opentracing-go"
-	jaeger "github.com/uber/jaeger-client-go"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
-	jaegerlog "github.com/uber/jaeger-client-go/log"
-	jaegermetrics "github.com/uber/jaeger-lib/metrics"
 )
 
 type TransactionRepository interface {
@@ -140,7 +141,6 @@ func NewDeps(ctx context.Context, cfg *config.Config) (*AppDeps, func(), error) 
 			logger.Error("Failed to close db", "error", err)
 		}
 
-		return
 	}
 
 	return &AppDeps{

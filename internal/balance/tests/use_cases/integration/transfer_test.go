@@ -6,19 +6,18 @@ import (
 	"sync/atomic"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/transfer"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 )
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_Success() {
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID_2
 	})
 
@@ -43,8 +42,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_Success() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_To() {
-
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID
 	})
 
@@ -60,7 +58,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_To() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_From() {
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID_2
 	})
 
@@ -75,7 +73,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_From() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_SameAccount() {
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID
 	})
 
@@ -90,12 +88,12 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_SameAccount() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_InsufficientBalance() {
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive50))
 	})
 
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID_2
 	})
 
@@ -110,12 +108,12 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_InsufficientBalance() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestTransfer_DoubleTransaction() {
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 
-	_ = s.newAccountSaved(func(a *account.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.UserID = fixtures.UserID_2
 	})
 

@@ -3,10 +3,11 @@ package account_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
-	"github.com/stretchr/testify/require"
 )
 
 // TestAccountBalance_Equality проверяет, что AccountBalance является значением, а не объектом
@@ -33,8 +34,8 @@ func TestAccountBalance_Deposit(t *testing.T) {
 
 	b2, err := b1.Deposit(amount1)
 	require.NoError(t, err)
-	require.Equal(t, b2.GetAvailable().Value(), int64(10))
-	require.Equal(t, b2.GetReserved().Value(), int64(0))
+	require.Equal(t, int64(10), b2.GetAvailable().Value())
+	require.Equal(t, int64(0), b2.GetReserved().Value())
 }
 
 func TestAccountBalance_Reserve(t *testing.T) {
@@ -44,8 +45,8 @@ func TestAccountBalance_Reserve(t *testing.T) {
 
 	b2, err := b1.Reserve(amount1)
 	require.NoError(t, err)
-	require.Equal(t, b2.GetAvailable().Value(), int64(5))
-	require.Equal(t, b2.GetReserved().Value(), int64(5))
+	require.Equal(t, int64(5), b2.GetAvailable().Value())
+	require.Equal(t, int64(5), b2.GetReserved().Value())
 }
 
 func TestAccountBalance_ReserveCancel_Success(t *testing.T) {
@@ -54,8 +55,8 @@ func TestAccountBalance_ReserveCancel_Success(t *testing.T) {
 
 	b2, err := b1.ReserveCancel(amount1)
 	require.NoError(t, err)
-	require.Equal(t, b2.GetAvailable().Value(), int64(10))
-	require.Equal(t, b2.GetReserved().Value(), int64(0))
+	require.Equal(t, int64(10), b2.GetAvailable().Value())
+	require.Equal(t, int64(0), b2.GetReserved().Value())
 }
 
 func TestAccountBalance_ReserveCancel_InsufficientBalance(t *testing.T) {
@@ -74,8 +75,8 @@ func TestAccountBalance_ReserveConfirm_Success(t *testing.T) {
 	b2, err := b1.ReserveConfirm(amount1)
 	require.NoError(t, err)
 
-	require.Equal(t, b2.GetAvailable().Value(), int64(0))
-	require.Equal(t, b2.GetReserved().Value(), int64(0))
+	require.Equal(t, int64(0), b2.GetAvailable().Value())
+	require.Equal(t, int64(0), b2.GetReserved().Value())
 }
 
 func TestAccountBalance_ReserveConfirm_InsufficientBalance(t *testing.T) {
@@ -92,8 +93,8 @@ func TestAccountBalance_Withdraw_Success(t *testing.T) {
 
 	b2, err := b1.Withdraw(amount1)
 	require.NoError(t, err)
-	require.Equal(t, b2.GetAvailable().Value(), int64(5))
-	require.Equal(t, b2.GetReserved().Value(), int64(0))
+	require.Equal(t, int64(5), b2.GetAvailable().Value())
+	require.Equal(t, int64(0), b2.GetReserved().Value())
 }
 
 func TestAccountBalance_Withdraw_InsufficientBalance(t *testing.T) {

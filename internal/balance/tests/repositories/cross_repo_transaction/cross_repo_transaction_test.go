@@ -37,10 +37,10 @@ func (s *Suite) SetupTest() {
 }
 
 func (s *Suite) TearDownTest() {
-	s.ExecSql("delete from accounts")
-	s.ExecSql("delete from transactions_deposit")
-	s.ExecSql("delete from transactions_spend")
-	s.ExecSql("delete from transactions_transfer")
+	s.ExecSQL("delete from accounts")
+	s.ExecSQL("delete from transactions_deposit")
+	s.ExecSQL("delete from transactions_spend")
+	s.ExecSQL("delete from transactions_transfer")
 }
 
 // TestCrossRepoTransaction_Fail проверяет, что транзакция работает в рамках двух репозиториев
@@ -72,11 +72,11 @@ func (s *Suite) TestCrossRepoTransaction_Fail() {
 
 	s.Require().Error(err)
 
-	rows, err := s.ExecSql("select * from transactions_spend")
+	rows, err := s.ExecSQL("select * from transactions_spend")
 	s.Require().NoError(err)
 	s.Require().Empty(rows.Rows)
 
-	rows, err = s.ExecSql("select * from accounts")
+	rows, err = s.ExecSQL("select * from accounts")
 	s.Require().NoError(err)
 	s.Require().Empty(rows.Rows)
 }

@@ -424,6 +424,14 @@ linters:
         linters: [ godot ]
       - text: 'should have a package comment'
         linters: [ revive ]
+      - text: 'use an underscore in package name'
+        linters: [ revive ]
+      - text: 'should not use underscores in package names'
+        linters: [ staticcheck ]
+      - text: 'don''t use underscores in Go names'
+        linters: [ staticcheck ]
+      - text: 'package should be \S+ instead of \S+'
+        linters: [ testpackage ]
       - text: 'exported \S+ \S+ should have comment( \(or a comment on this block\))? or be unexported'
         linters: [ revive ]
       - text: 'package comment should be of the form ".+"'

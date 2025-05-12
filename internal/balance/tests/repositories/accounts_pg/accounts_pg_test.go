@@ -5,13 +5,14 @@ import (
 	"testing"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestAccountsPg(t *testing.T) {
@@ -30,7 +31,7 @@ func (s *Suite) SetupTest() {
 }
 
 func (s *Suite) TearDownTest() {
-	s.ExecSql("delete from accounts")
+	s.ExecSQL("delete from accounts")
 }
 
 func (s *Suite) TestSave_Create_Success() {
@@ -65,10 +66,10 @@ func (s *Suite) TestSave_Update_Success() {
 
 	s.Require().NoError(acc.BalanceReserve(amount))
 
-	acc, err = s.accountsRepo.Save(context.Background(), acc)
+	acc2, err := s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
-	s.Require().Equal(acc.Balance, acc.Balance)
+	s.Require().Equal(acc.Balance, acc2.Balance)
 }
 
 func (s *Suite) TestSave_NotFound() {
@@ -119,9 +120,9 @@ func (s *Suite) TestGetByAccountID_Success() {
 	acc, err = s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
-	acc, err = s.accountsRepo.GetByAccountID(context.Background(), acc.ID)
+	acc2, err := s.accountsRepo.GetByAccountID(context.Background(), acc.ID)
 	s.Require().NoError(err)
-	s.Require().Equal(acc.ID, acc.ID)
+	s.Require().Equal(acc.ID, acc2.ID)
 }
 
 func (s *Suite) TestGetByAccountID_NotFound() {

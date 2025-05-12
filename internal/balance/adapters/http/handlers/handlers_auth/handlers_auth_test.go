@@ -9,6 +9,7 @@ import (
 	ergo "github.com/nktknshn/go-ergo-handler"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 )
@@ -81,9 +82,9 @@ func TestUseCaseToValidateToken_OtherError(t *testing.T) {
 
 	out, ok, err := validator.ValidateToken(t.Context(), "invalid_token")
 
+	require.Error(t, err)
 	assert.Nil(t, out)
 	assert.False(t, ok)
-	assert.Error(t, err)
 	assert.Equal(t, "some internal error", err.Error())
 }
 
@@ -97,7 +98,7 @@ func TestUseCaseToValidateToken_Success(t *testing.T) {
 
 	out, ok, err := validator.ValidateToken(t.Context(), "valid_token")
 
+	require.NoError(t, err)
 	assert.NotNil(t, out)
 	assert.True(t, ok)
-	assert.NoError(t, err)
 }

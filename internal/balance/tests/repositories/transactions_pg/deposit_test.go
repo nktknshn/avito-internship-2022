@@ -34,7 +34,7 @@ func (s *Suite) TestSaveTransactionDeposit_Success() {
 
 	s.Require().NotEqual(transaction.ID, domainTransaction.TransactionDepositID(uuid.Nil))
 
-	rows, err := s.ExecSql("select * from transactions_deposit")
+	rows, err := s.ExecSQL("select * from transactions_deposit")
 	s.Require().NoError(err)
 	s.Require().Equal(1, len(rows.Rows))
 	s.Require().Equal(transaction.ID.Value().String(), rows.Rows[0]["id"])

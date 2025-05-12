@@ -37,11 +37,7 @@ func (u *ReportRevenueUseCase) Handle(ctx context.Context, in In) (Out, error) {
 	}
 
 	for _, record := range report.Records {
-		out.Records = append(out.Records, OutRecord{
-			ProductID:    record.ProductID,
-			ProductTitle: record.ProductTitle,
-			TotalRevenue: record.TotalRevenue,
-		})
+		out.Records = append(out.Records, OutRecord(record))
 	}
 
 	return out, nil

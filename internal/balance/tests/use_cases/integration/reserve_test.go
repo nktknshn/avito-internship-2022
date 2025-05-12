@@ -77,7 +77,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyExists() {
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
-	acc := s.newAccountSaved(func(a *domainAccount.Account) {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
 

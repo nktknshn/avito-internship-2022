@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var timeZoneOption = pfgxStdlib.OptionAfterConnect(func(ctx context.Context, c *pgx.Conn) error {
+var timeZoneOption = pfgxStdlib.OptionAfterConnect(func(_ context.Context, c *pgx.Conn) error {
 	c.TypeMap().RegisterType(&pgtype.Type{
 		Name:  "timestamptz",
 		OID:   pgtype.TimestamptzOID,

@@ -12,7 +12,7 @@ func (s *AuthSuiteIntegrationTest) TestAuthSignup_Success() {
 	err := s.signup.Handle(context.Background(), fixtures.InAuthSignup)
 	s.Require().NoError(err)
 
-	result, err := s.ExecSql(
+	result, err := s.ExecSQL(
 		`SELECT * FROM auth_users`,
 	)
 	s.Require().NoError(err)

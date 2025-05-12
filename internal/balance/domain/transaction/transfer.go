@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 )
@@ -79,12 +79,12 @@ func NewTransactionTransferFromValues(
 		return nil, err
 	}
 
-	_fromAccountID, err := account.NewAccountID(fromAccountID)
+	_fromAccountID, err := domainAccount.NewAccountID(fromAccountID)
 	if err != nil {
 		return nil, err
 	}
 
-	_toAccountID, err := account.NewAccountID(toAccountID)
+	_toAccountID, err := domainAccount.NewAccountID(toAccountID)
 	if err != nil {
 		return nil, err
 	}

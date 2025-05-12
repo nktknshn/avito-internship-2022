@@ -21,24 +21,24 @@ func (s *UseCasesSuiteIntegrationTest) TestDeposit_CreatesAccountIfNotExists() {
 
 	s.Require().NoError(err)
 
-	rows, err := s.ExecSql("select * from accounts")
+	rows, err := s.ExecSQL("select * from accounts")
 	s.Require().NoError(err)
 	s.Require().Equal(1, len(rows.Rows))
 
-	rows, err = s.ExecSql("select * from transactions_deposit")
+	rows, err = s.ExecSQL("select * from transactions_deposit")
 	s.Require().NoError(err)
 	s.Require().Equal(1, len(rows.Rows))
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestDeposit_DepositsExistingAccount() {
 
-	s.ExecSqlExpectRowsLen("select * from accounts", 0)
+	s.ExecSQLExpectRowsLen("select * from accounts", 0)
 
 	acc := must.Must(domainAccount.NewAccount(1))
 	acc, err := s.accountsRepo.Save(context.Background(), acc)
 	s.Require().NoError(err)
 
-	s.ExecSqlExpectRowsLen("select * from accounts", 1)
+	s.ExecSQLExpectRowsLen("select * from accounts", 1)
 
 	in := must.Must(deposit.NewInFromValues(
 		fixtures.UserID_i64,
@@ -49,14 +49,14 @@ func (s *UseCasesSuiteIntegrationTest) TestDeposit_DepositsExistingAccount() {
 	err = s.deposit.Handle(context.Background(), in)
 	s.Require().NoError(err)
 
-	rows, err := s.ExecSql("select * from accounts")
+	rows, err := s.ExecSQL("select * from accounts")
 	s.Require().NoError(err)
 
 	s.Require().Equal(1, len(rows.Rows))
 	s.Require().Equal(acc.ID.Value(), rows.Rows[0]["id"])
 	s.Require().Equal(fixtures.Amount100_i64, rows.Rows[0]["balance_available"])
 
-	rows, err = s.ExecSql("select * from transactions_deposit")
+	rows, err = s.ExecSQL("select * from transactions_deposit")
 	s.Require().NoError(err)
 	s.Require().Equal(1, len(rows.Rows))
 }

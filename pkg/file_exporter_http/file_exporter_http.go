@@ -152,7 +152,7 @@ func (f *FileExporterHTTP) CleanupWorker(ctx context.Context) {
 	}()
 }
 
-// возвращает HTTP-хэндлер для скачивания файла
+// GetHandler возвращает HTTP-хэндлер для скачивания файла
 func (f *FileExporterHTTP) GetHandler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path

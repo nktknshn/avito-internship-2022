@@ -4,15 +4,16 @@ import (
 	"net"
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	adaptersGrpc "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/grpc"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
-	"github.com/stretchr/testify/suite"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 func TestGrpcTestSuite(t *testing.T) {
@@ -49,9 +50,12 @@ func (s *GrpcTestSuite) SetupTest() {
 	listen, err := net.Listen("tcp", ":0")
 	s.Require().NoError(err)
 	s.listen = listen
+
 	go func() {
 		err := s.grpcServer.Serve(s.listen)
-		s.Require().NoError(err)
+		if err != nil {
+			panic(err)
+		}
 	}()
 
 	insec := grpc.WithTransportCredentials(insecure.NewCredentials())

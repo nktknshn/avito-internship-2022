@@ -87,7 +87,7 @@ func (s *Suite) TestGetReportRevenueByMonth() {
 	trs := []*transactionWrapper{}
 
 	for month := range 12 {
-		for _ = range 50 {
+		for range 50 {
 			t := tSpend(acc,
 				rInt64(100, 1000),
 				rDateLocal(2024, month+1),

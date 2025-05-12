@@ -4,17 +4,18 @@ import (
 	"math"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAmount_New(t *testing.T) {
 	amount, err := domainAmount.New(10)
 	require.NoError(t, err)
-	require.Equal(t, amount.Value(), int64(10))
+	require.Equal(t, int64(10), amount.Value())
 
-	amount, err = domainAmount.New(-10)
+	_, err = domainAmount.New(-10)
 	require.Error(t, err)
 
 }
@@ -22,12 +23,12 @@ func TestAmount_New(t *testing.T) {
 func TestAmountPositive_New(t *testing.T) {
 	amount, err := domainAmount.NewPositive(10)
 	require.NoError(t, err)
-	require.Equal(t, amount.Value(), int64(10))
+	require.Equal(t, int64(10), amount.Value())
 
-	amount, err = domainAmount.NewPositive(-10)
+	_, err = domainAmount.NewPositive(-10)
 	require.Error(t, err)
 
-	amount, err = domainAmount.NewPositive(0)
+	_, err = domainAmount.NewPositive(0)
 	require.Error(t, err)
 }
 
@@ -37,7 +38,7 @@ func TestAmount_Add(t *testing.T) {
 
 	amount, err := amount1.Add(amount2)
 	require.NoError(t, err)
-	require.Equal(t, amount.Value(), int64(30))
+	require.Equal(t, int64(30), amount.Value())
 }
 
 func TestAmount_Add_Overflow(t *testing.T) {
@@ -59,7 +60,7 @@ func TestAmount_Sub(t *testing.T) {
 	amount1 = must.Must(domainAmount.New(30))
 	amount, err = amount1.Sub(amount2)
 	require.NoError(t, err)
-	require.Equal(t, amount.Value(), int64(10))
+	require.Equal(t, int64(10), amount.Value())
 }
 
 func TestAmount_LessThan(t *testing.T) {
@@ -76,5 +77,5 @@ func TestAmount_LessThan(t *testing.T) {
 
 func TestAmount_Zero(t *testing.T) {
 	amount := domainAmount.Zero()
-	require.Equal(t, amount.Value(), int64(0))
+	require.Equal(t, int64(0), amount.Value())
 }
