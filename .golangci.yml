@@ -339,11 +339,17 @@ linters:
         - os.WriteFile
         - prometheus.ExponentialBuckets.*
         - prometheus.LinearBuckets
+        - '^cobra\.ExactArgs$'
 
     nakedret:
       # Make an issue if func has more lines of code than this setting, and it has naked returns.
       # Default: 30
       max-func-lines: 0
+
+    nonamedreturns:
+      # Report named error if it is assigned inside defer.
+      # Default: false
+      report-error-in-defer: false
 
     nolintlint:
       # Exclude following linters from requiring an explanation.

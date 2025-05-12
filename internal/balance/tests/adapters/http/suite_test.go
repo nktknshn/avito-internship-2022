@@ -87,14 +87,16 @@ func (s *HTTPTestSuite) runTestCases(useCase func() *mock.Mock, handler func() a
 			// fmt.Println(resp.Body.String())
 			s.Require().Equal(tc.expectCode, resp.Code)
 
-			//nolint:gocritic // похер
-			if tc.expectErr != "" {
+			switch {
+			case tc.expectErr != "":
 				s.Require().JSONEq(ejson(tc.expectErr), resp.Body.String(), "expectedErr "+tc.expectErr+" but got "+resp.Body.String())
-			} else if tc.expectBody == nil {
+			case tc.expectBody == nil:
 				s.Require().JSONEq(rjsonStr(`{}`), resp.Body.String(), "expectedBody {} but got "+resp.Body.String())
-			} else {
-				s.Require().JSONEq(rjson(tc.expectBody), resp.Body.String(), "expectedBody "+rjson(tc.expectBody)+" but got "+resp.Body.String())
+			default:
+				s.Require().
+					JSONEq(rjson(tc.expectBody), resp.Body.String(), "expectedBody "+rjson(tc.expectBody)+" but got "+resp.Body.String())
 			}
+
 		})
 	}
 }

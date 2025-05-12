@@ -14,8 +14,7 @@ func init() {
 var cmdSignUp = &cobra.Command{
 	Use:   "signup",
 	Short: "Sign up",
-	//nolint:mnd // ...
-	Args: cobra.ExactArgs(3),
+	Args:  cobra.ExactArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
 		cliAdapter, err := deps.GetCliAdapter(ctx)

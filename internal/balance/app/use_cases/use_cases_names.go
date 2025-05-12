@@ -1,4 +1,3 @@
-//nolint:gosec // G101: Potential hardcoded credentials
 package use_cases
 
 const (
@@ -10,7 +9,7 @@ const (
 	NameTransfer            = "Transfer"
 	NameAuthSignin          = "AuthSignIn"
 	NameAuthSignup          = "AuthSignUp"
-	NameAuthValidateToken   = "AuthValidateToken"
+	NameAuthValidateToken   = "AuthValidateToken" //nolint:gosec // G101: Potential hardcoded credentials
 	NameReportTransactions  = "ReportTransactions"
 	NameReportRevenue       = "ReportRevenue"
 	NameReportRevenueExport = "ReportRevenueExport"

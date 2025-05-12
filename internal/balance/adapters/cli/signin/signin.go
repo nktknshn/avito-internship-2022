@@ -16,8 +16,7 @@ func init() {
 var cmdSignIn = &cobra.Command{
 	Use:   "signin",
 	Short: "Sign in",
-	//nolint:mnd // ...
-	Args: cobra.ExactArgs(2),
+	Args:  cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := cmd.Context()
 		cliAdapter, err := deps.GetCliAdapter(ctx)
@@ -28,7 +27,8 @@ var cmdSignIn = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		//nolint:forbidigo // ...
+
+		//nolint:forbidigo // expected
 		fmt.Println(token)
 		return nil
 	},
