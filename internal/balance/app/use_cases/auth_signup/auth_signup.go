@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/password_hasher"
@@ -16,7 +17,12 @@ type AuthSignupUseCase struct {
 }
 
 type authRepo interface {
-	CreateUser(ctx context.Context, username domainAuth.AuthUserUsername, passwordHash domainAuth.AuthUserPasswordHash, role domainAuth.AuthUserRole) error
+	CreateUser(
+		ctx context.Context,
+		username domainAuth.AuthUserUsername,
+		passwordHash domainAuth.AuthUserPasswordHash,
+		role domainAuth.AuthUserRole,
+	) error
 }
 
 func New(trm trm.Manager, hasher password_hasher.Hasher, authRepo authRepo) *AuthSignupUseCase {

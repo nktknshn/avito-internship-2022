@@ -2,12 +2,13 @@ package use_cases_test
 
 import (
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/mocked"
-	"github.com/stretchr/testify/suite"
 )
 
 type SuiteTest struct {

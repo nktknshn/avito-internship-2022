@@ -3,6 +3,8 @@ package http_test
 import (
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
@@ -11,7 +13,6 @@ import (
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *HTTPTestSuite) TestReserve() {
@@ -71,9 +72,14 @@ func (s *HTTPTestSuite) TestReserve() {
 		},
 		// amount
 		{
-			name:       "invalid amount",
-			auth:       true,
-			payload:    map[string]any{"user_id": fixtures.UserID_i64, "product_id": fixtures.ProductID_i64, "order_id": fixtures.OrderID_i64, "amount": -1},
+			name: "invalid amount",
+			auth: true,
+			payload: map[string]any{
+				"user_id":    fixtures.UserID_i64,
+				"product_id": fixtures.ProductID_i64,
+				"order_id":   fixtures.OrderID_i64,
+				"amount":     -1,
+			},
 			expectCode: http.StatusBadRequest,
 			expectErr:  domainAmount.ErrInvalidPositiveAmount.Error(),
 		},

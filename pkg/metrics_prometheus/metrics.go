@@ -3,10 +3,11 @@ package metrics_prometheus
 import (
 	"net/http"
 
-	"github.com/nktknshn/avito-internship-2022/internal/common/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/nktknshn/avito-internship-2022/internal/common/metrics"
 )
 
 type MetricsPrometheus struct {
@@ -16,7 +17,7 @@ type MetricsPrometheus struct {
 }
 
 func NewMetricsPrometheus(name string) (*MetricsPrometheus, error) {
-	metr := MetricsPrometheus{}
+	var metr MetricsPrometheus
 	metr.HitsTotal = prometheus.NewCounter(prometheus.CounterOpts{
 		Name: name + "_hits_total",
 	})
@@ -67,4 +68,4 @@ func (m *MetricsPrometheus) ObserveResponseTime(status metrics.Status, method st
 	m.Times.WithLabelValues(status.String(), method).Observe(observeTime)
 }
 
-var _ metrics.Metrics = &MetricsPrometheus{}
+var _ metrics.Metrics = (*MetricsPrometheus)(nil)

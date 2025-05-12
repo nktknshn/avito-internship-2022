@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"

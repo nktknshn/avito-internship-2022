@@ -1,11 +1,12 @@
 package grpc_test
 
 import (
-	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
+	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 )
 
 type testCaseDeposit struct {

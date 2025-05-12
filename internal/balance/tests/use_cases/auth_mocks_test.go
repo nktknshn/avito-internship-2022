@@ -3,10 +3,11 @@ package use_cases_test
 import (
 	"context"
 
+	"github.com/stretchr/testify/mock"
+
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/common/password_hasher"
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
-	"github.com/stretchr/testify/mock"
 )
 
 type tokenManagerMock struct {

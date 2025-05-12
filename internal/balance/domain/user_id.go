@@ -8,12 +8,6 @@ import (
 
 type UserID int64
 
-func (u UserID) Value() int64 {
-	return int64(u)
-}
-
-var ErrInvalidUserID = domainError.New("invalid UserID")
-
 func NewUserID(userID int64) (UserID, error) {
 	if userID <= 0 {
 		return 0, ErrInvalidUserID
@@ -28,3 +22,9 @@ func NewUserIDFromString(userID string) (UserID, error) {
 	}
 	return NewUserID(id)
 }
+
+func (u UserID) Value() int64 {
+	return int64(u)
+}
+
+var ErrInvalidUserID = domainError.New("invalid UserID")

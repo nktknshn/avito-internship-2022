@@ -87,6 +87,7 @@ func (s *HTTPTestSuite) runTestCases(useCase func() *mock.Mock, handler func() a
 			// fmt.Println(resp.Body.String())
 			s.Require().Equal(tc.expectCode, resp.Code)
 
+			//nolint:gocritic // похер
 			if tc.expectErr != "" {
 				s.Require().JSONEq(ejson(tc.expectErr), resp.Body.String(), "expectedErr "+tc.expectErr+" but got "+resp.Body.String())
 			} else if tc.expectBody == nil {

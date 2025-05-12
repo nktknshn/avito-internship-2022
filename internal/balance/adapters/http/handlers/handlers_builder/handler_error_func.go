@@ -24,24 +24,20 @@ func handlerErrorFunc(_ context.Context, w http.ResponseWriter, _ *http.Request,
 	var internalServerError ergo.InternalServerError
 	var errorWithHTTPStatus ergo.ErrorWithHttpStatus
 
-	if errors.As(err, &internalServerError) {
-		// InternalServerError подразумевает, что ошибка не будет показана клиенту
+	switch {
+	case errors.As(err, &internalServerError):
 		status = http.StatusInternalServerError
 		errorBody = makeErrorBody(errInternal)
-	} else if errors.As(err, &errorWithHTTPStatus) {
-		// если ошибка обернута в хендлере с http статусом, то используем этот статус
+	case errors.As(err, &errorWithHTTPStatus):
 		status = errorWithHTTPStatus.HttpStatusCode
 		errorBody = makeErrorBody(errorWithHTTPStatus.Err)
-	} else if domainError.IsDomainError(err) {
-		// если ошибка домена, то используем http статус 400
+	case domainError.IsDomainError(err):
 		errorBody = makeErrorBody(err)
 		status = http.StatusBadRequest
-	} else if useCaseError.IsUseCaseError(err) {
-		// если ошибка юзкейса, то используем http статус 400
+	case useCaseError.IsUseCaseError(err):
 		errorBody = makeErrorBody(err)
 		status = http.StatusBadRequest
-	} else {
-		// прочие ошибки
+	default:
 		errorBody = makeErrorBody(errInternal)
 		status = http.StatusInternalServerError
 	}
@@ -58,27 +54,3 @@ func handlerErrorFunc(_ context.Context, w http.ResponseWriter, _ *http.Request,
 	// TODO: check error
 	w.Write(bs)
 }
-
-// обработчик на дефолтном поведении бибилиотеки ergo
-// func handlerErrorFuncErgo(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
-// 	if ergo.IsWrappedError(err) {
-// 		// если ошибка обернута в хендлере с http статусом, то используем ее
-// 		ergo.DefaultHandlerErrorFunc(ctx, w, r, err)
-// 		return
-// 	}
-
-// 	if domainError.IsDomainError(err) {
-// 		// если ошибка домена, то используем http статус 400
-// 		ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.WrapWithStatusCode(err, http.StatusBadRequest))
-// 		return
-// 	}
-
-// 	if useCaseError.IsUseCaseError(err) {
-// 		// если ошибка юзкейса, то используем http статус 400
-// 		ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.WrapWithStatusCode(err, http.StatusBadRequest))
-// 		return
-// 	}
-
-// 	// если ошибка не обернута с http статусом, то используем http статус 500
-// 	ergo.DefaultHandlerErrorFunc(ctx, w, r, ergo.NewInternalServerError(err))
-// }

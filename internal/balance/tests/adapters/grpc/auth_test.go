@@ -3,12 +3,13 @@ package grpc_test
 import (
 	"errors"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *GrpcTestSuite) TestGetBalance_Unauthenticated() {

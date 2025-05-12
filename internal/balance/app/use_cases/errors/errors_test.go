@@ -3,9 +3,10 @@ package errors_test
 import (
 	"testing"
 
-	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
+
+	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
 )
 
 func TestUseCaseError(t *testing.T) {

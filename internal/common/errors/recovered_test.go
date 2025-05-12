@@ -4,8 +4,9 @@ import (
 	"errors"
 	"testing"
 
-	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 	"github.com/stretchr/testify/require"
+
+	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 )
 
 func TestIsErrPanic(t *testing.T) {

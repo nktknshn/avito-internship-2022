@@ -44,6 +44,11 @@ func (t *TokenGeneratorJWT[T]) GenerateToken(_ context.Context, claims T) (strin
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(t.tokenTTL)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "",
+			Subject:   "",
+			Audience:  []string{},
+			NotBefore: nil,
+			ID:        "",
 		},
 		claimsType: claimsType[T]{
 			Data: claims,
@@ -68,8 +73,9 @@ func NewTokenValidatorJWT[T any](signKey []byte) *TokenValidatorJWT[T] {
 }
 
 func (t *TokenValidatorJWT[T]) ValidateToken(_ context.Context, token string) (*T, error) {
+	var claims TokenClaims[T]
 
-	parsedToken, err := jwt.ParseWithClaims(token, &TokenClaims[T]{}, func(_ *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &claims, func(_ *jwt.Token) (interface{}, error) {
 		return t.signKey, nil
 	})
 
@@ -90,7 +96,7 @@ func (t *TokenValidatorJWT[T]) ValidateToken(_ context.Context, token string) (*
 	}
 
 	if parsedToken.Valid {
-		return &parsedToken.Claims.(*TokenClaims[T]).Data, nil
+		return &claims.Data, nil
 	}
 
 	return nil, token_generator.ErrInvalidToken

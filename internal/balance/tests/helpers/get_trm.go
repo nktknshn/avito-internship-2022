@@ -4,6 +4,7 @@ import (
 	"github.com/avito-tech/go-transaction-manager/sql"
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/avito-tech/go-transaction-manager/trm/manager"
+
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 )
 

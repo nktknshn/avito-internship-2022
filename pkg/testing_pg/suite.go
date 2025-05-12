@@ -63,6 +63,8 @@ func (s *TestSuitePg) ExecSQLExpectRowsLen(sql string, expectedRowsLen int) {
 }
 
 func (s *TestSuitePg) ExecSQL(sql string) (*ResultRows, error) {
+	var result ResultRows
+
 	rows := []map[string]any{}
 
 	err := sqlx_pg.NamedSelectMapScan(s.Context(), s.Conn, &rows, sql, map[string]any{})
@@ -72,7 +74,7 @@ func (s *TestSuitePg) ExecSQL(sql string) (*ResultRows, error) {
 	}
 
 	if len(rows) == 0 {
-		return &ResultRows{}, nil
+		return &result, nil
 	}
 
 	headers := make([]string, 0, len(rows[0]))
@@ -80,10 +82,10 @@ func (s *TestSuitePg) ExecSQL(sql string) (*ResultRows, error) {
 		headers = append(headers, key)
 	}
 
-	return &ResultRows{
-		Headers: headers,
-		Rows:    rows,
-	}, nil
+	result.Headers = headers
+	result.Rows = rows
+
+	return &result, nil
 }
 
 func (s *TestSuitePg) SetupSuite() {

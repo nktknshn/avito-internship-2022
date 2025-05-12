@@ -32,7 +32,7 @@ func TestTokenGeneratorJWT_GenerateToken_Valid(t *testing.T) {
 	tokenVal := token_generator_jwt.NewTokenValidatorJWT[auth.AuthUserTokenClaims](secret)
 	claims, err := tokenVal.ValidateToken(t.Context(), validToken)
 	require.NoError(t, err)
-	require.Equal(t, auth.AuthUserTokenClaims{
+	require.Equal(t, &auth.AuthUserTokenClaims{
 		AuthUserID:   1,
 		AuthUserRole: "admin",
 	}, claims)

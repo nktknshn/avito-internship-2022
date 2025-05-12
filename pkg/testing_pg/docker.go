@@ -1,3 +1,4 @@
+//nolint:exhaustruct // нет нужды
 package testing_pg
 
 import (

@@ -14,7 +14,7 @@ func NewErrPanic(arg any) *ErrPanic {
 	if e, ok := arg.(error); ok {
 		return &ErrPanic{Arg: arg, err: e}
 	}
-	return &ErrPanic{Arg: arg}
+	return &ErrPanic{Arg: arg, err: nil}
 }
 
 func (p *ErrPanic) Error() string {

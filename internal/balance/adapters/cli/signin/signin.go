@@ -1,7 +1,7 @@
 package signin
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 
@@ -28,7 +28,7 @@ var cmdSignIn = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Println(token)
+		log.Println(token)
 		return nil
 	},
 }

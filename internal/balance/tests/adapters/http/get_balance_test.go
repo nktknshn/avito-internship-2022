@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
@@ -11,7 +13,6 @@ import (
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *HTTPTestSuite) TestGetBalance() {

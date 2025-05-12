@@ -12,9 +12,9 @@ func (c *ConfigUseCases) GetReportRevenueExport() *ConfigReportRevenueExport {
 
 type ConfigReportRevenueExport struct {
 	Folder string        `yaml:"folder" env-required:"true" env:"REPORT_REVENUE_EXPORT_FOLDER"`
-	TTL    time.Duration `yaml:"ttl" env-required:"true" env:"REPORT_REVENUE_EXPORT_TTL"`
-	URL    string        `yaml:"url" env-required:"true" env:"REPORT_REVENUE_EXPORT_URL"`
-	Zip    bool          `yaml:"zip" env-required:"true" env:"REPORT_REVENUE_EXPORT_ZIP"`
+	TTL    time.Duration `yaml:"ttl"    env-required:"true" env:"REPORT_REVENUE_EXPORT_TTL"`
+	URL    string        `yaml:"url"    env-required:"true" env:"REPORT_REVENUE_EXPORT_URL"`
+	Zip    bool          `yaml:"zip"    env-required:"true" env:"REPORT_REVENUE_EXPORT_ZIP"`
 }
 
 func (c *ConfigReportRevenueExport) GetFolder() string {

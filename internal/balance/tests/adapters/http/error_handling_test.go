@@ -4,16 +4,18 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/get_balance"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *HTTPTestSuite) Test_DomainError() {
 	s.setupAuthAdmin()
 
-	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
+	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).
+		Return(get_balance.Out{}, domainAccount.ErrAccountNotFound)
 
 	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)
@@ -25,7 +27,8 @@ func (s *HTTPTestSuite) Test_DomainError() {
 func (s *HTTPTestSuite) Test_InternalError() {
 	s.setupAuthAdmin()
 
-	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).Return(get_balance.Out{}, errors.New("internal server error that should not be exposed to the client"))
+	s.app.GetBalanceUseCaseMock.On("Handle", mock.Anything, fixtures.InGetBalance).
+		Return(get_balance.Out{}, errors.New("internal server error that should not be exposed to the client"))
 
 	s.setRouteParams(map[string]string{"user_id": fixtures.UserID_str})
 	_, resp := s.requestAuth(s.httpAdapter.GetBalance)

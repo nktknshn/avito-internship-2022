@@ -29,7 +29,7 @@ func main() {
 	cfg, err := config.LoadConfigFromFile(flagConfigPath)
 
 	if err != nil {
-		log.Fatalf("LoadConfig: %v", err)
+		log.Panicf("LoadConfig: %v", err)
 	}
 
 	var deps *app_impl.AppDeps
@@ -38,12 +38,12 @@ func main() {
 	if cfg.GetLagging().GetEnabled() {
 		deps, cleanup, err = lagging.NewLaggingDeps(ctx, cfg)
 		if err != nil {
-			log.Fatalf("NewLaggingDeps: %v", err)
+			log.Panicf("NewLaggingDeps: %v", err)
 		}
 	} else {
 		deps, cleanup, err = app_impl.NewDeps(ctx, cfg)
 		if err != nil {
-			log.Fatalf("NewDeps: %v", err)
+			log.Panicf("NewDeps: %v", err)
 		}
 	}
 
@@ -52,18 +52,18 @@ func main() {
 	app, err := app_impl.NewApplicationFromDeps(ctx, deps)
 
 	if err != nil {
-		log.Fatalf("NewApplicationFromDeps: %v", err)
+		log.Panicf("NewApplicationFromDeps: %v", err)
 	}
 
 	server := server.NewHTTPServer(cfg, app)
 
 	if err := server.Init(ctx); err != nil {
-		log.Fatalf("Init: %v", err)
+		log.Panicf("Init: %v", err)
 	}
 
 	err = server.Run(ctx)
 	if err != nil {
-		log.Fatalf("Run: %v", err)
+		log.Panicf("Run: %v", err)
 	}
 
 	quit := make(chan os.Signal, 1)
@@ -73,6 +73,6 @@ func main() {
 	err = server.Shutdown(ctx)
 
 	if err != nil {
-		log.Fatalf("Shutdown: %v", err)
+		log.Panicf("Shutdown: %v", err)
 	}
 }

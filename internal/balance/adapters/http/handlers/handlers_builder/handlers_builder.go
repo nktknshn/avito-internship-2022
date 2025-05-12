@@ -1,10 +1,11 @@
 package handlers_builder
 
 import (
+	ergo "github.com/nktknshn/go-ergo-handler"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/roles"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	ergo "github.com/nktknshn/go-ergo-handler"
 )
 
 func NewPublic() *ergo.Builder {

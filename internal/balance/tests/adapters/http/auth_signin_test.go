@@ -4,10 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *HTTPTestSuite) TestAuthSignin() {

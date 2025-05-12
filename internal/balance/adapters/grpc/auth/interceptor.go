@@ -4,12 +4,13 @@ import (
 	"context"
 	"slices"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
-	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
+	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 )
 
 type AuthInterceptor struct {

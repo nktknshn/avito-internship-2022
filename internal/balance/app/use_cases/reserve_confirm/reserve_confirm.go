@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/pkg/errors"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
@@ -84,13 +86,13 @@ func (u *ReserveConfirmUseCase) Handle(ctx context.Context, in In) error {
 		err = acc.BalanceReserveConfirm(in.Amount)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "ReserveConfirmUseCase.BalanceReserveConfirm")
 		}
 
 		err = transaction.Confirm(time.Now())
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "ReserveConfirmUseCase.transaction.Confirm")
 		}
 
 		_, err = u.transactionsRepo.SaveTransactionSpend(ctx, transaction)

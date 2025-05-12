@@ -3,8 +3,9 @@ package server_grpc
 import (
 	"net"
 
-	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 	"google.golang.org/grpc"
+
+	"github.com/nktknshn/avito-internship-2022/internal/common/logging"
 )
 
 type RunningServer struct {
@@ -12,7 +13,12 @@ type RunningServer struct {
 	Listen     net.Listener
 }
 
-func RunGRPCServerOnAddr(addr string, logger logging.Logger, registerServer func(server *grpc.Server), opts ...grpc.ServerOption) *RunningServer {
+func RunGRPCServerOnAddr(
+	addr string,
+	logger logging.Logger,
+	registerServer func(server *grpc.Server),
+	opts ...grpc.ServerOption,
+) *RunningServer {
 
 	grpcServer := grpc.NewServer(opts...)
 

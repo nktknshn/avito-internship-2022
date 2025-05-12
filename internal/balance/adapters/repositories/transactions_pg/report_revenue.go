@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_revenue"
 	accountTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
-	"github.com/pkg/errors"
 )
 
 func getMonthRangeUTC(year int, month int) (time.Time, time.Time) {
@@ -25,7 +26,10 @@ func getMonthRangeUTC(year int, month int) (time.Time, time.Time) {
 	return t0, t1
 }
 
-func (r *TransactionsRepository) GetReportRevenueByMonth(ctx context.Context, reportQuery report_revenue.ReportRevenueQuery) (report_revenue.ReportRevenueResponse, error) {
+func (r *TransactionsRepository) GetReportRevenueByMonth(
+	ctx context.Context,
+	reportQuery report_revenue.ReportRevenueQuery,
+) (report_revenue.ReportRevenueResponse, error) {
 	t0, t1 := getMonthRangeUTC(
 		reportQuery.Year.Value(),
 		reportQuery.Month.Value(),
@@ -73,7 +77,10 @@ func (r *TransactionsRepository) GetReportRevenueByMonth(ctx context.Context, re
 		modelRecords[i], err = fromReportRevenueDTO(&record)
 
 		if err != nil {
-			return report_revenue.ReportRevenueResponse{}, errors.Wrap(err, "TransactionsRepository.GetReportRevenueByMonth.fromReportRevenueDTO")
+			return report_revenue.ReportRevenueResponse{}, errors.Wrap(
+				err,
+				"TransactionsRepository.GetReportRevenueByMonth.fromReportRevenueDTO",
+			)
 		}
 	}
 

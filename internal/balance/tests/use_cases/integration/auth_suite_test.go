@@ -7,6 +7,8 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/auth_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signin"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_signup"
@@ -18,7 +20,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/pkg/password_hasher_argon"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
 	"github.com/nktknshn/avito-internship-2022/pkg/token_generator_jwt"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestAuthUseCases(t *testing.T) {

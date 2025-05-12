@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/avito-tech/go-transaction-manager/trm"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases"
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"

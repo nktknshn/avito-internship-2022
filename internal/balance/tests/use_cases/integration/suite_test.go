@@ -6,6 +6,8 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/avito-tech/go-transaction-manager/trm"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
@@ -18,7 +20,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestUseCases(t *testing.T) {

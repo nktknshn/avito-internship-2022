@@ -11,12 +11,11 @@ import (
 
 type TransactionTransferID uuid.UUID
 
-func (id TransactionTransferID) Value() uuid.UUID {
-	return uuid.UUID(id)
-}
-
 func NewTransactionTransferID(id uuid.UUID) (TransactionTransferID, error) {
 	return TransactionTransferID(id), nil
+}
+func (id TransactionTransferID) Value() uuid.UUID {
+	return uuid.UUID(id)
 }
 
 type TransactionTransferStatus string

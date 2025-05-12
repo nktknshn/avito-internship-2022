@@ -5,13 +5,14 @@ import (
 	"testing"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestTransactionsPg(t *testing.T) {

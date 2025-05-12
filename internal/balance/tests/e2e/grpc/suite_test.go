@@ -5,6 +5,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/status"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/grpc/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
@@ -12,11 +18,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/internal/common/genproto/balance"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
 )
 
 func TestE2ESuite(t *testing.T) {

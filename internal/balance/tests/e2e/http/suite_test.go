@@ -7,13 +7,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app_impl"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/cmd/http/server"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/config"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/e2e"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/helpers"
 	"github.com/nktknshn/avito-internship-2022/pkg/testing_pg"
-	"github.com/stretchr/testify/suite"
 )
 
 func TestE2ETestSuite(t *testing.T) {

@@ -196,7 +196,6 @@ func (r *TransactionsRepository) GetTransactionsByUserID(
 	queryLimit := query.Limit.Value()
 
 	if queryLimit > 0 {
-		// qb.Limit = fmt.Sprintf("%d", queryLimit+1)
 		qb.Limit = strconv.FormatUint(queryLimit+1, 10)
 		queryArgs["limit"] = queryLimit + 1
 	}
@@ -271,6 +270,7 @@ func (r *TransactionsRepository) GetTransactionsByUserID(
 				"TransactionsRepository.GetTransactionsByUserID.fromReportTransactionDTO",
 			)
 		}
+
 		result.Transactions[i] = model
 
 		if i < len(transactions)-1 {
@@ -278,35 +278,52 @@ func (r *TransactionsRepository) GetTransactionsByUserID(
 		}
 
 		// устанавливаем курсор
-		if sorting.IsAmount() {
-			nextCursor, err := marshalCursor(&cursorUnion{
-				Amount: &cursorAmount{
-					Amount: transaction.Amount,
-					ID:     transaction.ID,
-				},
-			})
-			if err != nil {
-				return report_transactions.ReportTransactionsPage{}, errors.Wrap(
-					err,
-					"TransactionsRepository.GetTransactionsByUserID.marshalCursor",
-				)
-			}
-			result.Cursor = nextCursor
-		}
+		err = reportTransactionsSetCursorResult(&result, sorting, transactions[i])
 
-		if sorting.IsUpdatedAt() {
-			nextCursor, err := marshalCursor(&cursorUnion{
-				UpdatedAt: &cursorUpdatedAt{
-					UpdatedAt: transaction.UpdatedAt,
-					ID:        transaction.ID,
-				},
-			})
-			if err != nil {
-				return report_transactions.ReportTransactionsPage{}, err
-			}
-			result.Cursor = nextCursor
+		if err != nil {
+			return report_transactions.ReportTransactionsPage{}, err
 		}
 	}
 
 	return result, nil
+}
+
+func reportTransactionsSetCursorResult(
+	result *report_transactions.ReportTransactionsPage,
+	sorting report_transactions.Sorting,
+	transaction reportTransactionDTO,
+) error {
+	if sorting.IsAmount() {
+		nextCursor, err := marshalCursor(&cursorUnion{
+			Amount: &cursorAmount{
+				Amount: transaction.Amount,
+				ID:     transaction.ID,
+			},
+		})
+		if err != nil {
+			return errors.Wrap(
+				err,
+				"TransactionsRepository.GetTransactionsByUserID.marshalCursor",
+			)
+		}
+		result.Cursor = nextCursor
+	}
+
+	if sorting.IsUpdatedAt() {
+		nextCursor, err := marshalCursor(&cursorUnion{
+			UpdatedAt: &cursorUpdatedAt{
+				UpdatedAt: transaction.UpdatedAt,
+				ID:        transaction.ID,
+			},
+		})
+		if err != nil {
+			return errors.Wrap(
+				err,
+				"TransactionsRepository.GetTransactionsByUserID.marshalCursor",
+			)
+		}
+		result.Cursor = nextCursor
+	}
+
+	return nil
 }

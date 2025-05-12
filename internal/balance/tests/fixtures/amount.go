@@ -1,3 +1,4 @@
+//nolint:mnd // фикстуры
 package fixtures
 
 import (

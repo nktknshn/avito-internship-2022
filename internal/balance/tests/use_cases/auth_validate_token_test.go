@@ -3,13 +3,14 @@ package use_cases_test
 import (
 	"context"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/auth_validate_token"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/nktknshn/avito-internship-2022/internal/common/helpers/must"
 	"github.com/nktknshn/avito-internship-2022/internal/common/token_generator"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *AuthSuiteTest) TestAuthValidateToken_Success() {

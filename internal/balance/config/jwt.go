@@ -4,7 +4,7 @@ import "time"
 
 type ConfigJWT struct {
 	Secret string        `yaml:"secret" env-required:"true" env:"JWT_SECRET"`
-	TTL    time.Duration `yaml:"ttl" env-required:"true" env:"JWT_TTL"`
+	TTL    time.Duration `yaml:"ttl"    env-required:"true" env:"JWT_TTL"`
 }
 
 func NewConfigJWT() *ConfigJWT {

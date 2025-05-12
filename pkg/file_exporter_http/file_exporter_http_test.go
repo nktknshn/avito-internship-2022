@@ -19,6 +19,8 @@ func TestFileExporterHTTP_ExportFile(t *testing.T) {
 	cfg := Config{
 		Folder: dir,
 		URL:    "",
+		Zip:    false,
+		TTL:    time.Millisecond * 200,
 	}
 
 	fe, err := New(cfg)
@@ -50,6 +52,7 @@ func TestFileExporterHTTP_Cleanup(t *testing.T) {
 		Folder: dir,
 		TTL:    time.Millisecond * 200,
 		URL:    "/data/report_revenue_export",
+		Zip:    false,
 	}
 
 	fe, err := New(cfg)

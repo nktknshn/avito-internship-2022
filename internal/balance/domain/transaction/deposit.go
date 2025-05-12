@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
@@ -44,8 +45,7 @@ var (
 )
 
 func NewTransactionDepositStatus(s string) (TransactionDepositStatus, error) {
-	switch s {
-	case TransactionDepositStatusConfirmed.Value():
+	if s == TransactionDepositStatusConfirmed.Value() {
 		return TransactionDepositStatusConfirmed, nil
 	}
 	return "", ErrInvalidTransactionDepositStatus
@@ -53,13 +53,15 @@ func NewTransactionDepositStatus(s string) (TransactionDepositStatus, error) {
 
 type TransactionDepositID uuid.UUID
 
+func NewTransactionDepositID(id uuid.UUID) (TransactionDepositID, error) {
+	return TransactionDepositID(id), nil
+}
+
 func (id TransactionDepositID) Value() uuid.UUID {
 	return uuid.UUID(id)
 }
 
-func NewTransactionDepositID(id uuid.UUID) (TransactionDepositID, error) {
-	return TransactionDepositID(id), nil
-}
+var TransactionDepositIDNil = TransactionDepositID(uuid.Nil)
 
 type TransactionDeposit struct {
 	ID            TransactionDepositID
@@ -80,6 +82,7 @@ func NewTransactionDeposit(
 	now time.Time,
 ) (*TransactionDeposit, error) {
 	return &TransactionDeposit{
+		ID:            TransactionDepositIDNil,
 		UserID:        userID,
 		DepositSource: source,
 		Amount:        amount,

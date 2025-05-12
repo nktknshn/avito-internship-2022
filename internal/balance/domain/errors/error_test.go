@@ -6,8 +6,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	"github.com/stretchr/testify/require"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 func TestDomainError(t *testing.T) {

@@ -3,9 +3,10 @@ package use_cases_test
 import (
 	"context"
 
-	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
 
 func (s *AuthSuiteTest) TestAuthSignup_HasherError() {

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"

@@ -4,6 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	ergo "github.com/nktknshn/go-ergo-handler"
+	"github.com/stretchr/testify/mock"
+
 	adaptersHttp "github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/domain"
@@ -11,8 +14,6 @@ import (
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	ergo "github.com/nktknshn/go-ergo-handler"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *HTTPTestSuite) TestDeposit() {

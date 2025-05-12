@@ -8,6 +8,7 @@ import (
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
 	"github.com/jmoiron/sqlx"
+
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 )
@@ -30,7 +31,12 @@ func New(db *sqlx.DB, getter *trmsqlx.CtxGetter) *AuthRepository {
 	return &AuthRepository{db: db, getter: getter}
 }
 
-func (r *AuthRepository) CreateUser(ctx context.Context, username domainAuth.AuthUserUsername, passwordHash domainAuth.AuthUserPasswordHash, role domainAuth.AuthUserRole) error {
+func (r *AuthRepository) CreateUser(
+	ctx context.Context,
+	username domainAuth.AuthUserUsername,
+	passwordHash domainAuth.AuthUserPasswordHash,
+	role domainAuth.AuthUserRole,
+) error {
 	sq := `INSERT INTO auth_users (username, password_hash, role) VALUES (?, ?, ?)`
 
 	tr := r.getter.DefaultTrOrDB(ctx, r.db)

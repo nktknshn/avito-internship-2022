@@ -3,8 +3,9 @@ package accounts_pg
 import (
 	"testing"
 
-	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 	"github.com/stretchr/testify/require"
+
+	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 )
 
 func TestFromAccountDTO_StripDomainError(t *testing.T) {

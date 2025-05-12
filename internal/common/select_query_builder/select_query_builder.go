@@ -5,7 +5,18 @@ import (
 )
 
 func New() *SelectQueryBuilder {
-	return &SelectQueryBuilder{}
+	return &SelectQueryBuilder{
+		Ctes:          []string{},
+		AndConditions: []string{},
+		Query:         "",
+		Cursor:        "",
+		Order:         "",
+		GroupBy:       "",
+		Having:        "",
+		InnerJoins:    []string{},
+		LeftJoins:     []string{},
+		Limit:         "",
+	}
 }
 
 type SelectQueryBuilder struct {
@@ -48,31 +59,31 @@ func (s *SelectQueryBuilder) Build() string {
 	}
 
 	if len(s.InnerJoins) > 0 {
-		q = q + "INNER JOIN " + strings.Join(s.InnerJoins, "\nINNER JOIN ")
-		q = q + "\n"
+		q += "INNER JOIN " + strings.Join(s.InnerJoins, "\nINNER JOIN ")
+		q += "\n"
 	}
 
 	if len(s.LeftJoins) > 0 {
-		q = q + "LEFT JOIN " + strings.Join(s.LeftJoins, "\nLEFT JOIN ")
-		q = q + "\n"
+		q += "LEFT JOIN " + strings.Join(s.LeftJoins, "\nLEFT JOIN ")
+		q += "\n"
 	}
 
-	q = q + conditionsStr
+	q += conditionsStr
 
 	if s.GroupBy != "" {
-		q = q + " GROUP BY " + s.GroupBy
+		q += " GROUP BY " + s.GroupBy
 	}
 
 	if s.Having != "" {
-		q = q + " HAVING " + s.Having
+		q += " HAVING " + s.Having
 	}
 
 	if s.Order != "" {
-		q = q + " ORDER BY " + s.Order
+		q += " ORDER BY " + s.Order
 	}
 
 	if s.Limit != "" {
-		q = q + " LIMIT " + s.Limit
+		q += " LIMIT " + s.Limit
 	}
 
 	return q

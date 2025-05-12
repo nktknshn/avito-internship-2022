@@ -3,11 +3,11 @@ package use_cases_test
 import (
 	"context"
 	"errors"
-	"fmt"
+
+	"github.com/stretchr/testify/mock"
 
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
-	"github.com/stretchr/testify/mock"
 )
 
 func (s *SuiteTest) TestDeposit_Errors() {
@@ -18,6 +18,6 @@ func (s *SuiteTest) TestDeposit_Errors() {
 	err := s.mockedDeposit.Handle(context.Background(), fixtures.InDeposit100)
 
 	s.Require().Error(err)
-	fmt.Println(err)
+	// fmt.Println(err)
 
 }

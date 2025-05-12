@@ -26,13 +26,13 @@ func main() {
 	cfg, err := config.LoadConfigFromFile(flagConfigPath)
 
 	if err != nil {
-		log.Fatalf("LoadConfig: %v", err)
+		log.Panicf("LoadConfig: %v", err)
 	}
 
 	app, cleanup, err := app_impl.NewApplication(ctx, cfg)
 
 	if err != nil {
-		log.Fatalf("NewApplication: %v", err)
+		log.Panicf("NewApplication: %v", err)
 	}
 
 	defer cleanup()
@@ -40,11 +40,11 @@ func main() {
 	serv := server.NewGrpcServer(cfg, app)
 
 	if err := serv.Init(ctx); err != nil {
-		log.Fatalf("Init: %v", err)
+		log.Panicf("Init: %v", err)
 	}
 
 	if err := serv.Run(ctx); err != nil {
-		log.Fatalf("Run: %v", err)
+		log.Panicf("Run: %v", err)
 	}
 
 	quit := make(chan os.Signal, 1)
