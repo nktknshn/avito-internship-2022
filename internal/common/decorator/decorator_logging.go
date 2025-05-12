@@ -8,39 +8,39 @@ import (
 )
 
 type Decorator0Logging[T any] struct {
-	base   UseCase0Handler[T]
-	logger logging.Logger
+	Base   UseCase0Handler[T]
+	Logger logging.Logger
 }
 
 func (d *Decorator0Logging[T]) Handle(ctx context.Context, in T) (err error) {
 	defer func() {
 		if err != nil {
-			d.logger.Error(d.base.GetName(), "use_case", d.base.GetName(), "error", err)
+			d.Logger.Error(d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
 		}
 	}()
-	d.logger.Info(d.base.GetName(), "use_case", d.base.GetName(), "in", in)
-	return d.base.Handle(ctx, in)
+	d.Logger.Info(d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
+	return d.Base.Handle(ctx, in)
 }
 
 func (d *Decorator0Logging[T]) GetName() string {
-	return d.base.GetName()
+	return d.Base.GetName()
 }
 
 type Decorator1Logging[T any, R any] struct {
-	base   UseCase1Handler[T, R]
-	logger logging.Logger
+	Base   UseCase1Handler[T, R]
+	Logger logging.Logger
 }
 
 func (d *Decorator1Logging[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
 	defer func() {
 		if err != nil {
-			d.logger.Error(d.base.GetName(), "use_case", d.base.GetName(), "error", err)
+			d.Logger.Error(d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
 		}
 	}()
-	d.logger.Info(d.base.GetName(), "use_case", d.base.GetName(), "in", in)
-	return d.base.Handle(ctx, in)
+	d.Logger.Info(d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
+	return d.Base.Handle(ctx, in)
 }
 
 func (d *Decorator1Logging[T, R]) GetName() string {
-	return d.base.GetName()
+	return d.Base.GetName()
 }

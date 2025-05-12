@@ -44,8 +44,8 @@ func TestDecorator0Recover(t *testing.T) {
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator0Recover[int]{
-		base:           &useCase0{},
-		recoverHandler: h.Handle,
+		Base:           &useCase0{},
+		RecoverHandler: h.Handle,
 	}
 
 	require.NotPanics(t, func() {
@@ -61,8 +61,8 @@ func TestDecorator1Recover(t *testing.T) {
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator1Recover[int, int]{
-		base:           &useCase1{},
-		recoverHandler: h.Handle,
+		Base:           &useCase1{},
+		RecoverHandler: h.Handle,
 	}
 	require.NotPanics(t, func() {
 		res, err := dec.Handle(t.Context(), 1)

@@ -33,14 +33,14 @@ func Decorate0[T any](
 	logger logging.Logger,
 ) UseCase0Handler[T] {
 	return &Decorator0Logging[T]{
-		base: &Decorator0Metrics[T]{
-			base: &Decorator0Recover[T]{
-				base:           base,
-				recoverHandler: recoverHandler{logger}.Handle,
+		Base: &Decorator0Metrics[T]{
+			Base: &Decorator0Recover[T]{
+				Base:           base,
+				RecoverHandler: recoverHandler{logger}.Handle,
 			},
-			metrics: metrics,
+			Metrics: metrics,
 		},
-		logger: logger,
+		Logger: logger,
 	}
 }
 
@@ -50,13 +50,13 @@ func Decorate1[T any, R any](
 	logger logging.Logger,
 ) UseCase1Handler[T, R] {
 	return &Decorator1Logging[T, R]{
-		base: &Decorator1Metrics[T, R]{
-			base: &Decorator1Recover[T, R]{
-				base:           base,
-				recoverHandler: recoverHandler{logger}.Handle,
+		Base: &Decorator1Metrics[T, R]{
+			Base: &Decorator1Recover[T, R]{
+				Base:           base,
+				RecoverHandler: recoverHandler{logger}.Handle,
 			},
-			metrics: metrics,
+			Metrics: metrics,
 		},
-		logger: logger,
+		Logger: logger,
 	}
 }

@@ -10,8 +10,8 @@ import (
 )
 
 type Decorator0Metrics[T any] struct {
-	base    UseCase0Handler[T]
-	metrics metrics.Metrics
+	Base    UseCase0Handler[T]
+	Metrics metrics.Metrics
 }
 
 func (d *Decorator0Metrics[T]) Handle(ctx context.Context, in T) (err error) {
@@ -24,20 +24,20 @@ func (d *Decorator0Metrics[T]) Handle(ctx context.Context, in T) (err error) {
 		if commonErrors.IsPanicError(err) {
 			status = metrics.StatusPanic
 		}
-		d.metrics.IncHits(status, d.base.GetName())
-		d.metrics.ObserveResponseTime(status, d.base.GetName(), time.Since(started).Seconds())
+		d.Metrics.IncHits(status, d.Base.GetName())
+		d.Metrics.ObserveResponseTime(status, d.Base.GetName(), time.Since(started).Seconds())
 	}()
 
-	return d.base.Handle(ctx, in)
+	return d.Base.Handle(ctx, in)
 }
 
 func (d *Decorator0Metrics[T]) GetName() string {
-	return d.base.GetName()
+	return d.Base.GetName()
 }
 
 type Decorator1Metrics[T any, R any] struct {
-	base    UseCase1Handler[T, R]
-	metrics metrics.Metrics
+	Base    UseCase1Handler[T, R]
+	Metrics metrics.Metrics
 }
 
 func (d *Decorator1Metrics[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
@@ -47,13 +47,13 @@ func (d *Decorator1Metrics[T, R]) Handle(ctx context.Context, in T) (result R, e
 		if err != nil {
 			status = metrics.StatusError
 		}
-		d.metrics.IncHits(status, d.base.GetName())
-		d.metrics.ObserveResponseTime(status, d.base.GetName(), time.Since(started).Seconds())
+		d.Metrics.IncHits(status, d.Base.GetName())
+		d.Metrics.ObserveResponseTime(status, d.Base.GetName(), time.Since(started).Seconds())
 	}()
 
-	return d.base.Handle(ctx, in)
+	return d.Base.Handle(ctx, in)
 }
 
 func (d *Decorator1Metrics[T, R]) GetName() string {
-	return d.base.GetName()
+	return d.Base.GetName()
 }
