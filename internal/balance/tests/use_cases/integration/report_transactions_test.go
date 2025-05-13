@@ -44,8 +44,8 @@ func (s *UseCasesSuiteIntegrationTest) TestReportTransactions_Success() {
 		fixtures.UserID_i64,
 		"",
 		10,
-		"updated_at",
-		"asc",
+		report_transactions.SortingUpdatedAt.Value(),
+		report_transactions.SortingDirectionAsc.Value(),
 	)
 	s.Require().NoError(err)
 

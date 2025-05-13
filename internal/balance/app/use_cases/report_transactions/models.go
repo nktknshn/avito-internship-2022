@@ -48,6 +48,10 @@ type Transaction any
 
 type SortingDirection string
 
+func (s SortingDirection) Value() string {
+	return string(s)
+}
+
 func (s SortingDirection) IsZero() bool {
 	return s == ""
 }
