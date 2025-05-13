@@ -216,6 +216,7 @@ type Application struct {
 	AuthSignin        UseCase1[auth_signin.In, auth_signin.Out]
 	AuthSignup        UseCase0[auth_signup.In]
 	AuthValidateToken UseCase1[auth_validate_token.In, auth_validate_token.Out]
+	AuthListUsers     UseCase1[auth_list_users.In, auth_list_users.Out]
 	// Balance
 	GetBalance          UseCase1[get_balance.In, get_balance.Out]
 	Deposit             UseCase0[deposit.In]
@@ -415,7 +416,9 @@ func (g GrpcAdapter) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 
 #### Cli-адаптер
 
-Данный адаптер позволяет использовать приложение из командной строки. Он предоставляет доступ к юзкейсам регистрации нового пользователя с ролью и получения для него токена.
+* [internal/balance/adapters/cli](internal/balance/adapters/cli)
+
+Данный адаптер позволяет использовать приложение из командной строки. Он предоставляет доступ к юзкейсам регистрации нового пользователя с ролью, получения для него токена, а также списка пользователей. Список пользователей [используется в докер контейнере](deployment/docker/balance/http/start.sh) для инициации первого администратора.
 
 ```go
 func (a *CliAdapter) SignUp(ctx context.Context, username string, password string, role string) error {
@@ -431,7 +434,7 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 }
 ```
 
-Слой использует библиотеку cobra для удобной реализации клиента. Дополнительно слоя абстракции решено было не делать.
+Слой использует библиотеку [cobra](https://github.com/spf13/cobra) для удобной реализации клиента. Дополнительно слоя абстракции решено было не делать.
 
 ### Common
 
@@ -468,6 +471,14 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 - [pkg/sqlx_pg](pkg/sqlx_pg/) — работа с PostgreSQL через sqlx.
 - [pkg/metrics_prometheus](pkg/metrics_prometheus/) — интеграция с Prometheus для сбора метрик.
 
+#### Config
+
+* [internal/balance/config](internal/balance/config)
+* [config/balance/](config/balance/)
+* [.env](.env)
+
+Конфигурация микросервиса.
+
 ### Логирование
 
 ### Тестирование
@@ -476,7 +487,7 @@ func (a *CliAdapter) SignUp(ctx context.Context, username string, password strin
 
 Большинство тестов содержатся отдельно от тестируемого кода внутри пакета [internal/balance/tests](internal/balance/tests). 
 
-Репозитории и use-case тестируются в комплекте с базой данных посредством dockertest. Для тестирование с докером реализовано [расширение библиотеки testify/suite](pkg/testing_pg/suite.go), которое позволяет легко развернуть тестовую среду.
+Репозитории и use-case тестируются в комплекте с базой данных посредством dockertest. Для тестирование с докером реализовано [расширение библиотеки testify/suite](pkg/testing_pg/suite.go), которое позволяет легко развернуть тестовую среду с базой данных в контейнере.
 
 Адаптеры тестируются с моками юзкейсов.
 

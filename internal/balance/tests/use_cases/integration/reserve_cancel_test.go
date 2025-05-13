@@ -65,7 +65,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionProductIDMis
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionProductIDMismatch)
 }
 
-func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAlreadyPaid() {
+func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAlreadyCanceled() {
 	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		a.BalanceDeposit(fixtures.AmountPositive100)
 	})
@@ -75,5 +75,22 @@ func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAlreadyPaid(
 	s.Require().NoError(err)
 
 	err = s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyCanceled)
+}
+
+func (s *UseCasesSuiteIntegrationTest) TestReserveCancel_TransactionAlreadyPaid() {
+	_ = s.newAccountSaved(func(a *domainAccount.Account) {
+		a.BalanceDeposit(fixtures.AmountPositive100)
+	})
+
+	s.Require().NoError(
+		s.reserve.Handle(context.Background(), fixtures.InReserve100),
+	)
+
+	s.Require().NoError(
+		s.reserveConfirm.Handle(context.Background(), fixtures.InReserveConfirm100),
+	)
+
+	err := s.reserveCancel.Handle(context.Background(), fixtures.InReserveCancel100)
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
 }

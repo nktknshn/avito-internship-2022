@@ -1,6 +1,7 @@
 package http_test
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/stretchr/testify/mock"
@@ -12,6 +13,7 @@ import (
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
 
@@ -40,6 +42,22 @@ func (s *HTTPTestSuite) TestReserve() {
 			useCaseReturn: returnError(domainAccount.ErrAccountNotFound),
 			expectCode:    http.StatusNotFound,
 			expectErr:     domainAccount.ErrAccountNotFound.Error(),
+		},
+		{
+			name:          "transaction is already reserved",
+			auth:          true,
+			payload:       validPayload,
+			useCaseReturn: returnError(domainTransaction.ErrTransactionAlreadyReserved),
+			expectCode:    http.StatusConflict,
+			expectErr:     domainTransaction.ErrTransactionAlreadyReserved.Error(),
+		},
+		{
+			name:          "transaction is already paid",
+			auth:          true,
+			payload:       validPayload,
+			useCaseReturn: returnError(domainTransaction.ErrTransactionAlreadyPaid),
+			expectCode:    http.StatusConflict,
+			expectErr:     domainTransaction.ErrTransactionAlreadyPaid.Error(),
 		},
 		{
 			name:       "user is not allowed",
@@ -82,6 +100,14 @@ func (s *HTTPTestSuite) TestReserve() {
 			},
 			expectCode: http.StatusBadRequest,
 			expectErr:  domainAmount.ErrInvalidPositiveAmount.Error(),
+		},
+		{
+			name:          "internal error",
+			auth:          true,
+			payload:       validPayload,
+			expectCode:    http.StatusInternalServerError,
+			useCaseReturn: returnError(errors.New("some internal error")),
+			expectErr:     "internal server error",
 		},
 	}
 

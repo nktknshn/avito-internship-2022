@@ -60,6 +60,10 @@ func (u *ReserveCancelUseCase) Handle(ctx context.Context, in In) error {
 		for _, transaction = range orderTransactions {
 
 			if transaction.Status == domainTransaction.TransactionSpendStatusCanceled {
+				return domainTransaction.ErrTransactionAlreadyCanceled
+			}
+
+			if transaction.Status == domainTransaction.TransactionSpendStatusConfirmed {
 				return domainTransaction.ErrTransactionAlreadyPaid
 			}
 

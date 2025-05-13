@@ -1,6 +1,7 @@
 TODO
 
-- [ ] select for update
+- [ ] error codes
+- [ ] test select for update
 - [ ] index по amount+id, updated_at+id
 - [ ] pprof
 - [ ] additional data for metrics decorator (like adapter name)

@@ -15,10 +15,10 @@ type Decorator0Logging[T any] struct {
 func (d *Decorator0Logging[T]) Handle(ctx context.Context, in T) (err error) {
 	defer func() {
 		if err != nil {
-			d.Logger.Error(d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
+			d.Logger.Error("Error returned from "+d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
 		}
 	}()
-	d.Logger.Info(d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
+	d.Logger.Info("Handle "+d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
 	return d.Base.Handle(ctx, in)
 }
 
@@ -34,10 +34,10 @@ type Decorator1Logging[T any, R any] struct {
 func (d *Decorator1Logging[T, R]) Handle(ctx context.Context, in T) (result R, err error) {
 	defer func() {
 		if err != nil {
-			d.Logger.Error(d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
+			d.Logger.Error("Error returned from "+d.Base.GetName(), "use_case", d.Base.GetName(), "error", err)
 		}
 	}()
-	d.Logger.Info(d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
+	d.Logger.Info("Handle "+d.Base.GetName(), "use_case", d.Base.GetName(), "in", in)
 	return d.Base.Handle(ctx, in)
 }
 

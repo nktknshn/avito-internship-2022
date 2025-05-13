@@ -11,22 +11,22 @@ import (
 	commonErrors "github.com/nktknshn/avito-internship-2022/internal/common/errors"
 )
 
-type useCase0 struct{}
+type useCase0PanicingMock struct{}
 
-func (u *useCase0) Handle(_ context.Context, _ int) error {
+func (u *useCase0PanicingMock) Handle(_ context.Context, _ int) error {
 	panic("panic error")
 }
-func (u *useCase0) GetName() string {
+func (u *useCase0PanicingMock) GetName() string {
 	return "useCase0"
 }
 
-type useCase1 struct{}
+type useCase1PanicingMock struct{}
 
-func (u *useCase1) Handle(_ context.Context, _ int) (int, error) {
+func (u *useCase1PanicingMock) Handle(_ context.Context, _ int) (int, error) {
 	panic("panic error")
 }
 
-func (u *useCase1) GetName() string {
+func (u *useCase1PanicingMock) GetName() string {
 	return "useCase1"
 }
 
@@ -44,7 +44,7 @@ func TestDecorator0Recover(t *testing.T) {
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator0Recover[int]{
-		Base:           &useCase0{},
+		Base:           &useCase0PanicingMock{},
 		RecoverHandler: h.Handle,
 	}
 
@@ -61,7 +61,7 @@ func TestDecorator1Recover(t *testing.T) {
 	errRecovered := errors.New("error recovered")
 	h.On("Handle", mock.Anything, commonErrors.NewErrPanic("panic error")).Return(errRecovered)
 	dec := Decorator1Recover[int, int]{
-		Base:           &useCase1{},
+		Base:           &useCase1PanicingMock{},
 		RecoverHandler: h.Handle,
 	}
 	require.NotPanics(t, func() {

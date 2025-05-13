@@ -63,7 +63,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyPaid() {
 	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyPaid)
 }
 
-func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyExists() {
+func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyReserved() {
 	_ = s.newAccountSaved(func(a *domainAccount.Account) {
 		s.Require().NoError(a.BalanceDeposit(fixtures.AmountPositive100))
 	})
@@ -72,7 +72,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_AlreadyExists() {
 	s.Require().NoError(err)
 
 	err = s.reserve.Handle(s.Context(), fixtures.InReserve100)
-	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyExists)
+	s.Require().ErrorIs(err, domainTransaction.ErrTransactionAlreadyReserved)
 }
 
 func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
@@ -95,7 +95,7 @@ func (s *UseCasesSuiteIntegrationTest) TestReserve_DoubleReserve() {
 				errorCount.Add(1)
 				isPaidOrExists := errors.Is(err,
 					domainTransaction.ErrTransactionAlreadyPaid) ||
-					errors.Is(err, domainTransaction.ErrTransactionAlreadyExists)
+					errors.Is(err, domainTransaction.ErrTransactionAlreadyReserved)
 				s.Require().True(isPaidOrExists)
 			}
 		}()

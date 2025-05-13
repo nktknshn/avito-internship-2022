@@ -67,7 +67,7 @@ func (u *ReserveUseCase) Handle(ctx context.Context, in In) error {
 				return domainTransaction.ErrTransactionAlreadyPaid
 			}
 			if transaction.Status == domainTransaction.TransactionSpendStatusReserved {
-				return domainTransaction.ErrTransactionAlreadyExists
+				return domainTransaction.ErrTransactionAlreadyReserved
 			}
 		}
 

@@ -1,6 +1,7 @@
 package http_test
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/stretchr/testify/mock"
@@ -12,6 +13,7 @@ import (
 	domainAmount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/amount"
 	domainAuth "github.com/nktknshn/avito-internship-2022/internal/balance/domain/auth"
 	domainProduct "github.com/nktknshn/avito-internship-2022/internal/balance/domain/product"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
 
@@ -80,6 +82,38 @@ func (s *HTTPTestSuite) TestReserveCancel() {
 			},
 			expectCode: http.StatusBadRequest,
 			expectErr:  domainAmount.ErrInvalidPositiveAmount.Error(),
+		},
+		{
+			name:          "transaction is already canceled",
+			auth:          true,
+			payload:       validPayload,
+			expectCode:    http.StatusConflict,
+			useCaseReturn: returnError(domainTransaction.ErrTransactionAlreadyCanceled),
+			expectErr:     domainTransaction.ErrTransactionAlreadyCanceled.Error(),
+		},
+		{
+			name:          "transaction is already paid",
+			auth:          true,
+			payload:       validPayload,
+			expectCode:    http.StatusConflict,
+			useCaseReturn: returnError(domainTransaction.ErrTransactionAlreadyPaid),
+			expectErr:     domainTransaction.ErrTransactionAlreadyPaid.Error(),
+		},
+		{
+			name:          "transaction not found",
+			auth:          true,
+			payload:       validPayload,
+			expectCode:    http.StatusNotFound,
+			useCaseReturn: returnError(domainTransaction.ErrTransactionNotFound),
+			expectErr:     domainTransaction.ErrTransactionNotFound.Error(),
+		},
+		{
+			name:          "internal error",
+			auth:          true,
+			payload:       validPayload,
+			expectCode:    http.StatusInternalServerError,
+			useCaseReturn: returnError(errors.New("some internal error")),
+			expectErr:     "internal server error",
 		},
 	}
 
