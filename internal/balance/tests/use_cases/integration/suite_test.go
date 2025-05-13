@@ -10,6 +10,7 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/accounts_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/repositories/transactions_pg"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
+	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_cancel"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
@@ -33,11 +34,12 @@ type UseCasesSuiteIntegrationTest struct {
 	accountsRepo     *accounts_pg.AccountsRepository
 	transactionsRepo *transactions_pg.TransactionsRepository
 	// use cases
-	reserve        *reserve.ReserveUseCase
-	deposit        *deposit.DepositUseCase
-	reserveCancel  *reserve_cancel.ReserveCancelUseCase
-	reserveConfirm *reserve_confirm.ReserveConfirmUseCase
-	transfer       *transfer.TransferUseCase
+	reserve            *reserve.ReserveUseCase
+	deposit            *deposit.DepositUseCase
+	reserveCancel      *reserve_cancel.ReserveCancelUseCase
+	reserveConfirm     *reserve_confirm.ReserveConfirmUseCase
+	transfer           *transfer.TransferUseCase
+	reportTransactions *report_transactions.ReportTransactionsUseCase
 	// mocked dependencies
 
 }
@@ -52,6 +54,7 @@ func (s *UseCasesSuiteIntegrationTest) SetupTest() {
 	s.reserveCancel = reserve_cancel.New(s.trm, s.accountsRepo, s.transactionsRepo)
 	s.reserveConfirm = reserve_confirm.New(s.trm, s.accountsRepo, s.transactionsRepo)
 	s.transfer = transfer.New(s.trm, s.accountsRepo, s.transactionsRepo)
+	s.reportTransactions = report_transactions.New(s.transactionsRepo)
 }
 
 func (s *UseCasesSuiteIntegrationTest) TearDownTest() {
