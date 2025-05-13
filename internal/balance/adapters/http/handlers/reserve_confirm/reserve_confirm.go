@@ -2,7 +2,6 @@ package reserve_confirm
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	ergo "github.com/nktknshn/go-ergo-handler"
@@ -10,8 +9,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/reserve_confirm"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
-	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
 type HandlerReserveConfirm struct {
@@ -82,18 +79,6 @@ func makeHandlerReserveConfirm(auth handlers_auth.AuthUseCase, u useCase) http.H
 		}
 
 		err = u.Handle(r.Context(), in)
-
-		if errors.Is(err, domainAccount.ErrAccountNotFound) {
-			return nil, ergo.NewError(http.StatusNotFound, err)
-		}
-
-		if errors.Is(err, domainTransaction.ErrTransactionNotFound) {
-			return nil, ergo.NewError(http.StatusNotFound, err)
-		}
-
-		if errors.Is(err, domainTransaction.ErrTransactionAlreadyPaid) {
-			return nil, ergo.NewError(http.StatusConflict, err)
-		}
 
 		if err != nil {
 			return nil, err

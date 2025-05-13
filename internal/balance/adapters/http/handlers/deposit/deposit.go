@@ -2,7 +2,6 @@ package deposit
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	ergo "github.com/nktknshn/go-ergo-handler"
@@ -10,7 +9,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
 
 type DepositHandler struct {
@@ -81,10 +79,6 @@ func makeDepositHandler(auth handlers_auth.AuthUseCase, u useCase) http.Handler 
 		}
 
 		err = u.Handle(r.Context(), in)
-
-		if errors.Is(err, domainAccount.ErrAccountNotFound) {
-			return nil, ergo.NewError(http.StatusNotFound, err)
-		}
 
 		if err != nil {
 			return nil, err

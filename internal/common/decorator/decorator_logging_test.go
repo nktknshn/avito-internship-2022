@@ -57,7 +57,7 @@ func (l *loggerMock) Fatal(message string, keyvals ...interface{}) {
 }
 
 func (l *loggerMock) InitLogger(args ...interface{}) {
-	l.Called(args)
+	l.Called(args...)
 }
 
 func (l *loggerMock) Warn(message string, keyvals ...interface{}) {
@@ -80,7 +80,7 @@ func TestDecorator0Logging_Success(t *testing.T) {
 		Base:   ucmock,
 		Logger: logger,
 	}
-	decorator.Handle(context.Background(), 1)
+	decorator.Handle(t.Context(), 1)
 
 	ucmock.AssertExpectations(t)
 	logger.AssertExpectations(t)
@@ -98,7 +98,42 @@ func TestDecorator0Logging_Error(t *testing.T) {
 		Base:   ucmock,
 		Logger: logger,
 	}
-	decorator.Handle(context.Background(), 1)
+	decorator.Handle(t.Context(), 1)
+
+	ucmock.AssertExpectations(t)
+	logger.AssertExpectations(t)
+}
+
+func TestDecorator1Logging_Success(t *testing.T) {
+	logger := &loggerMock{}
+	ucmock := &useCase1Mock{}
+
+	ucmock.On("Handle", mock.Anything, mock.Anything).Return(1, nil)
+	logger.On("Info", mock.Anything, mock.Anything).Return(nil)
+
+	decorator := decorator.Decorator1Logging[int, int]{
+		Base:   ucmock,
+		Logger: logger,
+	}
+	decorator.Handle(t.Context(), 1)
+
+	ucmock.AssertExpectations(t)
+	logger.AssertExpectations(t)
+}
+
+func TestDecorator1Logging_Error(t *testing.T) {
+	logger := &loggerMock{}
+	ucmock := &useCase1Mock{}
+
+	ucmock.On("Handle", mock.Anything, mock.Anything).Return(0, errors.New("error"))
+	logger.On("Error", mock.Anything, mock.Anything).Return(nil)
+	logger.On("Info", mock.Anything, mock.Anything).Return(nil)
+
+	decorator := decorator.Decorator1Logging[int, int]{
+		Base:   ucmock,
+		Logger: logger,
+	}
+	decorator.Handle(t.Context(), 1)
 
 	ucmock.AssertExpectations(t)
 	logger.AssertExpectations(t)

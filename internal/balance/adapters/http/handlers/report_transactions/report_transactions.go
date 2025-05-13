@@ -10,7 +10,6 @@ import (
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_auth"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/adapters/http/handlers/handlers_builder"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/report_transactions"
-	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 )
 
 type ReportTransactionsHandler struct {
@@ -119,10 +118,6 @@ func makeReportTransactionsHandler(auth handlers_auth.AuthUseCase, u useCase) ht
 		}
 
 		res, err := u.Handle(r.Context(), in)
-
-		if errors.Is(err, domainAccount.ErrAccountNotFound) {
-			return nil, ergo.NewError(http.StatusNotFound, err)
-		}
 
 		if err != nil {
 			return nil, err

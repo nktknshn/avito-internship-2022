@@ -3,7 +3,6 @@ package transaction
 import domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
 
 var (
-	// ErrTransactionAlreadyExists     = domainError.New("transaction already exists")
 	ErrTransactionAlreadyPaid       = domainError.New("transaction is already paid")
 	ErrTransactionAlreadyCanceled   = domainError.New("transaction is already canceled")
 	ErrTransactionAlreadyReserved   = domainError.New("transaction is already reserved")

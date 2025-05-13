@@ -10,7 +10,9 @@ import (
 	ergo "github.com/nktknshn/go-ergo-handler"
 
 	useCaseError "github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/errors"
+	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	domainError "github.com/nktknshn/avito-internship-2022/internal/balance/domain/errors"
+	domainTransaction "github.com/nktknshn/avito-internship-2022/internal/balance/domain/transaction"
 )
 
 var (
@@ -32,6 +34,24 @@ func handlerErrorFunc(_ context.Context, w http.ResponseWriter, _ *http.Request,
 	case errors.As(err, &errorWithHTTPStatus):
 		status = errorWithHTTPStatus.HttpStatusCode
 		errorBody = makeErrorBody(errorWithHTTPStatus.Err)
+	case errors.Is(err, domainAccount.ErrAccountNotFound):
+		errorBody = makeErrorBody(err)
+		status = http.StatusNotFound
+	case errors.Is(err, domainTransaction.ErrTransactionNotFound):
+		errorBody = makeErrorBody(err)
+		status = http.StatusNotFound
+	case errors.Is(err, domainAccount.ErrAccountAlreadyExists):
+		errorBody = makeErrorBody(err)
+		status = http.StatusConflict
+	case errors.Is(err, domainTransaction.ErrTransactionAlreadyPaid):
+		errorBody = makeErrorBody(err)
+		status = http.StatusConflict
+	case errors.Is(err, domainTransaction.ErrTransactionAlreadyReserved):
+		errorBody = makeErrorBody(err)
+		status = http.StatusConflict
+	case errors.Is(err, domainTransaction.ErrTransactionAlreadyCanceled):
+		errorBody = makeErrorBody(err)
+		status = http.StatusConflict
 	case domainError.IsDomainError(err):
 		errorBody = makeErrorBody(err)
 		status = http.StatusBadRequest
