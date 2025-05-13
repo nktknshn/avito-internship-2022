@@ -1,15 +1,13 @@
 package use_cases_test
 
 import (
-	"context"
-
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
 )
 
 var ()
 
 func (s *AuthSuiteIntegrationTest) TestAuthSignup_Success() {
-	err := s.signup.Handle(context.Background(), fixtures.InAuthSignup)
+	err := s.signup.Handle(s.Context(), fixtures.InAuthSignup)
 	s.Require().NoError(err)
 
 	result, err := s.ExecSQL(

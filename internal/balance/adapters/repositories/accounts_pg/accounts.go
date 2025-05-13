@@ -11,6 +11,7 @@ import (
 
 	domain "github.com/nktknshn/avito-internship-2022/internal/balance/domain"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
+	"github.com/nktknshn/avito-internship-2022/pkg/sqlx_pg"
 )
 
 type AccountsRepository struct {
@@ -103,10 +104,15 @@ func (r *AccountsRepository) Save(ctx context.Context, account *domainAccount.Ac
 
 	var newDTO *accountDTO
 	var err error
+
 	if accDTO.ID == 0 {
 		newDTO, err = r.create(ctx, tr, accDTO)
 	} else {
 		newDTO, err = r.update(ctx, tr, accDTO)
+	}
+
+	if sqlx_pg.IsDuplicateKeyError(err) {
+		return nil, domainAccount.ErrAccountAlreadyExists
 	}
 
 	if err != nil {

@@ -1,7 +1,6 @@
 package use_cases_test
 
 import (
-	"context"
 	"testing"
 
 	trmsqlx "github.com/avito-tech/go-transaction-manager/sqlx"
@@ -69,7 +68,7 @@ func (s *UseCasesSuiteIntegrationTest) newAccount(mods ...func(*domainAccount.Ac
 
 func (s *UseCasesSuiteIntegrationTest) newAccountSaved(mods ...func(*domainAccount.Account)) *domainAccount.Account {
 	acc := s.newAccount(mods...)
-	acc, err := s.accountsRepo.Save(context.Background(), acc)
+	acc, err := s.accountsRepo.Save(s.Context(), acc)
 	s.Require().NoError(err)
 	return acc
 }

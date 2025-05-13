@@ -1,7 +1,6 @@
 package use_cases_test
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -68,6 +67,6 @@ func (s *AuthSuiteIntegrationTest) createAuthUser() {
 		fixtures.AuthUserRole_str,
 	)
 	s.Require().NoError(err)
-	err = s.authRepo.CreateUser(context.Background(), user.Username, user.PasswordHash, user.Role)
+	err = s.authRepo.CreateUser(s.Context(), user.Username, user.PasswordHash, user.Role)
 	s.Require().NoError(err)
 }

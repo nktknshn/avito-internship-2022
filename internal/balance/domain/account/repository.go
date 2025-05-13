@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrAccountNotFound = domainError.New("account not found")
+	ErrAccountNotFound      = domainError.New("account not found")
+	ErrAccountAlreadyExists = domainError.New("account already exists")
 )
 
 type AccountRepository interface {

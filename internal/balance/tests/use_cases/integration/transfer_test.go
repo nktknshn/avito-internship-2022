@@ -1,7 +1,6 @@
 package use_cases_test
 
 import (
-	"context"
 	"sync"
 	"sync/atomic"
 
@@ -27,15 +26,15 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_Success() {
 		fixtures.AmountPositive100_i64,
 	))
 
-	err := s.transfer.Handle(context.Background(), in)
+	err := s.transfer.Handle(s.Context(), in)
 	s.Require().NoError(err)
 
-	fromAcc, err := s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID)
+	fromAcc, err := s.accountsRepo.GetByUserID(s.Context(), fixtures.UserID)
 	s.Require().NoError(err)
 	s.Require().Equal(int64(0), fromAcc.Balance.GetAvailable().Value())
 	s.Require().Equal(int64(0), fromAcc.Balance.GetReserved().Value())
 
-	toAcc, err := s.accountsRepo.GetByUserID(context.Background(), fixtures.UserID_2)
+	toAcc, err := s.accountsRepo.GetByUserID(s.Context(), fixtures.UserID_2)
 	s.Require().NoError(err)
 	s.Require().Equal(fixtures.AmountPositive100_i64, toAcc.Balance.GetAvailable().Value())
 	s.Require().Equal(int64(0), toAcc.Balance.GetReserved().Value())
@@ -52,7 +51,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_To() {
 		fixtures.AmountPositive100_i64,
 	))
 
-	err := s.transfer.Handle(context.Background(), in)
+	err := s.transfer.Handle(s.Context(), in)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 
 }
@@ -68,7 +67,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_AccountNotFound_From() {
 		fixtures.AmountPositive100_i64,
 	))
 
-	err := s.transfer.Handle(context.Background(), in)
+	err := s.transfer.Handle(s.Context(), in)
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
@@ -83,7 +82,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_SameAccount() {
 		fixtures.AmountPositive100_i64,
 	))
 
-	err := s.transfer.Handle(context.Background(), in)
+	err := s.transfer.Handle(s.Context(), in)
 	s.Require().ErrorIs(err, domainAccount.ErrSameAccount)
 }
 
@@ -103,7 +102,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_InsufficientBalance() {
 		fixtures.AmountPositive100_i64,
 	))
 
-	err := s.transfer.Handle(context.Background(), in)
+	err := s.transfer.Handle(s.Context(), in)
 	s.Require().ErrorIs(err, domainAccount.ErrInsufficientAvailableBalance)
 }
 
@@ -133,7 +132,7 @@ func (s *UseCasesSuiteIntegrationTest) TestTransfer_DoubleTransaction() {
 		go func() {
 			defer wg.Done()
 			<-lock
-			err := s.transfer.Handle(context.Background(), in)
+			err := s.transfer.Handle(s.Context(), in)
 			if err != nil {
 				errorCount.Add(1)
 				s.Require().ErrorIs(err, domainAccount.ErrInsufficientAvailableBalance)

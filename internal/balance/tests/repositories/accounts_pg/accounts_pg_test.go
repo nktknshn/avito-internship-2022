@@ -87,6 +87,24 @@ func (s *Suite) TestSave_NotFound() {
 	s.Require().ErrorIs(err, domainAccount.ErrAccountNotFound)
 }
 
+func (s *Suite) TestSave_AlreadyExists() {
+	acc, err := domainAccount.NewAccountFromValues(
+		0,
+		fixtures.UserID_i64,
+		fixtures.Amount100_i64,
+		fixtures.Amount0_i64,
+	)
+
+	s.Require().NoError(err)
+
+	_, err = s.accountsRepo.Save(context.Background(), acc)
+	s.Require().NoError(err)
+
+	_, err = s.accountsRepo.Save(context.Background(), acc)
+	s.Require().Error(err)
+	s.Require().ErrorIs(err, domainAccount.ErrAccountAlreadyExists)
+}
+
 func (s *Suite) TestGetByUserID_Success() {
 	acc, err := domainAccount.NewAccountFromValues(
 		0,

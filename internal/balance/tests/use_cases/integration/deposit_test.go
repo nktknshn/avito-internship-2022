@@ -1,8 +1,6 @@
 package use_cases_test
 
 import (
-	"context"
-
 	"github.com/nktknshn/avito-internship-2022/internal/balance/app/use_cases/deposit"
 	domainAccount "github.com/nktknshn/avito-internship-2022/internal/balance/domain/account"
 	"github.com/nktknshn/avito-internship-2022/internal/balance/tests/fixtures"
@@ -17,7 +15,7 @@ func (s *UseCasesSuiteIntegrationTest) TestDeposit_CreatesAccountIfNotExists() {
 		fixtures.DepositSource_str,
 	))
 
-	err := s.deposit.Handle(context.Background(), in)
+	err := s.deposit.Handle(s.Context(), in)
 
 	s.Require().NoError(err)
 
@@ -35,7 +33,7 @@ func (s *UseCasesSuiteIntegrationTest) TestDeposit_DepositsExistingAccount() {
 	s.ExecSQLExpectRowsLen("select * from accounts", 0)
 
 	acc := must.Must(domainAccount.NewAccount(1))
-	acc, err := s.accountsRepo.Save(context.Background(), acc)
+	acc, err := s.accountsRepo.Save(s.Context(), acc)
 	s.Require().NoError(err)
 
 	s.ExecSQLExpectRowsLen("select * from accounts", 1)
@@ -46,7 +44,7 @@ func (s *UseCasesSuiteIntegrationTest) TestDeposit_DepositsExistingAccount() {
 		fixtures.DepositSource_str,
 	))
 
-	err = s.deposit.Handle(context.Background(), in)
+	err = s.deposit.Handle(s.Context(), in)
 	s.Require().NoError(err)
 
 	rows, err := s.ExecSQL("select * from accounts")
